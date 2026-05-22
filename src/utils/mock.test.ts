@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { mockCourses, mockProjects, mockSelectOptions, mockUsers } from './mock';
+import { mockCertificate, mockCourses, mockLearningProfile, mockProjects, mockSelectOptions, mockUsers } from './mock';
 
 describe('mock data workshop', () => {
   it('生成带脱敏信息的从业人员基本信息', () => {
@@ -43,5 +43,51 @@ describe('mock data workshop', () => {
     expect(mockSelectOptions('department')).toContainEqual({ label: '食品安全管理员项目', value: 'food-safety-manager' });
     expect(mockSelectOptions('trainingType')).toContainEqual({ label: '专项能力提升', value: 'special-capability' });
     expect(mockSelectOptions('status')).toContainEqual({ label: '进行中', value: 'ongoing' });
+  });
+
+  it('按证书类型生成脱敏的公司证书 mock 数据', () => {
+    const hours = mockCertificate('hours');
+    const education = mockCertificate('education');
+
+    expect(hours).toMatchObject({
+      studentName: '林予安',
+      idCardMasked: '110101********2026',
+      projectName: '住建项目',
+      hours: 48,
+      certificateNo: 'NX-CERT-HOURS-2026-0001',
+    });
+    expect(education.credits).toBe(12);
+    expect(education.certificateNo).toBe('NX-CERT-EDU-2026-0003');
+    expect(hours.idCardMasked).toContain('********');
+  });
+
+  it('生成综合学习档案 mock 数据并包含 IT 培训成长轨迹', () => {
+    const profile = mockLearningProfile('student-it-001');
+
+    expect(profile.student).toMatchObject({
+      id: 'student-it-001',
+      name: '张三',
+      idCardMasked: '110101********1234',
+    });
+    expect(profile.summary).toMatchObject({
+      totalHours: 156,
+      certificateCount: 2,
+      activeCourseCount: 1,
+      annualCredits: 18,
+    });
+    expect(profile.timeline.map((event) => event.title)).toEqual(
+      expect.arrayContaining(['完成《Next.js全栈工程化》课程', '获得《培训合格证明》']),
+    );
+    expect(profile.timeline.some((event) => event.certificateType === 'qualified')).toBe(true);
+    expect(profile.courses).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          courseName: 'Next.js全栈工程化',
+          hours: 48,
+          examResult: '合格',
+          status: '已完成',
+        }),
+      ]),
+    );
   });
 });

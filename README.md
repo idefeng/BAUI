@@ -17,10 +17,11 @@ npm run build-storybook
 中央 Mock 数据位于 `src/utils/mock.ts`，用于让业务组件在没有后端接口时也能展示高保真数据。
 
 ```tsx
-import { SmartTable, mockProjects, mockUsers } from 'boao-ui';
+import { CertificateTemplate, LearningProfile, SmartTable, mockLearningProfile, mockProjects, mockUsers } from 'boao-ui';
 
 const workers = mockUsers(8);
 const projects = mockProjects(8);
+const profile = mockLearningProfile('student-it-001');
 ```
 
 当前内置数据覆盖：
@@ -29,6 +30,7 @@ const projects = mockProjects(8);
 - 岗位：从业人员。
 - 培训类型：职业培训、继续教育、专项能力提升。
 - 人员信息：姓名、脱敏身份证号、脱敏手机号、工作单位、住址、头像、所属项目。
+- 证书与学习档案：学时证明、培训合格证明、继续教育学分证书，以及 IT 培训成长轨迹。
 
 ## 组件 Mock 用法
 
@@ -56,3 +58,15 @@ const projects = mockProjects(8);
 ```
 
 `mockType="course"` 保留兼容旧用法，内部会使用项目数据。
+
+`CertificateTemplate` 支持三种证书类型，并可在浏览器内调用原生打印：
+
+```tsx
+<CertificateTemplate type="qualified" mock />
+```
+
+`LearningProfile` 会在 `mock={true}` 时展示 600ms Skeleton，然后渲染摘要看板、学习时间线、证书预览弹窗和历史课程 `SmartTable`：
+
+```tsx
+<LearningProfile studentId="student-it-001" mock />
+```

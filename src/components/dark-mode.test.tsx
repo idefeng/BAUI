@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 import { cleanup, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { CertificateTemplate } from './biz/certificate';
+import { LearningProfile } from './biz/profile';
 import { SmartTable, type SmartTableColumn } from './biz/smart-table';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
@@ -121,5 +123,19 @@ describe('dark mode support', () => {
     rerender(<SmartTable columns={columns} data={[]} rowKey="id" emptyText="暂无暗色数据" />);
 
     expect(screen.getByText('暂无暗色数据').closest('[data-testid="smart-table-empty"]')?.className).toContain('dark:');
+  });
+
+  it('CertificateTemplate 包含暗黑模式下的黑金/暗银证书样式', () => {
+    render(<CertificateTemplate type="qualified" mock showActions={false} />);
+
+    expect(screen.getByTestId('certificate-paper').className).toContain('dark:');
+    expect(screen.getByTestId('certificate-inner-border').className).toContain('dark:');
+  });
+
+  it('LearningProfile 包含暗黑模式下的学习档案样式', () => {
+    render(<LearningProfile studentId="student-it-001" />);
+
+    expect(screen.getByTestId('learning-profile-root').className).toContain('dark:');
+    expect(screen.getByTestId('learning-profile-summary-card-totalHours').className).toContain('dark:');
   });
 });

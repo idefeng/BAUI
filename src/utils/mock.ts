@@ -51,6 +51,66 @@ export interface MockCourse extends MockProject {}
 
 export type MockSelectOptionType = 'department' | 'project' | 'trainingType' | 'status';
 
+export type MockCertificateType = 'hours' | 'qualified' | 'education';
+export type MockLearningTimelineType = 'joined' | 'course' | 'exam' | 'certificate';
+export type MockLearningCourseStatus = '已完成' | '进行中' | '待开始';
+export type MockLearningExamResult = '优秀' | '合格' | '学习中' | '待考核';
+
+export interface MockCertificateData {
+  studentName: string;
+  idCardMasked: string;
+  projectName: string;
+  courseName?: string;
+  hours?: number;
+  credits?: number;
+  certificateNo: string;
+  issuedAt: string;
+  organization?: string;
+}
+
+export interface MockLearningProfileStudent {
+  id: string;
+  name: string;
+  idCardMasked: string;
+  jobTitle: string;
+  workUnit: string;
+  joinedAt: string;
+}
+
+export interface MockLearningProfileSummary {
+  totalHours: number;
+  certificateCount: number;
+  activeCourseCount: number;
+  annualCredits: number;
+}
+
+export interface MockLearningProfileTimelineEvent {
+  id: string;
+  date: string;
+  type: MockLearningTimelineType;
+  title: string;
+  description: string;
+  certificateType?: MockCertificateType;
+  certificateData?: MockCertificateData;
+}
+
+export interface MockLearningProfileCourse {
+  id: string;
+  courseName: string;
+  hours: number;
+  credits: number;
+  examResult: MockLearningExamResult;
+  status: MockLearningCourseStatus;
+  completedAt: string;
+}
+
+export interface MockLearningProfileData {
+  student: MockLearningProfileStudent;
+  summary: MockLearningProfileSummary;
+  timeline: MockLearningProfileTimelineEvent[];
+  courses: MockLearningProfileCourse[];
+}
+
 export interface MockSelectOption {
   label: string;
   value: string;
@@ -192,3 +252,156 @@ export const mockProjects = (count: number): MockProject[] =>
 export const mockCourses = (count: number): MockCourse[] => mockProjects(count);
 
 export const mockSelectOptions = (type: MockSelectOptionType): MockSelectOption[] => [...selectOptionMap[type]];
+
+export const mockCertificate = (type: MockCertificateType): MockCertificateData => {
+  const user = mockUsers(3)[type === 'hours' ? 0 : type === 'qualified' ? 1 : 2];
+  const project = mockProjects(3)[type === 'hours' ? 0 : type === 'qualified' ? 1 : 2];
+  const certificateMeta: Record<MockCertificateType, Pick<MockCertificateData, 'hours' | 'credits' | 'certificateNo'>> = {
+    hours: {
+      hours: 48,
+      certificateNo: 'NX-CERT-HOURS-2026-0001',
+    },
+    qualified: {
+      hours: 64,
+      certificateNo: 'NX-CERT-QUALIFIED-2026-0002',
+    },
+    education: {
+      credits: 12,
+      certificateNo: 'NX-CERT-EDU-2026-0003',
+    },
+  };
+
+  return {
+    studentName: user.name,
+    idCardMasked: user.idCardMasked,
+    projectName: project.projectName,
+    courseName:
+      type === 'education'
+        ? '继续教育规范化能力提升课程'
+        : type === 'qualified'
+          ? `${project.projectName}培训合格班`
+          : `${project.projectName}在线学时课程`,
+    issuedAt: '2026-05-22',
+    organization: '灵境实训',
+    ...certificateMeta[type],
+  };
+};
+
+export const mockLearningProfile = (studentId = 'student-it-001'): MockLearningProfileData => {
+  const qualifiedCertificate: MockCertificateData = {
+    ...mockCertificate('qualified'),
+    studentName: '张三',
+    idCardMasked: '110101********1234',
+    projectName: '企业级前端全栈工程化训练营',
+    courseName: 'Next.js全栈工程化',
+    hours: 48,
+    certificateNo: 'NX-IT-QUALIFIED-2026-0408',
+    issuedAt: '2026-04-08',
+  };
+  const hoursCertificate: MockCertificateData = {
+    ...mockCertificate('hours'),
+    studentName: '张三',
+    idCardMasked: '110101********1234',
+    projectName: '云原生应用研发能力提升计划',
+    courseName: 'Node.js服务端实战',
+    hours: 64,
+    certificateNo: 'NX-IT-HOURS-2026-0318',
+    issuedAt: '2026-03-18',
+  };
+
+  return {
+    student: {
+      id: studentId,
+      name: '张三',
+      idCardMasked: '110101********1234',
+      jobTitle: '前端工程师',
+      workUnit: '灵境实训数字化研发中心',
+      joinedAt: '2026-02-28',
+    },
+    summary: {
+      totalHours: 156,
+      certificateCount: 2,
+      activeCourseCount: 1,
+      annualCredits: 18,
+    },
+    timeline: [
+      {
+        id: 'timeline-joined',
+        date: '2026-02-28',
+        type: 'joined',
+        title: '加入 IT 工程化培训计划',
+        description: '完成入学评估，进入企业级前端全栈工程化训练营。',
+      },
+      {
+        id: 'timeline-nextjs-course',
+        date: '2026-03-22',
+        type: 'course',
+        title: '完成《Next.js全栈工程化》课程',
+        description: '累计完成 48 学时，覆盖 App Router、服务端渲染、权限与部署流水线。',
+      },
+      {
+        id: 'timeline-nextjs-exam',
+        date: '2026-03-30',
+        type: 'exam',
+        title: '通过《Next.js全栈工程化》考核',
+        description: '综合项目评分 92 分，考核结果为合格。',
+      },
+      {
+        id: 'timeline-hours-certificate',
+        date: '2026-03-18',
+        type: 'certificate',
+        title: '获得《学时证明》',
+        description: '完成 Node.js 服务端实战模块，获得 64 学时证明。',
+        certificateType: 'hours',
+        certificateData: hoursCertificate,
+      },
+      {
+        id: 'timeline-qualified-certificate',
+        date: '2026-04-08',
+        type: 'certificate',
+        title: '获得《培训合格证明》',
+        description: '完成全栈工程化训练营并通过综合验收，证书可用于企业内部能力备案。',
+        certificateType: 'qualified',
+        certificateData: qualifiedCertificate,
+      },
+    ],
+    courses: [
+      {
+        id: 'course-nextjs-fullstack',
+        courseName: 'Next.js全栈工程化',
+        hours: 48,
+        credits: 6,
+        examResult: '合格',
+        status: '已完成',
+        completedAt: '2026-03-22',
+      },
+      {
+        id: 'course-node-service',
+        courseName: 'Node.js服务端实战',
+        hours: 64,
+        credits: 8,
+        examResult: '优秀',
+        status: '已完成',
+        completedAt: '2026-03-18',
+      },
+      {
+        id: 'course-react-quality',
+        courseName: 'React组件库质量工程',
+        hours: 32,
+        credits: 4,
+        examResult: '学习中',
+        status: '进行中',
+        completedAt: '进行中',
+      },
+      {
+        id: 'course-security-baseline',
+        courseName: '前端安全与权限基线',
+        hours: 12,
+        credits: 0,
+        examResult: '待考核',
+        status: '待开始',
+        completedAt: '2026-05-28',
+      },
+    ],
+  };
+};
