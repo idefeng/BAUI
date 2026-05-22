@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockProjects } from '../../../utils/mock';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion';
 
 const meta = {
@@ -77,4 +78,23 @@ export const CompactFaq: Story = {
       </Accordion>
     </div>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const projects = mockProjects(3);
+
+    return (
+      <Accordion type="single" collapsible defaultValue={projects[0].id} className="flex w-full max-w-3xl flex-col gap-3">
+        {projects.map((project) => (
+          <AccordionItem key={project.id} value={project.id}>
+            <AccordionTrigger>{project.projectName}</AccordionTrigger>
+            <AccordionContent>
+              培训类型为 {project.trainingType}，岗位为 {project.jobTitle}，当前从业人员 {project.enrolledCount} 人，项目状态为 {project.status}。
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    );
+  },
 };

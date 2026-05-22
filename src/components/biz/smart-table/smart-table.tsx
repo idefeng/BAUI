@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Inbox, LoaderCircle, Plus, Search } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
+import { mockProjects, mockUsers, type MockProject, type MockUser } from '../../../utils/mock';
 import { Button, type ButtonVariant } from '../../ui/button';
 import { Input } from '../../ui/input';
 import {
@@ -12,10 +13,12 @@ import {
   SelectValue,
 } from '../../ui/select';
 import { uiStyles } from '../../ui/shared/styles';
+import { Skeleton } from '../../ui/skeleton';
 
 export type SmartTableRowKey = string | number;
 export type SmartTableSelectionMode = 'multiple' | 'single';
 export type SmartTableAlign = 'left' | 'center' | 'right';
+export type SmartTableMockType = 'user' | 'course' | 'project';
 
 export interface SmartTableColumn<T extends object> {
   /** 列唯一标识，用于渲染 key 和配置列宽。 */
@@ -54,13 +57,17 @@ export interface SmartTablePagination {
   total: number;
 }
 
-export interface SmartTableProps<T extends object> {
+export interface SmartTableProps<T extends object = Record<string, unknown>> {
   /** 表格列配置。 */
-  columns: SmartTableColumn<T>[];
+  columns?: SmartTableColumn<T>[];
   /** 当前页数据，通常由外部 API 请求后传入。 */
-  data: T[];
+  data?: T[];
   /** 行唯一键字段或生成函数。 */
-  rowKey: keyof T | ((record: T) => SmartTableRowKey);
+  rowKey?: keyof T | ((record: T) => SmartTableRowKey);
+  /** 是否启用内置高保真 mock 数据；仅在未传 data 时接管表格数据。 */
+  mock?: boolean;
+  /** Mock 数据类型，默认渲染员工/学员数据。 */
+  mockType?: SmartTableMockType;
   /** 是否显示加载遮罩。 */
   loading?: boolean;
   /** 是否开启行选择。 */
@@ -134,13 +141,87 @@ const getDefaultCellValue = <T extends object>(record: T, column: SmartTableColu
   return record[column.dataIndex];
 };
 
+const projectStatusClassNames: Record<MockProject['status'], string> = {
+  进行中: 'bg-success-soft text-success',
+  待开班: 'bg-secondary text-muted-foreground dark:bg-secondary-dark dark:text-muted-dark-foreground',
+  已结项: 'bg-danger-soft text-danger',
+};
+
+const mockUserColumns: SmartTableColumn<MockUser>[] = [
+  {
+    key: 'avatarUrl',
+    title: '头像',
+    dataIndex: 'avatarUrl',
+    width: 76,
+    render: (value, record) => (
+      <img
+        src={String(value)}
+        alt={`${record.name}人脸识别头像`}
+        className="size-10 rounded-full border border-border bg-secondary object-cover dark:border-border-dark dark:bg-secondary-dark"
+      />
+    ),
+  },
+  { key: 'name', title: '姓名', dataIndex: 'name', width: 110 },
+  { key: 'jobTitle', title: '岗位', dataIndex: 'jobTitle', width: 110 },
+  { key: 'idCardMasked', title: '身份证号', dataIndex: 'idCardMasked', width: 170 },
+  { key: 'phoneMasked', title: '手机号', dataIndex: 'phoneMasked', width: 130 },
+  { key: 'workUnit', title: '工作单位', dataIndex: 'workUnit', ellipsis: true, width: 210 },
+  { key: 'address', title: '住址', dataIndex: 'address', ellipsis: true, width: 220 },
+  {
+    key: 'projectName',
+    title: '所属项目',
+    dataIndex: 'projectName',
+    width: 190,
+    render: (value, record) => (
+      <div className="space-y-1">
+        <p className="truncate font-medium text-foreground dark:text-foreground-dark">{value as React.ReactNode}</p>
+        <p className="truncate text-xs text-muted-foreground dark:text-muted-dark-foreground">{record.trainingType}</p>
+      </div>
+    ),
+  },
+];
+
+const mockProjectColumns: SmartTableColumn<MockProject>[] = [
+  { key: 'projectName', title: '项目名称', dataIndex: 'projectName', ellipsis: true, width: 220 },
+  { key: 'trainingType', title: '培训类型', dataIndex: 'trainingType', width: 130 },
+  { key: 'jobTitle', title: '岗位', dataIndex: 'jobTitle', width: 110 },
+  { key: 'enrolledCount', title: '从业人员人数', dataIndex: 'enrolledCount', width: 140, align: 'right' },
+  { key: 'organizer', title: '工作单位/承训机构', dataIndex: 'organizer', ellipsis: true, width: 220 },
+  { key: 'projectManager', title: '负责人', dataIndex: 'projectManager', width: 110 },
+  {
+    key: 'status',
+    title: '项目状态',
+    dataIndex: 'status',
+    width: 110,
+    render: (value) => {
+      const status = value as MockProject['status'];
+
+      return (
+        <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-medium', projectStatusClassNames[status])}>
+          {status}
+        </span>
+      );
+    },
+  },
+  { key: 'startDate', title: '开班日期', dataIndex: 'startDate', width: 120, align: 'right' },
+];
+
+const getMockColumns = (mockType: SmartTableMockType) =>
+  mockType === 'user' ? mockUserColumns : mockProjectColumns;
+
+const getFallbackRecordKey = <T extends object>(record: T, index: number): SmartTableRowKey => {
+  const candidate = (record as { id?: unknown; code?: unknown }).id ?? (record as { code?: unknown }).code;
+
+  return typeof candidate === 'string' || typeof candidate === 'number' ? candidate : index;
+};
+
 export function SmartTable<T extends object>({
   actionIcon = <Plus />,
   actionLabel,
   actionVariant = 'solid',
   className,
-  columns,
-  data,
+  columns: externalColumns,
+  data: externalData,
   defaultSelectedRowKeys = [],
   emptyText = '暂无数据',
   filterOptions = [],
@@ -148,6 +229,8 @@ export function SmartTable<T extends object>({
   filterValue,
   loading = false,
   maxBodyHeight = 'min(56vh, 640px)',
+  mock = false,
+  mockType = 'user',
   onAction,
   onFilterChange,
   onPageChange,
@@ -163,19 +246,56 @@ export function SmartTable<T extends object>({
   selectionMode = 'multiple',
   tableClassName,
 }: SmartTableProps<T>) {
+  const shouldUseMockData = mock && externalData === undefined;
+  const [mockRows, setMockRows] = React.useState<T[]>([]);
+  const [mockLoading, setMockLoading] = React.useState(shouldUseMockData);
   const [innerSelectedKeys, setInnerSelectedKeys] = React.useState<SmartTableRowKey[]>(defaultSelectedRowKeys);
+  const data = (shouldUseMockData ? mockRows : externalData ?? []) as T[];
+  const columns = React.useMemo<SmartTableColumn<T>[]>(() => {
+    if (shouldUseMockData) {
+      return getMockColumns(mockType) as unknown as SmartTableColumn<T>[];
+    }
+
+    return externalColumns ?? [];
+  }, [externalColumns, mockType, shouldUseMockData]);
   const isSelectionControlled = selectedRowKeys !== undefined;
   const currentSelectedKeys = isSelectionControlled ? selectedRowKeys : innerSelectedKeys;
   const pageCount = pagination ? Math.max(1, Math.ceil(pagination.total / pagination.pageSize)) : 0;
   const shouldShowToolbar = searchable || filterOptions.length > 0 || actionLabel;
+  const isMockLoading = shouldUseMockData && mockLoading;
+
+  React.useEffect(() => {
+    if (!shouldUseMockData) {
+      setMockRows([]);
+      setMockLoading(false);
+      return;
+    }
+
+    setMockRows([]);
+    setMockLoading(true);
+
+    const timer = window.setTimeout(() => {
+      // 延时结束后再生成数据，模拟真实接口返回并避免 Storybook 一闪而过。
+      const nextRows = mockType === 'user' ? mockUsers(8) : mockProjects(8);
+
+      setMockRows(nextRows as unknown as T[]);
+      setMockLoading(false);
+    }, 800);
+
+    return () => window.clearTimeout(timer);
+  }, [mockType, shouldUseMockData]);
 
   const getRecordKey = React.useCallback(
-    (record: T) => {
+    (record: T, index = 0) => {
       if (typeof rowKey === 'function') {
         return rowKey(record);
       }
 
-      return record[rowKey] as SmartTableRowKey;
+      if (rowKey) {
+        return record[rowKey] as SmartTableRowKey;
+      }
+
+      return getFallbackRecordKey(record, index);
     },
     [rowKey],
   );
@@ -185,11 +305,11 @@ export function SmartTable<T extends object>({
       setInnerSelectedKeys(nextKeys);
     }
 
-    const nextRows = data.filter((record) => nextKeys.includes(getRecordKey(record)));
+    const nextRows = data.filter((record, index) => nextKeys.includes(getRecordKey(record, index)));
     onSelectionChange?.(nextKeys, nextRows);
   };
 
-  const rowKeys = data.map(getRecordKey);
+  const rowKeys = data.map((record, index) => getRecordKey(record, index));
   const selectedKeySet = new Set(currentSelectedKeys);
   const isEveryCurrentPageSelected = rowKeys.length > 0 && rowKeys.every((key) => selectedKeySet.has(key));
 
@@ -298,9 +418,24 @@ export function SmartTable<T extends object>({
               </tr>
             </thead>
             <tbody>
-              {data.map((record, rowIndex) => {
-                const key = getRecordKey(record);
-                const rowLabel = String(getDefaultCellValue(record, columns[0]) ?? key);
+              {isMockLoading
+                ? Array.from({ length: 6 }, (_, rowIndex) => (
+                    <tr key={`mock-skeleton-${rowIndex}`} data-testid={rowIndex === 0 ? 'smart-table-skeleton' : undefined}>
+                      {selectable ? (
+                        <td className="border-b border-border px-4 py-3 dark:border-border-dark">
+                          <Skeleton className="size-4 rounded" />
+                        </td>
+                      ) : null}
+                      {columns.map((column, columnIndex) => (
+                        <td key={column.key} className="border-b border-border px-4 py-3 dark:border-border-dark">
+                          <Skeleton className={cn('h-4', columnIndex === 0 ? 'w-4/5' : 'w-3/5')} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                : data.map((record, rowIndex) => {
+                const key = getRecordKey(record, rowIndex);
+                const rowLabel = String((columns[0] ? getDefaultCellValue(record, columns[0]) : undefined) ?? key);
                 const isSelected = selectedKeySet.has(key);
 
                 return (
@@ -348,7 +483,7 @@ export function SmartTable<T extends object>({
           </table>
         </div>
 
-        {data.length === 0 && !loading ? (
+        {data.length === 0 && !loading && !isMockLoading ? (
           <div
             data-testid="smart-table-empty"
             className="flex min-h-72 flex-col items-center justify-center gap-3 p-8 text-center dark:bg-surface-dark"
@@ -364,7 +499,7 @@ export function SmartTable<T extends object>({
           </div>
         ) : null}
 
-        {loading ? (
+        {loading && !isMockLoading ? (
           <div
             data-testid="smart-table-loading"
             className="absolute inset-0 z-20 flex items-center justify-center bg-surface/70 backdrop-blur-sm dark:bg-background-dark/70"

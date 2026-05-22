@@ -46,4 +46,10 @@ describe('Input', () => {
     expect(screen.getByRole('textbox', { name: '编码' })).toBeDisabled();
     expect(screen.queryByRole('button', { name: '清除输入内容' })).not.toBeInTheDocument();
   });
+
+  it('mock 属性会切换为逼真的业务占位符', () => {
+    render(<Input aria-label="手机号" mock="phone" />);
+
+    expect(screen.getByRole('textbox', { name: '手机号' })).toHaveAttribute('placeholder', '请输入脱敏手机号，如 138****2026');
+  });
 });

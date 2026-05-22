@@ -5,6 +5,8 @@ import { cn } from '../../../lib/utils';
 import { uiStyles } from '../shared/styles';
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'prefix'> {
+  /** Mock 占位符类型，用于快速搭建公司业务表单原型。 */
+  mock?: 'name' | 'phone' | 'email';
   /** 是否展示一键清除按钮；禁用和只读状态下不会展示。 */
   clearable?: boolean;
   /** 点击清除按钮后的回调，受控场景建议在这里把外部 value 置空。 */
@@ -17,6 +19,12 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   rootClassName?: string;
 }
 
+const mockPlaceholders: Record<NonNullable<InputProps['mock']>, string> = {
+  name: '请输入从业人员姓名，如 林予安',
+  phone: '请输入脱敏手机号，如 138****2026',
+  email: '请输入企业邮箱，如 student@boaoit.com',
+};
+
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -24,8 +32,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       clearable = false,
       defaultValue,
       disabled = false,
+      mock,
       onChange,
       onClear,
+      placeholder,
       prefixIcon,
       readOnly = false,
       rootClassName,
@@ -97,6 +107,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           defaultValue={defaultValue}
           disabled={disabled}
           readOnly={readOnly}
+          placeholder={mock ? mockPlaceholders[mock] : placeholder}
           onChange={handleChange}
           className={cn(
             'h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground dark:text-foreground-dark dark:placeholder:text-muted-dark-foreground',

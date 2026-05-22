@@ -79,3 +79,22 @@ export const DarkContrast: Story = {
     </div>
   ),
 };
+
+export const MockModeDemo: Story = {
+  render: () => (
+    <div className="grid gap-4">
+      <div className="flex items-center justify-between gap-6">
+        <label htmlFor="mock-auto-enroll" className="text-sm font-medium text-foreground dark:text-foreground-dark">
+          新从业人员自动加入住建项目
+        </label>
+        <Switch id="mock-auto-enroll" aria-label="新从业人员自动加入住建项目" defaultChecked />
+      </div>
+      <div className="flex items-center justify-between gap-6">
+        <label htmlFor="mock-course-alert" className="text-sm font-medium text-foreground dark:text-foreground-dark">
+          项目状态变更短信通知
+        </label>
+        <Switch id="mock-course-alert" aria-label="项目状态变更短信通知" />
+      </div>
+    </div>
+  ),
+};

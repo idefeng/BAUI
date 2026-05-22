@@ -75,3 +75,26 @@ export const DarkMode: Story = {
     </div>
   ),
 };
+
+export const MockModeDemo: Story = {
+  render: () => (
+    <div className="w-[620px] rounded-2xl border border-border bg-surface p-4 dark:border-border-dark dark:bg-surface-dark">
+      <div className="mb-4 grid grid-cols-[1.4fr_1fr_0.8fr_0.8fr] gap-4">
+        <Skeleton className="h-4" />
+        <Skeleton className="h-4" />
+        <Skeleton className="h-4" />
+        <Skeleton className="h-4" />
+      </div>
+      <div className="space-y-3">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="grid grid-cols-[1.4fr_1fr_0.8fr_0.8fr] gap-4">
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+};

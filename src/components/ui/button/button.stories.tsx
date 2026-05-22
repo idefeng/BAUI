@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ArrowRight, Download, Plus, Send } from 'lucide-react';
 
+import { mockProjects } from '../../../utils/mock';
 import { Button } from './button';
 
 const meta = {
@@ -104,4 +105,22 @@ export const Sizes: Story = {
       <Button size="lg">大按钮</Button>
     </div>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const [project] = mockProjects(1);
+
+    return (
+      <div className="flex flex-wrap items-center gap-3">
+        <Button leftIcon={<Plus />}>启动{project.projectName}</Button>
+        <Button variant="outline" leftIcon={<Download />}>
+          导出从业人员名单
+        </Button>
+        <Button variant="ghost" rightIcon={<ArrowRight />}>
+          查看项目详情
+        </Button>
+      </div>
+    );
+  },
 };

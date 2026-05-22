@@ -45,4 +45,12 @@ describe('Select', () => {
     expect(content).toHaveClass('data-[state=open]:animate-select-in');
     expect(content).toHaveClass('data-[state=closed]:animate-select-out');
   });
+
+  it('mock 模式会自动加载业务下拉选项', () => {
+    render(<Select mock mockType="department" defaultOpen />);
+
+    expect(screen.getByRole('combobox', { hidden: true, name: '选择项目' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: '住建项目' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: '食品安全管理员项目' })).toBeInTheDocument();
+  });
 });

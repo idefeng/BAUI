@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Archive, Copy, Download, MoreHorizontal, Pencil, Settings, Trash2 } from 'lucide-react';
 
+import { mockProjects } from '../../../utils/mock';
 import { Button } from '../button';
 import {
   DropdownMenu,
@@ -105,6 +106,33 @@ export const Stateful: Story = {
           <DropdownMenuGroup>
             <DropdownMenuItem inset>保存为默认视图</DropdownMenuItem>
           </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  },
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const [project] = mockProjects(1);
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild styled={false}>
+          <Button variant="outline" rightIcon={<MoreHorizontal />}>
+            {project.projectName}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>项目操作</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem icon={<Pencil />}>编辑项目信息</DropdownMenuItem>
+          <DropdownMenuItem icon={<Download />}>导出人员名单</DropdownMenuItem>
+          <DropdownMenuItem icon={<Archive />}>项目结项</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem icon={<Trash2 />} variant="danger">
+            删除项目
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );

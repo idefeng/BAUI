@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockSelectOptions } from '../../../utils/mock';
 import { RadioGroup, RadioGroupItem } from './radio-group';
 
 const meta = {
@@ -85,4 +86,23 @@ export const DarkContrast: Story = {
       </RadioGroup>
     </div>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const statusOptions = mockSelectOptions('status');
+
+    return (
+      <RadioGroup defaultValue="ongoing" aria-label="项目状态">
+        {statusOptions.map((option) => (
+          <div key={option.value} className="flex items-center gap-3">
+            <RadioGroupItem id={`mock-status-${option.value}`} aria-label={option.label} value={option.value} />
+            <label htmlFor={`mock-status-${option.value}`} className="text-sm font-medium text-foreground dark:text-foreground-dark">
+              {option.label}
+            </label>
+          </div>
+        ))}
+      </RadioGroup>
+    );
+  },
 };

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -129,5 +129,27 @@ describe('SmartTable', () => {
     expect(currentPage).toHaveClass('bg-primary');
     expect(currentPage).toHaveClass('rounded-xl');
     expect(onPageChange).toHaveBeenCalledWith(2, 10);
+  });
+
+  it('mock 模式在 800ms 骨架屏后渲染项目业务表头和数据', async () => {
+    vi.useFakeTimers();
+
+    try {
+      render(<SmartTable mock mockType="project" />);
+
+      expect(screen.getByTestId('smart-table-skeleton')).toBeInTheDocument();
+
+      await act(async () => {
+        vi.advanceTimersByTime(800);
+      });
+
+      expect(screen.queryByTestId('smart-table-skeleton')).not.toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: '项目名称' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: '培训类型' })).toBeInTheDocument();
+      expect(screen.getAllByText('住建项目').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('职业培训').length).toBeGreaterThan(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

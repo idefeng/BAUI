@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BarChart3, FileText, Settings, Users } from 'lucide-react';
 
+import { mockProjects, mockUsers } from '../../../utils/mock';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 
 const meta = {
@@ -71,4 +72,30 @@ export const FullWidth: Story = {
       </Tabs>
     </div>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const users = mockUsers(4);
+    const projects = mockProjects(2);
+
+    return (
+      <Tabs defaultValue="learners" className="w-full max-w-4xl">
+        <TabsList aria-label="培训业务 mock 数据">
+          <TabsTrigger value="learners" icon={<Users />}>
+            从业人员
+          </TabsTrigger>
+          <TabsTrigger value="projects" icon={<FileText />}>
+            项目
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="learners">
+          {users.map((user) => `${user.name} · ${user.idCardMasked} · ${user.workUnit}`).join(' / ')}
+        </TabsContent>
+        <TabsContent value="projects">
+          {projects.map((project) => `${project.projectName} · ${project.trainingType} · ${project.status}`).join(' / ')}
+        </TabsContent>
+      </Tabs>
+    );
+  },
 };

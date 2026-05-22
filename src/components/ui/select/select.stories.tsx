@@ -98,3 +98,12 @@ export const Disabled: Story = {
     </div>
   ),
 };
+
+export const MockModeDemo: Story = {
+  render: () => (
+    <div className="grid w-full max-w-xl gap-4 md:grid-cols-2">
+      <Select mock defaultValue="construction" />
+      <Select mock mockType="trainingType" defaultValue="vocational-training" />
+    </div>
+  ),
+};

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Info } from 'lucide-react';
 
+import { mockUsers } from '../../../utils/mock';
 import { Button } from '../button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
@@ -87,4 +88,21 @@ export const DarkMode: Story = {
       </Tooltip>
     </div>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const [user] = mockUsers(1);
+
+    return (
+      <Tooltip open>
+        <TooltipTrigger asChild>
+          <Button variant="outline">{user.name}</Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          {user.idCardMasked} · {user.phoneMasked} · {user.workUnit}
+        </TooltipContent>
+      </Tooltip>
+    );
+  },
 };

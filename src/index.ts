@@ -13,3 +13,4 @@ export * from './components/ui/theme-toggle';
 export * from './components/ui/tooltip';
 export * from './components/ui/toast';
 export * from './components/biz/smart-table';
+export * from './utils/mock';

@@ -70,3 +70,13 @@ export const Disabled: Story = {
     defaultValue: '不可编辑内容',
   },
 };
+
+export const MockModeDemo: Story = {
+  render: () => (
+    <div className="grid w-full max-w-2xl gap-4 md:grid-cols-3">
+      <Input aria-label="从业人员姓名" mock="name" clearable />
+      <Input aria-label="联系电话" mock="phone" clearable />
+      <Input aria-label="企业邮箱" mock="email" clearable />
+    </div>
+  ),
+};

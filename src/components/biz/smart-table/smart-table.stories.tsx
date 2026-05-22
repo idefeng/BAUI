@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { RotateCcw } from 'lucide-react';
 
+import { mockSelectOptions } from '../../../utils/mock';
 import { SmartTable, type SmartTableColumn, type SmartTableFilterOption } from './smart-table';
 
 interface ApiProjectRow {
@@ -31,7 +32,7 @@ const mockRows: ApiProjectRow[] = Array.from({ length: 36 }, (_, index) => {
 
   return {
     id: `BA-${String(index + 1).padStart(3, '0')}`,
-    name: ['区域机构账号治理', '课程资源审核中台', '医教协同数据看板', '培训项目报名管理'][index % 4],
+    name: ['住建项目报名管理', '食品安全管理员资料审核', '继续医学教育数据看板', '睡眠健康管理师培训排期'][index % 4],
     status: statuses[index % statuses.length],
     owner: ['林医生', '王老师', '陈主任', '赵经理'][index % 4],
     department: departments[index % departments.length],
@@ -89,6 +90,7 @@ const filterOptions: SmartTableFilterOption[] = [
   { label: '暂停', value: 'paused' },
   { label: '草稿', value: 'draft' },
 ];
+const projectStatusOptions = mockSelectOptions('status');
 
 const fetchProjects = async ({
   page,
@@ -221,5 +223,22 @@ export const Empty: Story = {
       actionLabel="新增项目"
       emptyText="暂无项目数据"
     />
+  ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <SmartTable mock mockType="user" selectable searchPlaceholder="搜索从业人员姓名、手机号或工作单位" actionLabel="新增从业人员" />
+      <SmartTable
+        mock
+        mockType="project"
+        searchable={false}
+        filterValue="ongoing"
+        filterOptions={projectStatusOptions}
+        actionLabel="新增项目"
+        emptyText="暂无项目数据"
+      />
+    </div>
   ),
 };

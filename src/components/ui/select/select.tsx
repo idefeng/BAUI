@@ -3,9 +3,61 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
+import { mockSelectOptions, type MockSelectOptionType } from '../../../utils/mock';
 import { uiStyles } from '../shared/styles';
 
-export const Select = SelectPrimitive.Root;
+export interface SelectProps extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
+  /** 开启后在未传 children 时自动加载公司业务 mock 选项。 */
+  mock?: boolean;
+  /** Mock 选项类型，默认展示部门/班级选项。 */
+  mockType?: MockSelectOptionType;
+  /** Mock 便捷模式下的触发器无障碍名称。 */
+  mockAriaLabel?: string;
+  /** Mock 便捷模式下的占位文本。 */
+  mockPlaceholder?: string;
+}
+
+export const Select = ({
+  children,
+  mock = false,
+  mockAriaLabel,
+  mockPlaceholder,
+  mockType = 'department',
+  ...props
+}: SelectProps) => {
+  const shouldRenderMockOptions = mock && children === undefined;
+  const options = shouldRenderMockOptions ? mockSelectOptions(mockType) : [];
+  const defaultLabelMap: Record<MockSelectOptionType, string> = {
+    department: '选择项目',
+    project: '选择项目',
+    trainingType: '选择培训类型',
+    status: '选择项目状态',
+  };
+  const defaultLabel = defaultLabelMap[mockType];
+
+  return (
+    <SelectPrimitive.Root {...props}>
+      {shouldRenderMockOptions ? (
+        <>
+          <SelectTrigger aria-label={mockAriaLabel ?? defaultLabel}>
+            <SelectValue placeholder={mockPlaceholder ?? defaultLabel} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </>
+      ) : (
+        children
+      )}
+    </SelectPrimitive.Root>
+  );
+};
+
+Select.displayName = SelectPrimitive.Root.displayName;
 export const SelectGroup = SelectPrimitive.Group;
 export const SelectValue = SelectPrimitive.Value;
 

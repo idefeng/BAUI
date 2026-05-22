@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockProjects } from '../../../utils/mock';
 import { Button } from '../button';
 import {
   Modal,
@@ -65,6 +66,34 @@ export const Controlled: Story = {
               稍后处理
             </Button>
             <Button onClick={() => setOpen(false)}>我知道了</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    );
+  },
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const [project] = mockProjects(1);
+
+    return (
+      <Modal>
+        <ModalTrigger asChild>
+          <Button>打开项目启动确认</Button>
+        </ModalTrigger>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>确认启动项目</ModalTitle>
+            <ModalDescription>
+              {project.projectName} 将面向{project.jobTitle}开展{project.trainingType}，预计覆盖 {project.enrolledCount} 名从业人员。
+            </ModalDescription>
+          </ModalHeader>
+          <ModalFooter>
+            <ModalClose asChild>
+              <Button variant="outline">取消</Button>
+            </ModalClose>
+            <Button>确认启动</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

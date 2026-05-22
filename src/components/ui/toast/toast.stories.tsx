@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockProjects } from '../../../utils/mock';
 import { Button } from '../button';
 import { ToastHost, ToastProvider, ToastRoot, ToastDescription, ToastTitle, ToastViewport, useToast } from './toast';
 
@@ -84,4 +85,27 @@ export const Variants: Story = {
       <ToastViewport />
     </ToastProvider>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const { removeToast, showToast, toasts } = useToast();
+    const [project] = mockProjects(1);
+
+    return (
+      <ToastHost toasts={toasts} onRemove={removeToast}>
+        <Button
+          onClick={() =>
+            showToast({
+              title: '项目已进入排期',
+              description: `${project.projectName} 已按${project.trainingType}口径提交，预计 1 个工作日内完成开班确认。`,
+              variant: 'info',
+            })
+          }
+        >
+          触发项目排期通知
+        </Button>
+      </ToastHost>
+    );
+  },
 };

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockUsers } from '../../../utils/mock';
 import { Checkbox } from './checkbox';
 
 const meta = {
@@ -92,4 +93,23 @@ export const DarkContrast: Story = {
       </div>
     </div>
   ),
+};
+
+export const MockModeDemo: Story = {
+  render: () => {
+    const users = mockUsers(3);
+
+    return (
+      <div className="grid gap-3">
+        {users.map((user, index) => (
+          <div key={user.id} className="flex items-center gap-3">
+            <Checkbox id={`mock-user-${user.id}`} aria-label={`选择 ${user.name}`} defaultChecked={index === 0} />
+            <label htmlFor={`mock-user-${user.id}`} className="text-sm font-medium text-foreground dark:text-foreground-dark">
+              {user.name} · {user.workUnit}
+            </label>
+          </div>
+        ))}
+      </div>
+    );
+  },
 };
