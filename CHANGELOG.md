@@ -22,6 +22,10 @@
 - 新增 `CertificateTemplate` 公司专属证书模板，支持学时证明、培训合格证明、继续教育学分证书三种类型、打印操作、黑金/暗银暗黑模式和防伪视觉占位。
 - 新增 `LearningProfile` 综合学习档案业务组件，组合摘要看板、学习时间线、证书预览弹窗和 `SmartTable` 历史课程明细。
 - `src/utils/mock.ts` 新增 `mockCertificate(type)` 与 `mockLearningProfile(studentId)`，用于 Storybook 和业务组件本地高保真演示。
+- 新增 `Slider` 滑块组件，基于 Radix Slider 支持单值/范围受控值、拖拽数值气泡、暗黑模式和 Form 一键填表。
+- 新增 `Transfer` 公司业务穿梭框，支持左右列表搜索、全选计数、方向迁移按钮、Mock 候选人数据和 Form schema 联动。
+- 新增 `TreeSelect` 智能树选择器，支持 Radix Popover 浮层、多选 Tag、递归展开、父子全选/半选联动和全球组织架构 Mock 数据。
+- `src/utils/mock.ts` 新增 `mockSliderValue()`、`mockTransferData()`、`mockTransferTargetKeys()`、`mockTreeData()` 和 `mockTreeSelectValue()`，覆盖滑块、穿梭框和树选择一键填表场景。
 
 ### Changed
 
@@ -35,3 +39,7 @@
 - 引入 Radix Tooltip 依赖，保持 hover、focus 和键盘无障碍提示语义一致。
 - 引入 Radix Popover 依赖，为级联选择器和日期时间选择器提供浮层底座。
 - 公共入口补充导出 `CertificateTemplate`、`LearningProfile`、`Cascader`、`DateTimePicker`、`Form`、`Pagination`、`Upload` 和 `NavMenu`，便于业务系统直接引用。
+- `Form` Schema 消费链扩展 `slider`、`transfer` 和 `treeselect` 字段类型，学员档案 Storybook 增加薪资、分配学员和组织范围演示。
+- `Checkbox` 受控 `checked` 支持 Radix `indeterminate` 状态，用于树选择器父节点半选展示。
+- 公共入口补充导出 `Slider`、`Transfer` 和 `TreeSelect`。
+- 引入 Radix Slider 依赖，保持滑块拖拽、键盘调节和无障碍状态一致。

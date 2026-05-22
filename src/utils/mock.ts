@@ -121,10 +121,30 @@ export interface MockTechnologyInterestOption {
   value: string;
 }
 
+export interface MockSliderValueParams {
+  min?: number;
+  max?: number;
+  step?: number;
+  seed?: number;
+}
+
+export interface MockTransferItem {
+  key: string;
+  title: string;
+  description?: string;
+  disabled?: boolean;
+}
+
 export interface MockCascaderOption {
   value: string;
   label: string;
   children?: MockCascaderOption[];
+}
+
+export interface MockTreeNode {
+  key: string;
+  title: string;
+  children?: MockTreeNode[];
 }
 
 const userNames = ['林予安', '周明轩', '陈晓雨', '赵一诺', '王嘉宁', '许若辰', '李思远', '韩沐阳'];
@@ -250,6 +270,106 @@ const cascaderOrganizationOptions: MockCascaderOption[] = [
   },
 ];
 
+const globalOrganizationTree: MockTreeNode[] = [
+  {
+    key: 'global-hq',
+    title: '灵境实训集团总部',
+    children: [
+      {
+        key: 'global-apac',
+        title: '亚太分公司',
+        children: [
+          {
+            key: 'global-apac-rd',
+            title: '研发部',
+            children: [
+              { key: 'global-apac-rd-frontend', title: '前端体验组' },
+              { key: 'global-apac-rd-ai', title: 'AI Agent 平台组' },
+              { key: 'global-apac-rd-data', title: '数据工程组' },
+            ],
+          },
+          {
+            key: 'global-apac-ops',
+            title: '运营部',
+            children: [
+              { key: 'global-apac-ops-learning', title: '学习运营组' },
+              { key: 'global-apac-ops-customer', title: '客户成功组' },
+            ],
+          },
+          {
+            key: 'global-apac-teaching',
+            title: '教学部',
+            children: [
+              { key: 'global-apac-teaching-course', title: '课程研发组' },
+              { key: 'global-apac-teaching-exam', title: '考试教务组' },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'global-europe',
+        title: '欧洲分公司',
+        children: [
+          {
+            key: 'global-europe-rd',
+            title: '研发部',
+            children: [
+              { key: 'global-europe-rd-platform', title: '平台工程组' },
+              { key: 'global-europe-rd-security', title: '安全合规组' },
+            ],
+          },
+          {
+            key: 'global-europe-ops',
+            title: '运营部',
+            children: [
+              { key: 'global-europe-ops-localization', title: '本地化运营组' },
+              { key: 'global-europe-ops-partner', title: '伙伴赋能组' },
+            ],
+          },
+          {
+            key: 'global-europe-teaching',
+            title: '教学部',
+            children: [
+              { key: 'global-europe-teaching-live', title: '直播教研组' },
+              { key: 'global-europe-teaching-quality', title: '质量督导组' },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'global-americas',
+        title: '美洲分公司',
+        children: [
+          {
+            key: 'global-americas-rd',
+            title: '研发部',
+            children: [
+              { key: 'global-americas-rd-cloud', title: '云原生工程组' },
+              { key: 'global-americas-rd-mobile', title: '移动学习组' },
+            ],
+          },
+          {
+            key: 'global-americas-ops',
+            title: '运营部',
+            children: [
+              { key: 'global-americas-ops-growth', title: '增长运营组' },
+              { key: 'global-americas-ops-delivery', title: '项目交付组' },
+            ],
+          },
+          {
+            key: 'global-americas-teaching',
+            title: '教学部',
+            children: [
+              { key: 'global-americas-teaching-enterprise', title: '企业内训组' },
+              { key: 'global-americas-teaching-cert', title: '认证服务组' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
 const trainingScheduleTimeSlots = [
   { hour: 14, minute: 0 },
   { hour: 14, minute: 30 },
@@ -262,6 +382,24 @@ const technologyInterestOptions: MockTechnologyInterestOption[] = [
   { label: 'Java', value: 'java' },
   { label: 'AI Agent', value: 'ai-agent' },
   { label: 'Go', value: 'go' },
+];
+
+const transferCandidates: MockTransferItem[] = [
+  { key: 'transfer-user-001', title: '林予安', description: '技术中心 / 前端平台组 / React 组件库' },
+  { key: 'transfer-user-002', title: '周明轩', description: '技术中心 / Java 服务组 / 权限中台' },
+  { key: 'transfer-user-003', title: '陈晓雨', description: 'AI 产品中心 / AI Agent 课程运营' },
+  { key: 'transfer-user-004', title: '赵一诺', description: '数据基础设施组 / 数据治理' },
+  { key: 'transfer-user-005', title: '王嘉宁', description: '学习产品中心 / 课程设计' },
+  { key: 'transfer-user-006', title: '许若辰', description: '考试运营组 / 题库审核' },
+  { key: 'transfer-user-007', title: '李思远', description: '客户成功中心 / 交付实施', disabled: true },
+  { key: 'transfer-user-008', title: '韩沐阳', description: '市场增长中心 / 渠道合作' },
+  { key: 'transfer-user-009', title: '沈知夏', description: '技术中心 / Go 服务组 / 高并发网关' },
+  { key: 'transfer-user-010', title: '顾清越', description: '质量稽核组 / 学员档案复核' },
+  { key: 'transfer-user-011', title: '陆景行', description: '安全合规组 / 内网权限审计' },
+  { key: 'transfer-user-012', title: '苏念安', description: '证书服务组 / 证书签发' },
+  { key: 'transfer-user-013', title: '程予白', description: '技术中心 / 前端平台组 / Storybook' },
+  { key: 'transfer-user-014', title: '叶初晴', description: '产品运营组 / 培训项目排期' },
+  { key: 'transfer-user-015', title: '唐星澜', description: '客户支持组 / 工单响应', disabled: true },
 ];
 
 const normalizeCount = (count: number) => Math.max(0, Math.floor(count));
@@ -332,6 +470,32 @@ export const mockCascaderOptions = (): MockCascaderOption[] =>
     })),
   }));
 
+const cloneTreeNodes = (nodes: MockTreeNode[]): MockTreeNode[] =>
+  nodes.map((node) => ({
+    ...node,
+    children: node.children ? cloneTreeNodes(node.children) : undefined,
+  }));
+
+const collectLeafTreeKeys = (nodes: MockTreeNode[]): string[] =>
+  nodes.flatMap((node) => (node.children?.length ? collectLeafTreeKeys(node.children) : [node.key]));
+
+export const mockTreeData = (): MockTreeNode[] => cloneTreeNodes(globalOrganizationTree);
+
+export const mockTreeSelectValue = (treeData = mockTreeData(), seed = Date.now()): string[] => {
+  const leafKeys = collectLeafTreeKeys(treeData);
+
+  if (leafKeys.length === 0) {
+    return [];
+  }
+
+  const safeSeed = Math.abs(Math.floor(seed));
+  const count = Math.min(leafKeys.length, (safeSeed % 3) + 2);
+  const startIndex = safeSeed % leafKeys.length;
+
+  // 只随机叶子节点，交给 TreeSelect 的父子联动逻辑回推父节点半选/全选状态。
+  return Array.from({ length: count }, (_, index) => leafKeys[(startIndex + index) % leafKeys.length]);
+};
+
 export const mockTrainingScheduleDateTime = (baseDate = new Date()): Date => {
   const dayOffset = (baseDate.getDate() % 2) + 1;
   const slot = trainingScheduleTimeSlots[(baseDate.getDate() + 3) % trainingScheduleTimeSlots.length];
@@ -361,6 +525,41 @@ export const mockPickTechnologyInterests = (
 };
 
 export const mockSwitchChecked = (seed = Date.now()) => Math.abs(Math.floor(seed)) % 2 === 0;
+
+export const mockSliderValue = ({
+  max = 100,
+  min = 0,
+  seed = Date.now(),
+  step = 1,
+}: MockSliderValueParams = {}) => {
+  const lower = Math.min(min, max);
+  const upper = Math.max(min, max);
+  const safeStep = step > 0 ? step : 1;
+  const stepSlots = Math.max(1, Math.floor((upper - lower) / safeStep));
+  // 用 seed 生成稳定候选值，并严格贴合 step，避免 Form 一键填表出现半格数值。
+  const offset = Math.abs(Math.floor(seed)) % stepSlots;
+
+  return Math.min(upper, lower + offset * safeStep);
+};
+
+export const mockTransferData = (): MockTransferItem[] => transferCandidates.map((item) => ({ ...item }));
+
+export const mockTransferTargetKeys = (
+  dataSource = mockTransferData(),
+  seed = Date.now(),
+  count = 3,
+): string[] => {
+  const enabledItems = dataSource.filter((item) => !item.disabled);
+
+  if (enabledItems.length === 0) {
+    return [];
+  }
+
+  const startIndex = Math.abs(Math.floor(seed)) % enabledItems.length;
+  const targetCount = Math.min(enabledItems.length, Math.max(0, Math.floor(count)));
+
+  return Array.from({ length: targetCount }, (_, index) => enabledItems[(startIndex + index) % enabledItems.length].key);
+};
 
 export const mockCertificate = (type: MockCertificateType): MockCertificateData => {
   const user = mockUsers(3)[type === 'hours' ? 0 : type === 'qualified' ? 1 : 2];

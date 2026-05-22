@@ -36,6 +36,28 @@ const learnerProfileSchema: FormSchemaField[] = [
     type: 'checkbox',
     mock: true,
   },
+  {
+    name: 'expectedSalary',
+    label: '期望薪资',
+    type: 'slider',
+    min: 8000,
+    max: 20000,
+    step: 1000,
+  },
+  {
+    name: 'assignedLearners',
+    label: '分配学员',
+    type: 'transfer',
+    titles: ['未分配学员', '已分配学员'],
+    mock: true,
+  },
+  {
+    name: 'organizationScope',
+    label: '组织范围',
+    type: 'treeselect',
+    placeholder: '请选择组织范围',
+    mock: true,
+  },
 ];
 
 const LearnerProfileForm = () => {
@@ -45,10 +67,13 @@ const LearnerProfileForm = () => {
     project: '',
     intranetEnabled: false,
     techDirections: [],
+    expectedSalary: 12000,
+    assignedLearners: ['transfer-user-001', 'transfer-user-004'],
+    organizationScope: ['global-apac-rd-frontend', 'global-apac-rd-ai'],
   });
 
   return (
-    <div className="w-[min(92vw,42rem)] rounded-2xl border border-border bg-surface p-6 shadow-button dark:border-border-dark dark:bg-surface-dark">
+    <div className="w-[min(94vw,72rem)] rounded-2xl border border-border bg-surface p-6 shadow-button dark:border-border-dark dark:bg-surface-dark">
       <Form schema={learnerProfileSchema} value={value} onChange={setValue} />
     </div>
   );

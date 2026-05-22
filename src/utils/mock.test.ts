@@ -8,8 +8,13 @@ import {
   mockPickTechnologyInterests,
   mockProjects,
   mockSelectOptions,
+  mockSliderValue,
   mockSwitchChecked,
   mockTechnologyInterestOptions,
+  mockTreeData,
+  mockTreeSelectValue,
+  mockTransferData,
+  mockTransferTargetKeys,
   mockTrainingScheduleDateTime,
   mockUsers,
 } from './mock';
@@ -101,6 +106,42 @@ describe('mock data workshop', () => {
   it('生成 switch 一键填表布尔值', () => {
     expect(mockSwitchChecked(2)).toBe(true);
     expect(mockSwitchChecked(3)).toBe(false);
+  });
+
+  it('按 min/max/step 生成 Slider 一键填表数值', () => {
+    expect(mockSliderValue({ min: 8000, max: 20000, step: 1000, seed: 4 })).toBe(12000);
+    expect(mockSliderValue({ min: 3, max: 9, step: 2, seed: 10 })).toBe(5);
+  });
+
+  it('生成 Transfer 候选人数据和一键填表目标 keys', () => {
+    const transferData = mockTransferData();
+    const targetKeys = mockTransferTargetKeys(transferData, 1, 3);
+
+    expect(transferData).toHaveLength(15);
+    expect(transferData[0]).toMatchObject({
+      key: 'transfer-user-001',
+      title: '林予安',
+    });
+    expect(transferData[0].description).toContain('技术中心');
+    expect(targetKeys).toHaveLength(3);
+    expect(targetKeys.every((key) => transferData.some((item) => item.key === key && !item.disabled))).toBe(true);
+  });
+
+  it('生成公司全球多级组织架构树和 TreeSelect 一键填表值', () => {
+    const treeData = mockTreeData();
+    const selectedKeys = mockTreeSelectValue(treeData, 2);
+
+    expect(treeData[0]).toMatchObject({
+      key: 'global-hq',
+      title: '灵境实训集团总部',
+    });
+    expect(treeData[0].children).toHaveLength(3);
+    expect(treeData[0].children?.[0].children?.map((node) => node.title)).toEqual(
+      expect.arrayContaining(['研发部', '运营部', '教学部']),
+    );
+    expect(selectedKeys.length).toBeGreaterThanOrEqual(2);
+    expect(selectedKeys.length).toBeLessThanOrEqual(4);
+    expect(selectedKeys.every((key) => key.startsWith('global-'))).toBe(true);
   });
 
   it('按证书类型生成脱敏的公司证书 mock 数据', () => {

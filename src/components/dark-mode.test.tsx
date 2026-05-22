@@ -6,6 +6,7 @@ import { CertificateTemplate } from './biz/certificate';
 import { LearningProfile } from './biz/profile';
 import { NavMenu } from './biz/navigation';
 import { SmartTable, type SmartTableColumn } from './biz/smart-table';
+import { Transfer } from './biz/transfer';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
@@ -14,9 +15,11 @@ import { Pagination } from './ui/pagination';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Skeleton } from './ui/skeleton';
+import { Slider } from './ui/slider';
 import { Switch } from './ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { ToastProvider, ToastRoot, ToastTitle, ToastViewport } from './ui/toast';
+import { TreeSelect } from './ui/tree-select';
 import { Upload } from './ui/upload';
 
 interface Row {
@@ -50,9 +53,23 @@ describe('dark mode support', () => {
     expect(screen.getByTestId('骨架屏').className).toContain('dark:');
     cleanup();
 
+    render(<Slider aria-label="满意度" value={60} onChange={() => undefined} />);
+    expect(screen.getByTestId('slider-root').className).toContain('dark:');
+    expect(screen.getByTestId('slider-range').className).toContain('dark:');
+    cleanup();
+
     render(<Upload />);
     expect(screen.getByTestId('upload-root').className).toContain('dark:');
     expect(screen.getByTestId('upload-dropzone').className).toContain('dark:');
+    cleanup();
+
+    render(<Transfer mock />);
+    expect(screen.getByTestId('transfer-panel-source').className).toContain('dark:');
+    expect(screen.getByTestId('transfer-panel-target').className).toContain('dark:');
+    cleanup();
+
+    render(<TreeSelect mock value={[]} onChange={() => undefined} />);
+    expect(screen.getByTestId('tree-select-trigger').className).toContain('dark:');
     cleanup();
 
     render(

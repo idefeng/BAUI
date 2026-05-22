@@ -23,23 +23,54 @@ const learnerProfileSchema: FormSchemaField[] = [
     type: 'checkbox',
     mock: true,
   },
+  {
+    name: 'expectedSalary',
+    label: '期望薪资',
+    type: 'slider',
+    min: 8000,
+    max: 20000,
+    step: 1000,
+  },
+  {
+    name: 'assignedLearners',
+    label: '分配学员',
+    type: 'transfer',
+    titles: ['未分配学员', '已分配学员'],
+    mock: true,
+  },
+  {
+    name: 'organizationScope',
+    label: '组织范围',
+    type: 'treeselect',
+    placeholder: '请选择组织范围',
+    mock: true,
+  },
 ];
 
 describe('Form schema consumer', () => {
-  it('按 schema 渲染 switch 和 CheckboxGroup，并正确绑定值', async () => {
+  it('按 schema 渲染 switch、CheckboxGroup、Slider 和 Transfer，并正确绑定值', async () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
 
     render(
       <Form
         schema={learnerProfileSchema}
-        value={{ intranetEnabled: false, techDirections: ['frontend'] }}
+        value={{
+          intranetEnabled: false,
+          techDirections: ['frontend'],
+          expectedSalary: 12000,
+          assignedLearners: ['transfer-user-001'],
+        }}
         onChange={onChange}
       />,
     );
 
     await user.click(screen.getByRole('switch', { name: '是否开通内网权限' }));
     await user.click(screen.getByRole('checkbox', { name: 'Java' }));
+    screen.getByRole('slider', { name: '期望薪资' }).focus();
+    await user.keyboard('{ArrowRight}');
+    await user.click(screen.getByRole('checkbox', { name: '周明轩' }));
+    await user.click(screen.getByRole('button', { name: '移至右侧' }));
 
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -51,9 +82,19 @@ describe('Form schema consumer', () => {
         techDirections: ['frontend', 'java'],
       }),
     );
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        expectedSalary: 13000,
+      }),
+    );
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assignedLearners: ['transfer-user-001', 'transfer-user-002'],
+      }),
+    );
   });
 
-  it('一键填表会为 switch 生成布尔值并为 CheckboxGroup 随机勾选 1 到 2 项', async () => {
+  it('一键填表会为 switch、CheckboxGroup、Slider、Transfer 和 TreeSelect 生成合理 mock 值', async () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
 
@@ -67,5 +108,14 @@ describe('Form schema consumer', () => {
     expect(latestValue.techDirections.length).toBeGreaterThanOrEqual(1);
     expect(latestValue.techDirections.length).toBeLessThanOrEqual(2);
     expect(latestValue.techDirections.every((value: string) => ['frontend', 'java', 'ai-agent', 'go'].includes(value))).toBe(true);
+    expect(latestValue.expectedSalary).toBeGreaterThanOrEqual(8000);
+    expect(latestValue.expectedSalary).toBeLessThanOrEqual(20000);
+    expect(latestValue.expectedSalary % 1000).toBe(0);
+    expect(latestValue.expectedSalary).toBe(12000);
+    expect(latestValue.assignedLearners).toHaveLength(3);
+    expect(latestValue.assignedLearners.every((key: string) => key.startsWith('transfer-user-'))).toBe(true);
+    expect(latestValue.organizationScope.length).toBeGreaterThanOrEqual(2);
+    expect(latestValue.organizationScope.length).toBeLessThanOrEqual(4);
+    expect(latestValue.organizationScope.every((key: string) => key.startsWith('global-'))).toBe(true);
   });
 });

@@ -11,8 +11,8 @@ type CheckboxCheckedState = CheckboxPrimitiveProps['checked'];
 
 export interface CheckboxProps
   extends Omit<CheckboxPrimitiveProps, 'checked' | 'onChange' | 'onCheckedChange'> {
-  /** Form 标准受控勾选值；indeterminate 请继续使用 Radix defaultChecked。 */
-  checked?: boolean;
+  /** Form 标准受控勾选值；TreeSelect 等复杂组件可传入 indeterminate 半选态。 */
+  checked?: CheckboxCheckedState;
   /** Form 标准变更回调，只返回 boolean。 */
   onChange?: (checked: boolean) => void;
   /** 保留 Radix 原始回调，兼容既有调用方。 */

@@ -4,19 +4,27 @@ import { cn } from '../../../lib/utils';
 import {
   mockPickTechnologyInterests,
   mockSelectOptions,
+  mockSliderValue,
   mockSwitchChecked,
   mockTechnologyInterestOptions,
+  mockTreeData,
+  mockTreeSelectValue,
+  mockTransferData,
+  mockTransferTargetKeys,
   mockUsers,
   type MockSelectOptionType,
 } from '../../../utils/mock';
+import { Transfer, type TransferItem } from '../../biz/transfer';
 import { Button } from '../button';
 import { Checkbox, CheckboxGroup, type CheckboxGroupOption } from '../checkbox';
 import { Input, type InputProps } from '../input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
 import { uiStyles } from '../shared/styles';
+import { Slider, type SliderValue } from '../slider';
 import { Switch } from '../switch';
+import { TreeSelect, type TreeSelectNode } from '../tree-select';
 
-export type FormFieldType = 'input' | 'select' | 'switch' | 'checkbox';
+export type FormFieldType = 'input' | 'select' | 'switch' | 'checkbox' | 'slider' | 'transfer' | 'treeselect';
 export type FormValues = Record<string, unknown>;
 
 export interface FormOption {
@@ -35,6 +43,20 @@ export interface FormSchemaField {
   placeholder?: string;
   /** select 或 CheckboxGroup 的可选项。 */
   options?: FormOption[];
+  /** transfer 源数据。 */
+  dataSource?: TransferItem[];
+  /** transfer 左右面板标题。 */
+  titles?: [string, string];
+  /** treeselect 树状数据源。 */
+  treeData?: TreeSelectNode[];
+  /** treeselect 是否支持多选，默认 true。 */
+  multiple?: boolean;
+  /** slider 最小值，默认 0。 */
+  min?: number;
+  /** slider 最大值，默认 100。 */
+  max?: number;
+  /** slider 步长，默认 1。 */
+  step?: number;
   /** 禁用当前字段。 */
   disabled?: boolean;
   /** Mock 类型；input 支持 name/phone/email，checkbox 可用 true 自动加载 IT 技术方向。 */
@@ -78,6 +100,30 @@ const getFieldOptions = (field: FormSchemaField): CheckboxGroupOption[] => {
   return [];
 };
 
+const getTransferDataSource = (field: FormSchemaField): TransferItem[] => {
+  if (field.dataSource && field.dataSource.length > 0) {
+    return field.dataSource;
+  }
+
+  if (field.type === 'transfer' && field.mock === true) {
+    return mockTransferData();
+  }
+
+  return [];
+};
+
+const getTreeSelectData = (field: FormSchemaField): TreeSelectNode[] => {
+  if (field.treeData && field.treeData.length > 0) {
+    return field.treeData;
+  }
+
+  if (field.type === 'treeselect' && field.mock === true) {
+    return mockTreeData();
+  }
+
+  return [];
+};
+
 const getMockInputValue = (mock: FormSchemaField['mock']) => {
   const user = mockUsers(1)[0];
 
@@ -92,7 +138,42 @@ const getMockInputValue = (mock: FormSchemaField['mock']) => {
   return user.name;
 };
 
+const getMockSliderValue = (field: FormSchemaField, index: number) => {
+  const min = field.min ?? 0;
+  const max = field.max ?? 100;
+  const step = field.step ?? 1;
+  const salaryExampleValue = 12000;
+  const isSalaryField = field.name.toLowerCase().includes('salary');
+  const salaryValueFits =
+    salaryExampleValue >= min &&
+    salaryExampleValue <= max &&
+    (salaryExampleValue - min) % step === 0;
+
+  if (isSalaryField && salaryValueFits) {
+    return salaryExampleValue;
+  }
+
+  return mockSliderValue({
+    max: field.max,
+    min: field.min,
+    seed: index + 1,
+    step: field.step,
+  });
+};
+
 const getMockValue = (field: FormSchemaField, index: number) => {
+  if (field.type === 'treeselect') {
+    return mockTreeSelectValue(getTreeSelectData(field), index + 1);
+  }
+
+  if (field.type === 'transfer') {
+    return mockTransferTargetKeys(getTransferDataSource(field), index + 1, 3);
+  }
+
+  if (field.type === 'slider') {
+    return getMockSliderValue(field, index);
+  }
+
   if (field.type === 'switch') {
     return mockSwitchChecked(index);
   }
@@ -109,6 +190,15 @@ const getMockValue = (field: FormSchemaField, index: number) => {
 
   return getMockInputValue(field.mock);
 };
+
+const isSliderValue = (value: unknown): value is SliderValue =>
+  typeof value === 'number' ||
+  (Array.isArray(value) &&
+    value.length === 2 &&
+    value.every((item): item is number => typeof item === 'number'));
+
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item): item is string => typeof item === 'string');
 
 export const Form = React.forwardRef<HTMLFormElement, FormProps>(
   (
@@ -199,6 +289,48 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>(
             checked={Boolean(fieldValue)}
             disabled={field.disabled}
             onChange={(checked) => updateField(field.name, checked)}
+          />
+        );
+      }
+
+      if (field.type === 'slider') {
+        const fallbackValue = field.min ?? 0;
+
+        return (
+          <Slider
+            aria-label={field.label}
+            min={field.min}
+            max={field.max}
+            step={field.step}
+            value={isSliderValue(fieldValue) ? fieldValue : fallbackValue}
+            disabled={field.disabled}
+            onChange={(sliderValue) => updateField(field.name, sliderValue)}
+          />
+        );
+      }
+
+      if (field.type === 'transfer') {
+        return (
+          <Transfer
+            dataSource={getTransferDataSource(field)}
+            targetKeys={isStringArray(fieldValue) ? fieldValue : []}
+            titles={field.titles}
+            mock={field.mock === true}
+            onChange={(targetKeys) => updateField(field.name, targetKeys)}
+          />
+        );
+      }
+
+      if (field.type === 'treeselect') {
+        return (
+          <TreeSelect
+            treeData={getTreeSelectData(field)}
+            value={isStringArray(fieldValue) ? fieldValue : []}
+            placeholder={field.placeholder ?? `请选择${field.label}`}
+            multiple={field.multiple}
+            disabled={field.disabled}
+            mock={field.mock === true}
+            onChange={(selectedKeys) => updateField(field.name, selectedKeys)}
           />
         );
       }
