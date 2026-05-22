@@ -7,3 +7,55 @@
     @apply bg-background text-foreground antialiased dark:bg-background-dark dark:text-foreground-dark;
   }
 }
+
+@layer utilities {
+  .focus-breathing-ring {
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: 200ms;
+  }
+
+  .focus-breathing-ring:focus-visible {
+    --boao-focus-offset: theme('colors.background.DEFAULT');
+    --boao-focus-core: rgb(0 82 217 / 0.28);
+    --boao-focus-outer: rgb(0 82 217 / 0.12);
+
+    outline: none;
+    border-color: theme('colors.primary.DEFAULT');
+    animation: boao-focus-breathe 1.6s ease-in-out infinite;
+    box-shadow:
+      0 0 0 2px var(--boao-focus-offset),
+      0 0 0 5px var(--boao-focus-core),
+      0 0 0 9px var(--boao-focus-outer);
+  }
+
+  .dark .focus-breathing-ring:focus-visible {
+    --boao-focus-offset: theme('colors.background.dark');
+    --boao-focus-core: rgb(91 156 255 / 0.36);
+    --boao-focus-outer: rgb(91 156 255 / 0.18);
+
+    border-color: theme('colors.primary.dark');
+  }
+
+  @keyframes boao-focus-breathe {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 2px var(--boao-focus-offset),
+        0 0 0 5px var(--boao-focus-core),
+        0 0 0 9px var(--boao-focus-outer);
+    }
+
+    50% {
+      box-shadow:
+        0 0 0 2px var(--boao-focus-offset),
+        0 0 0 7px var(--boao-focus-core),
+        0 0 0 13px var(--boao-focus-outer);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .focus-breathing-ring:focus-visible {
+      animation: none;
+    }
+  }
+}

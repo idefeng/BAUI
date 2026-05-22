@@ -4,9 +4,12 @@ import { describe, expect, it } from 'vitest';
 
 import { SmartTable, type SmartTableColumn } from './biz/smart-table';
 import { Button } from './ui/button';
+import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
 import { Modal, ModalContent, ModalTitle } from './ui/modal';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Switch } from './ui/switch';
 import { ToastProvider, ToastRoot, ToastTitle, ToastViewport } from './ui/toast';
 
 interface Row {
@@ -30,6 +33,22 @@ describe('dark mode support', () => {
 
     render(<Input aria-label="搜索" />);
     expect(screen.getByTestId('boao-input-root').className).toContain('dark:');
+    cleanup();
+
+    render(<Switch aria-label="开关" defaultChecked />);
+    expect(screen.getByRole('switch', { name: '开关' }).className).toContain('dark:');
+    cleanup();
+
+    render(<Checkbox aria-label="勾选" defaultChecked />);
+    expect(screen.getByRole('checkbox', { name: '勾选' }).className).toContain('dark:');
+    cleanup();
+
+    render(
+      <RadioGroup defaultValue="daily">
+        <RadioGroupItem aria-label="每日" value="daily" />
+      </RadioGroup>,
+    );
+    expect(screen.getByRole('radio', { name: '每日' }).className).toContain('dark:');
     cleanup();
 
     render(

@@ -9,6 +9,7 @@ export const uiStyles = {
     'focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:ring-offset-2 focus-within:ring-offset-background dark:focus-within:border-primary-dark dark:focus-within:ring-primary-dark/30 dark:focus-within:ring-offset-background-dark',
   focusRing:
     'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background dark:focus:ring-primary-dark/30 dark:focus:ring-offset-background-dark',
+  focusBreathingRing: 'focus-breathing-ring',
   buttonFocusVisibleRing:
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-ring-dark dark:focus-visible:ring-offset-background-dark',
   mutedIconSlot:
