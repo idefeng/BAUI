@@ -20,8 +20,8 @@ export const TooltipContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'z-50 max-w-72 rounded-2xl px-3.5 py-2 text-sm leading-5 text-foreground outline-none dark:text-foreground-dark',
-        uiStyles.surfaceCard,
+        'max-w-72 px-3.5 py-2 text-sm leading-5 outline-none',
+        uiStyles.floatingContent,
         'shadow-tooltip',
         uiStyles.floatingDelayedStateMotion,
         uiStyles.floatingSideMotion,

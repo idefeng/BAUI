@@ -160,6 +160,36 @@ export interface MockStatisticData {
   trendText?: string;
 }
 
+export interface MockDashboardMetric {
+  id: string;
+  label: string;
+  value: number | string;
+  suffix?: string;
+  trend: MockStatisticTrend;
+  trendText: string;
+}
+
+export interface MockCardGridItem {
+  id: string;
+  title: string;
+  description: string;
+  status: MockProjectStatus;
+  projectName: string;
+  trainingType: MockTrainingType;
+  learnerCount: number;
+  updatedAt: string;
+  owner: string;
+  tags: string[];
+}
+
+export type MockLoginRole = 'admin' | 'student' | 'teacher' | 'academic-admin';
+
+export interface MockLoginAccount {
+  username: string;
+  password: string;
+  role?: MockLoginRole;
+}
+
 export interface MockTagData {
   label: string;
   variant: MockTagVariant;
@@ -223,6 +253,13 @@ const statisticMetrics: MockStatisticData[] = [
   { title: '待处理异常任务', value: 18, suffix: '项', trend: 'down', trendText: '环比 -4.8%' },
   { title: '本月培训营收', value: 328600, prefix: '¥', suffix: '元', trend: 'up', trendText: '同比 +18.9%' },
 ];
+const dashboardMetrics: MockDashboardMetric[] = [
+  { id: 'active-learners', label: '活跃学员', value: 1286, suffix: '人', trend: 'up', trendText: '同比 +12.6%' },
+  { id: 'completion-rate', label: '课程完课率', value: '86.4', suffix: '%', trend: 'up', trendText: '较上周 +3.2%' },
+  { id: 'certificate-issued', label: '证书签发', value: '5.2w', suffix: '张', trend: 'up', trendText: '本月 +18.9%' },
+  { id: 'risk-tasks', label: '异常预警', value: 18, suffix: '项', trend: 'down', trendText: '环比 -4.8%' },
+];
+const cardTagPool = ['线上班', '可报名', '证书服务', '教务跟进', '企业内训', '质量复核'];
 const tagSamples: MockTagData[] = [
   { label: 'React 组件库', variant: 'primary' },
   { label: '已通过', variant: 'success' },
@@ -235,6 +272,12 @@ const progressSamples: MockProgressData[] = [
   { label: '证书签发进度', value: 92, status: 'success' },
   { label: '异常任务处理率', value: 42, status: 'exception' },
 ];
+const loginAccounts: Record<MockLoginRole, MockLoginAccount> = {
+  admin: { username: 'boao.admin', password: 'Boao@2026', role: 'admin' },
+  student: { username: 'student.demo', password: 'Boao@2026', role: 'student' },
+  teacher: { username: 'teacher.demo', password: 'Boao@2026', role: 'teacher' },
+  'academic-admin': { username: 'academic.admin', password: 'Boao@2026', role: 'academic-admin' },
+};
 
 const selectOptionMap: Record<MockSelectOptionType, MockSelectOption[]> = {
   department: [
@@ -586,6 +629,28 @@ export const mockSliderValue = ({
 
 export const mockStatistic = (seed = 0): MockStatisticData => ({
   ...statisticMetrics[Math.abs(Math.floor(seed)) % statisticMetrics.length],
+});
+
+export const mockDashboardMetrics = (): MockDashboardMetric[] =>
+  dashboardMetrics.map((metric) => ({ ...metric }));
+
+export const mockCardGridItems = (count = 12): MockCardGridItem[] =>
+  mockProjects(count).map((project, index) => ({
+    id: `card-project-${String(index + 1).padStart(4, '0')}`,
+    title: project.projectName,
+    description: `${project.organizer} 发起的${project.trainingType}项目，面向${project.jobTitle}提供报名、学习、考核与证书跟踪。`,
+    status: project.status,
+    projectName: project.projectName,
+    trainingType: project.trainingType,
+    learnerCount: project.learnerCount,
+    updatedAt: project.startDate,
+    owner: project.projectManager,
+    // 取连续标签，保证每张卡片既稳定又有轻微差异。
+    tags: [cardTagPool[index % cardTagPool.length], cardTagPool[(index + 2) % cardTagPool.length]],
+  }));
+
+export const mockLoginAccount = (role: MockLoginRole = 'admin'): MockLoginAccount => ({
+  ...loginAccounts[role],
 });
 
 export const mockTags = (count = tagSamples.length, seed = 0): MockTagData[] => {

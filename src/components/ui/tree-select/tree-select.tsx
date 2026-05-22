@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, X } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { mockTreeData } from '../../../utils/mock';
 import { Checkbox } from '../checkbox';
+import { hasChildItems } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface TreeSelectNode {
@@ -32,7 +33,7 @@ export interface TreeSelectProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
 type SelectionState = 'checked' | 'indeterminate' | 'unchecked';
 
-const hasChildren = (node: TreeSelectNode) => Boolean(node.children?.length);
+const hasChildren = (node: TreeSelectNode) => hasChildItems(node);
 
 const getDescendantKeys = (node: TreeSelectNode, includeSelf = true): string[] => [
   ...(includeSelf ? [node.key] : []),
@@ -295,7 +296,8 @@ export const TreeSelect = React.forwardRef<HTMLDivElement, TreeSelectProps>(
             <button
               type="button"
               className={cn(
-                'min-w-0 flex-1 truncate text-left text-foreground outline-none transition-colors focus:text-primary dark:text-slate-300 dark:focus:text-primary-dark',
+                'min-w-0 flex-1 truncate text-left outline-none transition-colors focus:text-primary dark:focus:text-primary-dark',
+                uiStyles.textForeground,
                 state !== 'unchecked' && 'font-medium text-primary dark:text-primary-dark',
                 disabled && 'pointer-events-none',
               )}
@@ -406,7 +408,8 @@ export const TreeSelect = React.forwardRef<HTMLDivElement, TreeSelectProps>(
             sideOffset={8}
             data-testid="tree-select-content"
             className={cn(
-              'z-50 w-[var(--radix-popover-trigger-width)] min-w-72 overflow-hidden rounded-2xl border border-border bg-white p-2 text-foreground shadow-xl dark:border-border-dark dark:bg-slate-950 dark:text-slate-200',
+              'w-[var(--radix-popover-trigger-width)] min-w-72 overflow-hidden p-2',
+              uiStyles.floatingContent,
               uiStyles.floatingStateMotion,
               uiStyles.floatingSideMotion,
             )}
@@ -414,7 +417,7 @@ export const TreeSelect = React.forwardRef<HTMLDivElement, TreeSelectProps>(
             <div
               role="tree"
               aria-multiselectable={multiple}
-              className="max-h-80 overflow-y-auto rounded-xl bg-surface/80 p-1 dark:bg-slate-900/70"
+              className="max-h-80 overflow-y-auto rounded-xl bg-surface/80 p-1 dark:bg-surface-dark/70"
             >
               {resolvedTreeData.length > 0 ? (
                 resolvedTreeData.map((node) => renderNode(node, 0))

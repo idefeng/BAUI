@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-23
+
+### Added
+
+- 新增 `StandardLoginPages` 通用登录页模板，支持 `tech`、`education`、`minimal`、`split-screen` 和 `classic` 五种行业风格，覆盖暗黑模式、AI 一键填表和表单校验后提交回调。
+- 新增 `DashboardTemplate` 科技大屏模板页，支持 `mock={true}`、四格指标卡片和趋势分析图表占位。
+- 新增 `CardGridPage` 卡片网格模板页，整合 `Form` 搜索、`Card` 网格、`Skeleton` 加载态和 `Pagination` 分页，支持 mock 一键填表联动骨架屏。
+- `src/utils/mock.ts` 新增 `mockLoginAccount()`、`mockDashboardMetrics()` 和 `mockCardGridItems()`，为登录页和模板页提供中央 Mock 数据。
+- 新增 `src/components/ui/shared/logic.ts`，集中提供 `clampNumber()` 和 `hasChildItems()`，复用进度、分页和树形控件的边界逻辑。
+
+### Changed
+
+- 公共入口导出 `src/components/biz/login` 与 `src/components/biz/pages`，便于业务系统直接引用登录页与模板页。
+- 公共样式 `uiStyles` 补充浮层容器、选项交互态、空态面板、图标占位、Card footer 和 placeholder 等 Tailwind 片段，减少 `src/components/ui/` 内重复类名。
+- `Cascader`、`DateTimePicker`、`TreeSelect`、`Popover`、`Tooltip`、`Upload`、`Progress`、`Pagination` 和 `Card` 复用共享样式与轻量逻辑，保持原有 Props 和交互行为不变。
+- `.gitignore` 增加 `.superpowers/`，避免本地 brainstorm/预览临时产物进入版本库。
+
 ## 2026-05-22
 
 ### Added

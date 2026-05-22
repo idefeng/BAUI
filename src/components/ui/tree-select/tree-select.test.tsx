@@ -86,6 +86,6 @@ describe('TreeSelect', () => {
 
     expect(within(content).getByText('灵境实训集团总部')).toBeInTheDocument();
     expect(content.className).toContain('rounded-2xl');
-    expect(content.className).toContain('dark:bg-slate-950');
+    expect(content.className).toContain('dark:bg-surface-dark');
   });
 });

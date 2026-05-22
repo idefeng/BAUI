@@ -36,8 +36,11 @@ export const uiStatusStyles = {
 export const uiStyles = {
   textForeground: 'text-foreground dark:text-foreground-dark',
   textMuted: 'text-muted-foreground dark:text-muted-dark-foreground',
+  placeholderText: 'text-muted-foreground dark:text-muted-dark-foreground',
   activePrimary:
     'bg-primary text-primary-foreground shadow-md dark:bg-primary-dark dark:text-primary-dark-foreground',
+  activePrimarySoft:
+    'bg-primary/5 font-medium text-primary dark:bg-primary-dark-soft/50 dark:text-primary-dark',
   primarySurfaceHover:
     'hover:bg-primary-soft hover:text-primary dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark',
   formControlHover:
@@ -67,6 +70,8 @@ export const uiStyles = {
   mutedIconSlot:
     'inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground dark:text-muted-dark-foreground [&>svg]:size-4',
   iconSlot: 'inline-flex size-4 items-center justify-center [&>svg]:size-4',
+  mutedIconTile:
+    'flex size-12 items-center justify-center overflow-hidden rounded-2xl bg-secondary text-muted-foreground dark:bg-secondary-dark dark:text-muted-dark-foreground',
   closeButton:
     'inline-flex items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark dark:focus-visible:ring-primary-dark/30',
   iconGhostButton:
@@ -80,6 +85,10 @@ export const uiStyles = {
   floatingSurface:
     'rounded-2xl border border-border bg-surface text-foreground shadow-button dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
   surfaceCard: 'border border-border bg-surface shadow-button dark:border-border-dark dark:bg-surface-dark',
+  floatingContent:
+    'z-50 rounded-2xl border border-border bg-surface text-foreground shadow-xl dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
+  floatingBackdropContent:
+    'z-50 rounded-2xl border border-border bg-background/90 text-foreground shadow-lg backdrop-blur dark:border-border-dark dark:bg-background-dark/90 dark:text-foreground-dark',
   floatingStateMotion: 'data-[state=open]:animate-select-in data-[state=closed]:animate-select-out',
   floatingDelayedStateMotion:
     'data-[state=delayed-open]:animate-select-in data-[state=closed]:animate-select-out',
@@ -95,10 +104,22 @@ export const uiStyles = {
     'text-foreground focus:bg-primary-soft focus:text-primary dark:text-foreground-dark dark:focus:bg-primary-dark-soft dark:focus:text-primary-dark',
   menuItemDanger:
     'text-danger focus:bg-danger-soft focus:text-danger dark:text-danger-dark dark:focus:bg-danger-dark-soft dark:focus:text-danger-dark',
+  optionItemInteractive:
+    'text-foreground outline-none transition-all duration-150 hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary focus:outline-none dark:text-foreground-dark dark:hover:bg-primary-dark-soft/50 dark:hover:text-primary-dark dark:focus:bg-primary-dark-soft/50 dark:focus:text-primary-dark',
+  optionPanel:
+    'rounded-xl border border-border/70 bg-background dark:border-border-dark/70 dark:bg-background-dark',
+  optionPanelSurface:
+    'rounded-xl border border-border/80 bg-surface dark:border-border-dark dark:bg-surface-dark',
+  optionPanelBackground:
+    'rounded-xl border border-border/80 bg-background dark:border-border-dark dark:bg-background-dark',
+  emptyStateSurface:
+    'rounded-xl border border-border bg-surface text-center text-sm text-muted-foreground shadow-lg dark:border-border-dark dark:bg-surface-dark dark:text-muted-dark-foreground',
   stateOpenPrimary:
     'data-[state=open]:bg-primary-soft data-[state=open]:text-primary dark:data-[state=open]:bg-primary-dark-soft dark:data-[state=open]:text-primary-dark',
   surfaceInteractive:
     'border border-border bg-surface hover:bg-primary-soft hover:text-primary dark:border-border-dark dark:bg-surface-dark dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark',
   title: 'text-sm font-semibold text-foreground dark:text-foreground-dark',
   description: 'text-sm text-muted-foreground dark:text-muted-dark-foreground',
+  cardFooter:
+    'flex items-center gap-3 border-t border-border px-6 py-4 text-sm text-muted-foreground dark:border-border-dark dark:text-muted-dark-foreground',
 };

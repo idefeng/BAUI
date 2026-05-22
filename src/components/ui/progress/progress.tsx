@@ -3,6 +3,7 @@ import * as ProgressPrimitive from '@radix-ui/react-progress';
 
 import { cn } from '../../../lib/utils';
 import { mockProgress } from '../../../utils/mock';
+import { clampNumber } from '../shared/logic';
 import { uiStatusStyles, uiStyles, type UiProgressStatus } from '../shared/styles';
 
 export type ProgressStatus = UiProgressStatus;
@@ -31,7 +32,7 @@ export interface ProgressProps
   mockSeed?: number;
 }
 
-const clampValue = (value: number, max: number) => Math.min(max, Math.max(0, value));
+const clampValue = (value: number, max: number) => clampNumber(value, 0, max);
 
 const getPercentage = (value: number, max: number) => Math.round((clampValue(value, max) / max) * 100);
 

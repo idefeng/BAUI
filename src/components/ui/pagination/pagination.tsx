@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../select';
+import { clampNumber } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export type PaginationItem = number | 'ellipsis-left' | 'ellipsis-right';
@@ -30,7 +31,7 @@ const defaultPageSize = 10;
 const maxContinuousPages = 5;
 const pageSizeOptions = [10, 20, 50, 100];
 
-const clampPage = (page: number, pageCount: number) => Math.min(Math.max(1, page), pageCount);
+const clampPage = (page: number, pageCount: number) => clampNumber(page, 1, pageCount);
 
 const getSortedPageSizeOptions = (pageSize: number) =>
   Array.from(new Set([...pageSizeOptions, pageSize])).sort((left, right) => left - right);

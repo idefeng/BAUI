@@ -4,6 +4,7 @@ import { Check, ChevronDown, ChevronRight, X } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
 import { mockCascaderOptions } from '../../../utils/mock';
+import { hasChildItems } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface CascaderOption {
@@ -29,7 +30,7 @@ export interface CascaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   clearable?: boolean;
 }
 
-const hasChildren = (option: CascaderOption) => Boolean(option.children?.length);
+const hasChildren = (option: CascaderOption) => hasChildItems(option);
 
 const findOptionPath = (options: CascaderOption[], value: string[] = []) => {
   const path: CascaderOption[] = [];
@@ -166,7 +167,7 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
               <span
                 className={cn(
                   'min-w-0 flex-1 truncate',
-                  !displayText && 'text-muted-foreground dark:text-muted-dark-foreground',
+                  !displayText && uiStyles.placeholderText,
                 )}
               >
                 {displayText || placeholder}
@@ -201,7 +202,8 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
             align="start"
             sideOffset={8}
             className={cn(
-              'z-50 flex max-w-[min(92vw,64rem)] gap-2 overflow-x-auto rounded-2xl border border-border bg-background/90 p-2 text-foreground shadow-lg backdrop-blur dark:border-border-dark dark:bg-background-dark/90 dark:text-foreground-dark',
+              'flex max-w-[min(92vw,64rem)] gap-2 overflow-x-auto p-2',
+              uiStyles.floatingBackdropContent,
               uiStyles.floatingStateMotion,
               uiStyles.floatingSideMotion,
             )}
@@ -212,10 +214,8 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
                   key={level}
                   role="menu"
                   className={cn(
-                    'max-h-72 min-w-52 overflow-y-auto rounded-xl border border-border/80 p-1.5 shadow-lg',
-                    level % 2 === 0
-                      ? 'bg-surface dark:border-border-dark dark:bg-surface-dark'
-                      : 'bg-background dark:border-border-dark dark:bg-background-dark',
+                    'max-h-72 min-w-52 overflow-y-auto p-1.5 shadow-lg',
+                    level % 2 === 0 ? uiStyles.optionPanelSurface : uiStyles.optionPanelBackground,
                   )}
                 >
                   {columnOptions.map((option) => {
@@ -231,9 +231,9 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
                         aria-haspopup={optionHasChildren ? 'menu' : undefined}
                         aria-expanded={optionHasChildren ? isActive : undefined}
                         className={cn(
-                          'group flex h-10 w-full items-center gap-2 rounded-xl px-3 text-left text-sm text-foreground outline-none transition-all duration-150 hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary dark:text-foreground-dark dark:hover:bg-primary-dark-soft/50 dark:hover:text-primary-dark dark:focus:bg-primary-dark-soft/50 dark:focus:text-primary-dark',
-                          (isActive || isSelectedPathNode) &&
-                            'bg-primary/5 font-medium text-primary dark:bg-primary-dark-soft/50 dark:text-primary-dark',
+                          'group flex h-10 w-full items-center gap-2 rounded-xl px-3 text-left text-sm',
+                          uiStyles.optionItemInteractive,
+                          (isActive || isSelectedPathNode) && uiStyles.activePrimarySoft,
                         )}
                         onMouseEnter={() => previewPath(option, level)}
                         onFocus={() => previewPath(option, level)}
@@ -257,7 +257,7 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
                 </div>
               ))
             ) : (
-              <div className="min-w-52 rounded-xl border border-border bg-surface px-4 py-8 text-center text-sm text-muted-foreground shadow-lg dark:border-border-dark dark:bg-surface-dark dark:text-muted-dark-foreground">
+              <div className={cn('min-w-52 px-4 py-8', uiStyles.emptyStateSurface)}>
                 暂无可选项
               </div>
             )}

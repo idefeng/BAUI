@@ -182,7 +182,10 @@ const TimeColumn = ({
       <div
         role="listbox"
         aria-label={label}
-        className="max-h-52 snap-y snap-mandatory overflow-y-auto scroll-smooth rounded-xl border border-border/70 bg-background p-1 shadow-inner [scrollbar-width:none] dark:border-border-dark/70 dark:bg-background-dark [&::-webkit-scrollbar]:hidden"
+        className={cn(
+          'max-h-52 snap-y snap-mandatory overflow-y-auto scroll-smooth p-1 shadow-inner [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          uiStyles.optionPanel,
+        )}
       >
         {values.map((value) => {
           const isSelected = value === selected;
@@ -195,7 +198,8 @@ const TimeColumn = ({
               aria-selected={isSelected}
               aria-label={`${pad(value)} ${suffix}`}
               className={cn(
-                'flex h-9 w-full snap-center items-center justify-center rounded-xl text-sm transition-all duration-150 hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary focus:outline-none dark:hover:bg-primary-dark-soft/50 dark:hover:text-primary-dark dark:focus:bg-primary-dark-soft/50 dark:focus:text-primary-dark',
+                'flex h-9 w-full snap-center items-center justify-center rounded-xl text-sm',
+                uiStyles.optionItemInteractive,
                 isSelected
                   ? 'bg-primary text-primary-foreground shadow-sm dark:bg-primary-dark dark:text-primary-dark-foreground'
                   : uiStyles.textForeground,
@@ -373,7 +377,8 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
             align="start"
             sideOffset={8}
             className={cn(
-              'z-50 flex max-w-[min(94vw,44rem)] gap-4 overflow-hidden rounded-2xl border border-border bg-surface p-4 text-foreground shadow-xl dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
+              'flex max-w-[min(94vw,44rem)] gap-4 overflow-hidden p-4',
+              uiStyles.floatingContent,
               shouldRenderCalendar && shouldRenderTime ? 'flex-col md:flex-row' : 'flex-col',
               uiStyles.floatingStateMotion,
               uiStyles.floatingSideMotion,
@@ -430,7 +435,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                 </div>
                 <div
                   role="grid"
-                  className="mt-2 grid grid-cols-7 gap-y-1 rounded-2xl border border-border/70 bg-background p-2 dark:border-border-dark/70 dark:bg-background-dark"
+                  className={cn(uiStyles.optionPanel, 'mt-2 grid grid-cols-7 gap-y-1 rounded-2xl p-2')}
                 >
                   {calendarCells.map(({ date, isCurrentMonth }) => {
                     const selected = isSameDate(selectedDate, date);
@@ -460,7 +465,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
             ) : null}
 
             {shouldRenderTime ? (
-              <div className="min-w-72 rounded-2xl border border-border/70 bg-background p-3 dark:border-border-dark/70 dark:bg-background-dark">
+              <div className={cn(uiStyles.optionPanel, 'min-w-72 rounded-2xl p-3')}>
                 <div className={cn('mb-3 flex items-center gap-2 text-sm font-semibold', uiStyles.textForeground)}>
                   <Clock className="size-4 text-primary dark:text-primary-dark" aria-hidden="true" />
                   时间

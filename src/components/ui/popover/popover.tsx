@@ -136,8 +136,8 @@ export const PopoverContent = React.forwardRef<
           }
         }}
         className={cn(
-          'z-50 w-80 max-w-[calc(100vw-2rem)] rounded-2xl p-4 text-sm text-foreground outline-none dark:text-foreground-dark',
-          uiStyles.surfaceCard,
+          'w-80 max-w-[calc(100vw-2rem)] p-4 text-sm outline-none',
+          uiStyles.floatingContent,
           'shadow-tooltip',
           uiStyles.floatingStateMotion,
           uiStyles.floatingSideMotion,

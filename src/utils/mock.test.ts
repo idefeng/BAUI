@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import {
   mockCascaderOptions,
+  mockCardGridItems,
   mockCertificate,
   mockCourses,
+  mockDashboardMetrics,
   mockLearningProfile,
+  mockLoginAccount,
   mockPickTechnologyInterests,
   mockProjects,
   mockSelectOptions,
@@ -158,6 +161,45 @@ describe('mock data workshop', () => {
     expect(education.credits).toBe(12);
     expect(education.certificateNo).toBe('NX-CERT-EDU-2026-0003');
     expect(hours.idCardMasked).toContain('********');
+  });
+
+  it('生成登录页 AI 一键填表使用的演示账号', () => {
+    expect(mockLoginAccount()).toEqual({
+      username: 'boao.admin',
+      password: 'Boao@2026',
+      role: 'admin',
+    });
+    expect(mockLoginAccount('student')).toMatchObject({
+      username: 'student.demo',
+      role: 'student',
+    });
+  });
+
+  it('生成 DashboardTemplate 科技大屏使用的 4 个指标 mock 数据', () => {
+    const metrics = mockDashboardMetrics();
+
+    expect(metrics).toHaveLength(4);
+    expect(metrics[0]).toMatchObject({
+      id: 'active-learners',
+      label: '活跃学员',
+      value: 1286,
+      suffix: '人',
+    });
+    expect(metrics.every((metric) => metric.trendText.length > 0)).toBe(true);
+  });
+
+  it('生成 CardGridPage 使用的项目卡片 mock 数据', () => {
+    const cards = mockCardGridItems(12);
+
+    expect(cards).toHaveLength(12);
+    expect(cards[0]).toMatchObject({
+      id: 'card-project-0001',
+      title: '住建项目',
+      projectName: '住建项目',
+      trainingType: '职业培训',
+      status: '进行中',
+    });
+    expect(cards[0].tags.length).toBeGreaterThan(0);
   });
 
   it('生成综合学习档案 mock 数据并包含 IT 培训成长轨迹', () => {

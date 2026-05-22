@@ -13,7 +13,8 @@ import {
 
 import { cn } from '../../../lib/utils';
 import { Button } from '../button';
-import { uiStyles } from '../shared/styles';
+import { clampNumber } from '../shared/logic';
+import { uiStatusStyles, uiStyles, type UiProgressStatus } from '../shared/styles';
 
 export type UploadStatus = 'uploading' | 'success' | 'error';
 
@@ -48,6 +49,11 @@ const imageTypePrefix = 'image/';
 const spreadsheetExtensions = ['.xls', '.xlsx', '.csv'];
 const documentExtensions = ['.doc', '.docx'];
 const archiveExtensions = ['.zip', '.rar', '.7z'];
+const uploadProgressStatusMap = {
+  uploading: 'normal',
+  success: 'success',
+  error: 'exception',
+} satisfies Record<UploadStatus, UiProgressStatus>;
 
 const toMegabytes = (bytes: number) => bytes / 1024 / 1024;
 
@@ -102,7 +108,7 @@ const createPreviewUrl = (file: File) => {
   return URL.createObjectURL(file);
 };
 
-const clampProgress = (progress: number) => Math.max(0, Math.min(100, Math.round(progress)));
+const clampProgress = (progress: number) => clampNumber(Math.round(progress), 0, 100);
 
 const getFileIcon = (item: UploadItem) => {
   const extension = getFileExtension(item.name);
@@ -229,7 +235,7 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
             }
 
             // 使用 5% 到 10% 的随机步进，模拟真实网络波动下的上传速度。
-            const nextProgress = Math.min(100, currentItem.progress + 5 + Math.floor(Math.random() * 6));
+            const nextProgress = clampNumber(currentItem.progress + 5 + Math.floor(Math.random() * 6), 0, 100);
 
             if (nextProgress >= 100) {
               window.clearInterval(timer);
@@ -403,7 +409,7 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
                 className={cn('grid gap-3 rounded-3xl p-4', uiStyles.surfaceCard)}
               >
                 <div className="grid grid-cols-[3rem_1fr_auto] items-center gap-3">
-                  <div className="flex size-12 items-center justify-center overflow-hidden rounded-2xl bg-secondary text-muted-foreground dark:bg-secondary-dark dark:text-muted-dark-foreground">
+                  <div className={uiStyles.mutedIconTile}>
                     {item.previewUrl ? (
                       <img src={item.previewUrl} alt={`${item.name} 缩略图`} className="size-full object-cover" />
                     ) : (
@@ -460,11 +466,7 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
                     <div
                       className={cn(
                         'h-full rounded-full transition-all duration-300',
-                        item.status === 'error'
-                          ? 'bg-danger dark:bg-danger-dark'
-                          : item.status === 'success'
-                            ? 'bg-success dark:bg-success-dark'
-                            : 'bg-primary dark:bg-primary-dark',
+                        uiStatusStyles.progress[uploadProgressStatusMap[item.status]],
                       )}
                       style={{ width: `${item.progress}%` }}
                     />

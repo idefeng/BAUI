@@ -31,6 +31,9 @@ import {
   QRCode,
   DateTimePicker,
   Form,
+  StandardLoginPages,
+  DashboardTemplate,
+  CardGridPage,
   LearningProfile,
   SmartTable,
   Slider,
@@ -39,6 +42,9 @@ import {
   Transfer,
   TreeSelect,
   mockLearningProfile,
+  mockLoginAccount,
+  mockDashboardMetrics,
+  mockCardGridItems,
   mockProgress,
   mockProjects,
   mockStatistic,
@@ -50,6 +56,9 @@ import {
 const workers = mockUsers(8);
 const projects = mockProjects(8);
 const profile = mockLearningProfile('student-it-001');
+const loginAccount = mockLoginAccount();
+const dashboardMetrics = mockDashboardMetrics();
+const cardGridItems = mockCardGridItems(12);
 const organizationTree = mockTreeData();
 const metric = mockStatistic();
 const tags = mockTags();
@@ -63,6 +72,7 @@ const progress = mockProgress();
 - 培训类型：职业培训、继续教育、专项能力提升。
 - 人员信息：姓名、脱敏身份证号、脱敏手机号、工作单位、住址、头像、所属项目。
 - 证书与学习档案：学时证明、培训合格证明、继续教育学分证书，以及 IT 培训成长轨迹。
+- 登录与模板页：多行业登录账号、科技大屏指标和项目卡片流。
 - 表单提效：公司组织架构级联、全球组织架构树、IT 技术方向、培训排课未来时间、候选人穿梭和滑块数值等高保真 Mock 场景。
 - 展示组件：学员头像、运营指标、业务标签、培训进度、二维码签到和课程海报等本地 Mock 预览场景。
 
@@ -103,6 +113,23 @@ const progress = mockProgress();
 
 ```tsx
 <LearningProfile studentId="student-it-001" mock />
+```
+
+`StandardLoginPages` 提供五种行业登录页门面，`mock={true}` 时展示 AI 一键填表按钮：
+
+```tsx
+<StandardLoginPages
+  type="tech"
+  mock
+  onSubmit={(values) => console.log(values.username, values.password, values.role)}
+/>
+```
+
+`DashboardTemplate` 和 `CardGridPage` 面向业务模板页预览；其中 `CardGridPage` 的表单一键填表会联动下方卡片流 Skeleton 加载态：
+
+```tsx
+<DashboardTemplate mock />
+<CardGridPage mock />
 ```
 
 `Cascader`、`DateTimePicker`、`CheckboxGroup`、`Slider`、`Transfer` 和 `TreeSelect` 支持 `mock={true}`，可直接走查三级联动、排课时间、技术方向多选、滑块填值、穿梭搬运和组织树父子联动：
