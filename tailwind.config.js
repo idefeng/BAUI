@@ -1,0 +1,153 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: 'class',
+  content: ['./index.html', './src/**/*.{ts,tsx}', './.storybook/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        background: {
+          DEFAULT: '#FFFFFF',
+          dark: '#020617',
+        },
+        foreground: {
+          DEFAULT: '#101828',
+          dark: '#F8FAFC',
+        },
+        surface: {
+          DEFAULT: '#FFFFFF',
+          dark: '#0F172A',
+        },
+        secondary: {
+          DEFAULT: '#F5F7FA',
+          foreground: '#344054',
+          hover: '#EAECF0',
+          dark: '#1E293B',
+          'dark-foreground': '#CBD5E1',
+          'dark-hover': '#334155',
+        },
+        primary: {
+          DEFAULT: '#0052D9',
+          foreground: '#FFFFFF',
+          hover: '#0044B8',
+          active: '#00388F',
+          soft: '#E8F1FF',
+          dark: '#5B9CFF',
+          'dark-foreground': '#020617',
+          'dark-hover': '#7DB2FF',
+          'dark-active': '#A7C7FF',
+          'dark-soft': '#0B2D5F',
+        },
+        success: {
+          DEFAULT: '#26B899',
+          foreground: '#FFFFFF',
+          hover: '#1FA487',
+          active: '#18866F',
+          soft: '#E8FAF5',
+          dark: '#3DCCA8',
+          'dark-foreground': '#022C22',
+          'dark-hover': '#5ED9B8',
+          'dark-active': '#8BE4CC',
+          'dark-soft': '#063D35',
+        },
+        danger: {
+          DEFAULT: '#F04438',
+          foreground: '#FFFFFF',
+          hover: '#D92D20',
+          active: '#B42318',
+          soft: '#FEF3F2',
+          dark: '#FF7A70',
+          'dark-foreground': '#450A0A',
+          'dark-hover': '#FF9B93',
+          'dark-active': '#FFC0BA',
+          'dark-soft': '#4A1111',
+        },
+        muted: {
+          DEFAULT: '#F2F4F7',
+          foreground: '#667085',
+          dark: '#1E293B',
+          'dark-foreground': '#94A3B8',
+        },
+        border: {
+          DEFAULT: '#D0D5DD',
+          strong: '#98A2B3',
+          dark: '#334155',
+          'dark-strong': '#475569',
+        },
+        ring: {
+          DEFAULT: '#84ADFF',
+          dark: '#60A5FA',
+        },
+        disabled: {
+          DEFAULT: '#F2F4F7',
+          foreground: '#98A2B3',
+          dark: '#1E293B',
+          'dark-foreground': '#64748B',
+        },
+      },
+      borderRadius: {
+        lg: '0.75rem',
+        xl: '1rem',
+        '2xl': '1.25rem',
+        '3xl': '1.5rem',
+      },
+      boxShadow: {
+        button: '0 10px 24px -12px rgb(16 24 40 / 0.32)',
+      },
+      keyframes: {
+        selectIn: {
+          from: { opacity: '0', transform: 'scale(0.98) translateY(-0.25rem)' },
+          to: { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+        selectOut: {
+          from: { opacity: '1', transform: 'scale(1) translateY(0)' },
+          to: { opacity: '0', transform: 'scale(0.98) translateY(-0.25rem)' },
+        },
+        overlayIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        overlayOut: {
+          from: { opacity: '1' },
+          to: { opacity: '0' },
+        },
+        modalIn: {
+          from: { opacity: '0', transform: 'translate(-50%, -50%) scale(0.95)' },
+          to: { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
+        },
+        modalOut: {
+          from: { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
+          to: { opacity: '0', transform: 'translate(-50%, -50%) scale(0.95)' },
+        },
+        toastIn: {
+          from: { opacity: '0', transform: 'translateX(1rem)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
+        },
+        toastOut: {
+          from: { opacity: '1', transform: 'translateX(0)' },
+          to: { opacity: '0', transform: 'translateX(1rem)' },
+        },
+        accordionDown: {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        accordionUp: {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+      },
+      animation: {
+        'select-in': 'selectIn 160ms ease-out',
+        'select-out': 'selectOut 120ms ease-in',
+        'overlay-in': 'overlayIn 180ms ease-out',
+        'overlay-out': 'overlayOut 140ms ease-in',
+        'modal-in': 'modalIn 180ms ease-out',
+        'modal-out': 'modalOut 140ms ease-in',
+        'toast-in': 'toastIn 180ms ease-out',
+        'toast-out': 'toastOut 160ms ease-in',
+        'accordion-down': 'accordionDown 180ms ease-out',
+        'accordion-up': 'accordionUp 160ms ease-in',
+      },
+    },
+  },
+  plugins: [],
+};

@@ -1,0 +1,111 @@
+# BOAO UI Codex Rules
+
+## 1. 任务判断与沟通规则
+
+- 当任务是“新需求”时，Codex 必须以更高经验和技术标准理解用户真实意图，不能机械照做。如果不能 100% 确认需求边界，应主动提问，直到完全清楚后再实施。
+- 当任务是“现有功能的改动”时，Codex 必须从全局考虑影响面，检查是否有互相关联或引用的位置。不清楚时应主动询问，确认后再实施。
+- 当任务是“BUG 修复”时，Codex 必须分析 bug 产生原因，记录经验，总结 failure shield，避免同类问题在其他位置重复出现。
+- 对高风险、批量或影响面较大的任务，优先采用稳健路线：先盘点、再实现、再验证。
+
+## 2. 提交代码规则
+
+当用户说“提交代码”时，默认包含以下工作：
+
+- 检查 `.gitignore` 配置，确认 `.env`、构建产物、依赖目录、缓存文件等不应同步的文件没有混入版本控制。
+- 如发现不应提交的文件类型，应更新 `.gitignore`。
+- 提交到关联的远程仓库。
+- 总结本次修改，更新根目录 `CHANGELOG`。
+- 如有未完成任务，更新 `task.md`。
+- 检查 `README`，如涉及安装、使用、开发或 API 变化，应同步更新。
+- 检查用户操作手册；涉及操作流程变更时，应及时更新操作手册。
+
+## 3. 代码生成规则
+
+- 函数、组件 Props、关键逻辑和关键代码行应使用中文注释。
+- 代码应符合“简洁之道”，先检查是否已有实现或公共工具，避免重复生成冗余代码。
+- 优先复用现有工具函数、共享样式、组件模式和目录结构。
+- 不做无关重构；重构必须服务当前任务。
+- 修改已有组件时必须保持原有 API 向后兼容，严禁无故删除或重命名已存在的 Prop。
+- 组件尽量保持纯 UI 渲染逻辑，状态优先由外部 Controlled 传入。
+- 新功能和行为变更优先使用测试驱动：先补测试，再实现，再验证。
+
+## 4. BOAO UI 技术栈
+
+- 框架：React 18+、TypeScript、Vite。
+- 样式：Tailwind CSS、clsx、tailwind-merge。
+- Headless 交互底座：Radix UI。
+- 图标：lucide-react。
+- 文档与预览：Storybook。
+- 测试：Vitest、Testing Library。
+
+## 5. BOAO UI 视觉规范
+
+- 所有组件样式必须基于 `tailwind.config.js` 中定义的语义化变量。
+- 严禁在组件内部使用任何硬编码 hex 颜色值，例如 `bg-[#0066FF]`。
+- 主色使用科技蓝 `primary`，成功色使用 `success`，危险状态使用 `danger`。
+- 整体风格应保持极简、现代、大圆角、强呼吸感。
+- 默认圆角优先使用 `rounded-xl` 或 `rounded-2xl`。
+- 表单、按钮、浮层、表格、反馈组件应保持宽松 padding 和清晰交互状态。
+- 组件必须适配暗黑模式，使用 Tailwind `dark:` 前缀。
+- 暗黑模式由 `darkMode: 'class'` 驱动，通过在 `html` 或 `body` 上添加 `dark` 类名控制。
+- 科技蓝和成功色在暗色背景下必须保持足够对比度和可读性。
+
+## 6. BOAO UI 组件目录规范
+
+每个组件必须独立成目录，结构如下：
+
+```text
+src/components/ui/component-name/
+  component-name.tsx
+  index.ts
+  component-name.stories.tsx
+  component-name.test.tsx
+```
+
+业务组件放在：
+
+```text
+src/components/biz/component-name/
+  component-name.tsx
+  index.ts
+  component-name.stories.tsx
+  component-name.test.tsx
+```
+
+组件实现完成后，应在 `src/index.ts` 中导出。
+
+## 7. BOAO UI 组件实现约定
+
+- 所有 Radix 可套壳组件一律基于 Radix UI 原语封装，不自研复杂交互、定位、焦点管理和无障碍行为。
+- 组件样式使用 `cn` 组合 className，公共样式优先沉淀到 `src/components/ui/shared/styles.ts`。
+- 组件 Props 必须有严格 TypeScript 类型定义。
+- 关键 Props 必须写中文注释，解释使用场景和行为边界。
+- 所有组件必须接收并合并 `className`，不得阻断业务侧样式扩展。
+- 交互组件必须保留 Radix 原语的受控和非受控能力，例如 `value/defaultValue/onValueChange/open/onOpenChange`。
+- 支持图标的组件默认使用 lucide-react 图标，并允许业务传入自定义 `ReactNode`。
+- 禁用、加载、选中、展开、焦点、悬浮、错误等状态必须有明确样式。
+- 浮层类组件必须有合理 z-index、现代大圆角、阴影、动画和暗黑模式样式。
+
+## 8. Storybook 规范
+
+- 每个组件必须提供完整 Storybook 用例。
+- Storybook 至少覆盖基础用法和一个真实业务使用场景。
+- 复杂组件应覆盖受控状态、禁用状态、图标组合、空态或变体。
+- Storybook 预览应直接展示可用组件，不做营销式 landing page。
+- 组件故事中的样式同样不得硬编码 hex 颜色。
+
+## 9. 验证规则
+
+完成组件或功能开发后，默认执行：
+
+```bash
+npm run test:run
+npm run typecheck
+npm run build
+npm run build-storybook
+npm audit --omit=dev && npm audit --audit-level=moderate
+rg "#[0-9A-Fa-f]{3,8}" src/components || true
+```
+
+- 前端可视化改动应尽量通过 Storybook 或浏览器做交互冒烟。
+- 不能声称完成、通过或可用，除非已经运行并读取对应验证命令结果。
