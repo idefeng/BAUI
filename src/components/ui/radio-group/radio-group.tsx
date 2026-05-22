@@ -23,12 +23,14 @@ export const RadioGroupItem = React.forwardRef<
   <RadioGroupPrimitive.Item
     ref={ref}
     className={cn(
-      'inline-flex size-5 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-primary shadow-sm outline-none transition-all duration-200',
+      uiStyles.choiceControlBase,
+      'rounded-full text-primary',
       uiStyles.focusBreathingRing,
-      'hover:border-primary/70 hover:bg-primary-soft data-[state=checked]:border-primary data-[state=checked]:bg-primary-soft',
-      'data-[disabled]:cursor-not-allowed data-[disabled]:border-border data-[disabled]:bg-disabled data-[disabled]:text-disabled-foreground data-[disabled]:opacity-80',
+      uiStyles.formControlHover,
+      'data-[state=checked]:border-primary data-[state=checked]:bg-primary-soft',
+      uiStyles.radixDisabledControl,
       // 暗黑选中态保持浅蓝描边和圆点，在深色背景下比纯灰态更清晰。
-      'dark:border-border-dark dark:bg-surface-dark dark:text-primary-dark dark:hover:border-primary-dark/80 dark:hover:bg-primary-dark-soft dark:data-[state=checked]:border-primary-dark dark:data-[state=checked]:bg-primary-dark-soft dark:data-[disabled]:border-border-dark dark:data-[disabled]:bg-disabled-dark dark:data-[disabled]:text-disabled-dark-foreground',
+      'dark:border-border-dark dark:bg-surface-dark dark:text-primary-dark dark:data-[state=checked]:border-primary-dark dark:data-[state=checked]:bg-primary-dark-soft',
       className,
     )}
     {...props}

@@ -17,7 +17,17 @@ npm run build-storybook
 中央 Mock 数据位于 `src/utils/mock.ts`，用于让业务组件在没有后端接口时也能展示高保真数据。
 
 ```tsx
-import { CertificateTemplate, LearningProfile, SmartTable, mockLearningProfile, mockProjects, mockUsers } from 'boao-ui';
+import {
+  Cascader,
+  CheckboxGroup,
+  DateTimePicker,
+  Form,
+  LearningProfile,
+  SmartTable,
+  mockLearningProfile,
+  mockProjects,
+  mockUsers,
+} from 'boao-ui';
 
 const workers = mockUsers(8);
 const projects = mockProjects(8);
@@ -31,6 +41,7 @@ const profile = mockLearningProfile('student-it-001');
 - 培训类型：职业培训、继续教育、专项能力提升。
 - 人员信息：姓名、脱敏身份证号、脱敏手机号、工作单位、住址、头像、所属项目。
 - 证书与学习档案：学时证明、培训合格证明、继续教育学分证书，以及 IT 培训成长轨迹。
+- 表单提效：公司组织架构级联、IT 技术方向、培训排课未来时间等高保真 Mock 场景。
 
 ## 组件 Mock 用法
 
@@ -69,4 +80,24 @@ const profile = mockLearningProfile('student-it-001');
 
 ```tsx
 <LearningProfile studentId="student-it-001" mock />
+```
+
+`Cascader`、`DateTimePicker` 和 `CheckboxGroup` 支持 `mock={true}`，可直接走查三级联动、排课时间和技术方向多选：
+
+```tsx
+<Cascader mock placeholder="请选择组织架构" onChange={(path) => console.log(path)} />
+<DateTimePicker type="datetime" mock onChange={(value) => console.log(value)} />
+<CheckboxGroup mock value={['frontend']} onChange={(value) => console.log(value)} />
+```
+
+`Form` 支持 Schema 驱动消费 `input`、`select`、`switch`、`checkbox`，并可用一键填表验证 Mock 链路：
+
+```tsx
+<Form
+  schema={[
+    { name: 'name', label: '学员姓名', type: 'input', mock: 'name' },
+    { name: 'intranet', label: '是否开通内网权限', type: 'switch', mock: true },
+    { name: 'directions', label: '选修技术方向', type: 'checkbox', mock: true },
+  ]}
+/>
 ```

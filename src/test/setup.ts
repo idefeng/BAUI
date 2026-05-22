@@ -40,3 +40,29 @@ try {
     value: createLocalStorageMock(),
   });
 }
+
+if (!HTMLElement.prototype.hasPointerCapture) {
+  // jsdom 尚未完整实现 Pointer Capture，Radix Select 交互测试需要这些浏览器 API 存在。
+  HTMLElement.prototype.hasPointerCapture = () => false;
+}
+
+if (!HTMLElement.prototype.setPointerCapture) {
+  HTMLElement.prototype.setPointerCapture = () => undefined;
+}
+
+if (!HTMLElement.prototype.releasePointerCapture) {
+  HTMLElement.prototype.releasePointerCapture = () => undefined;
+}
+
+if (!HTMLElement.prototype.scrollIntoView) {
+  HTMLElement.prototype.scrollIntoView = () => undefined;
+}
+
+if (!window.ResizeObserver) {
+  // Radix 的表单 bubble input 在 jsdom 中会访问 ResizeObserver，这里补齐浏览器等价空实现。
+  window.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}

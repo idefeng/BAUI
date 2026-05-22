@@ -39,7 +39,7 @@ export const TabsTrigger = React.forwardRef<React.ElementRef<typeof TabsPrimitiv
         'inline-flex h-10 min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 text-sm font-medium transition-all duration-200',
         'data-[state=active]:bg-surface data-[state=active]:text-primary data-[state=active]:shadow-button',
         'data-[state=inactive]:hover:bg-surface/70 data-[state=inactive]:hover:text-foreground',
-        'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        uiStyles.radixDisabledItem,
         'dark:data-[state=active]:bg-surface-dark dark:data-[state=active]:text-primary-dark dark:data-[state=inactive]:hover:bg-secondary-dark-hover dark:data-[state=inactive]:hover:text-foreground-dark',
         uiStyles.buttonFocusVisibleRing,
         className,

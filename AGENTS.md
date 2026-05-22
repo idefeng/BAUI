@@ -86,7 +86,14 @@ src/components/biz/component-name/
 - 禁用、加载、选中、展开、焦点、悬浮、错误等状态必须有明确样式。
 - 浮层类组件必须有合理 z-index、现代大圆角、阴影、动画和暗黑模式样式。
 
-## 8. Storybook 规范
+## 8. 企业内部定制：本地 Mock 驱动规范 (Efficiency Pack)
+- **核心目的**：为了让前端开发摆脱对后端接口的依赖，实现全库组件的“提效降本”，各核心组件必须内嵌 `mock` 驱动能力。
+- **命名规范**：统一使用可选属性 `mock?: boolean`（或特定组件支持的枚举值，如 `mock?: 'user' | 'course'`）。严禁使用 `fake`、`testData` 等其他杂乱命名。
+- **中央数据源隔离**：所有 mock 数据必须从统一的中央工具库 `src/utils/mock.ts` 中调用，严禁在单个组件内部硬编码、手写死数据。
+- **SmartTable 联动规范**：当 `SmartTable` 接收到 `mock={true}` 且外部无真实数据传入时，必须强制模拟 `Skeleton`（骨架屏）动画加载 500ms~1000ms，以100%还原真实的异步接口请求场景。
+- **生产安全边界**：组件内部的 mock 逻辑必须编写得足够轻量，且作为外部 Props 的兜底（Fallback）方案。当外部传入真实数据时，真实数据永远拥有最高优先级，mock 逻辑必须自动失效。
+
+## 9. Storybook 规范
 
 - 每个组件必须提供完整 Storybook 用例。
 - Storybook 至少覆盖基础用法和一个真实业务使用场景。
@@ -94,7 +101,7 @@ src/components/biz/component-name/
 - Storybook 预览应直接展示可用组件，不做营销式 landing page。
 - 组件故事中的样式同样不得硬编码 hex 颜色。
 
-## 9. 验证规则
+## 10. 验证规则
 
 完成组件或功能开发后，默认执行：
 

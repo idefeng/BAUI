@@ -24,7 +24,10 @@ export const DropdownMenuTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       styled &&
-        'inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-foreground shadow-sm transition-all hover:border-primary hover:bg-primary-soft hover:text-primary data-[state=open]:border-primary data-[state=open]:text-primary dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark dark:hover:border-primary-dark dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark dark:data-[state=open]:border-primary-dark dark:data-[state=open]:text-primary-dark',
+        'inline-flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all',
+      styled && uiStyles.surfaceInteractive,
+      styled &&
+        'text-foreground hover:border-primary data-[state=open]:border-primary data-[state=open]:text-primary dark:text-foreground-dark dark:hover:border-primary-dark dark:data-[state=open]:border-primary-dark dark:data-[state=open]:text-primary-dark',
       styled && uiStyles.buttonFocusVisibleRing,
       className,
     )}
@@ -49,8 +52,8 @@ export const DropdownMenuContent = React.forwardRef<
       className={cn(
         'z-50 min-w-48 overflow-hidden p-1',
         uiStyles.floatingSurface,
-        'data-[state=open]:animate-select-in data-[state=closed]:animate-select-out',
-        'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+        uiStyles.floatingStateMotion,
+        uiStyles.floatingSideMotion,
         className,
       )}
       {...props}
@@ -62,14 +65,11 @@ DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 export type DropdownMenuItemVariant = 'default' | 'danger';
 
 const itemVariantClasses: Record<DropdownMenuItemVariant, string> = {
-  default:
-    'text-foreground focus:bg-primary-soft focus:text-primary dark:text-foreground-dark dark:focus:bg-primary-dark-soft dark:focus:text-primary-dark',
-  danger:
-    'text-danger focus:bg-danger-soft focus:text-danger dark:text-danger-dark dark:focus:bg-danger-dark-soft dark:focus:text-danger-dark',
+  default: uiStyles.menuItemDefault,
+  danger: uiStyles.menuItemDanger,
 };
 
-const menuItemBase =
-  'relative flex cursor-default select-none items-center gap-2 rounded-xl px-3 py-2.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50';
+const menuItemBase = cn(uiStyles.menuItemBase, 'gap-2 px-3');
 
 export interface DropdownMenuItemProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
   /** 菜单项语义，danger 用于删除、移除等高风险操作。 */
@@ -143,7 +143,7 @@ export const DropdownMenuLabel = React.forwardRef<
 >(({ className, inset = false, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn('px-3 py-2 text-xs font-medium text-muted-foreground dark:text-muted-dark-foreground', inset && 'pl-9', className)}
+    className={cn(uiStyles.sectionLabel, inset && 'pl-9', className)}
     {...props}
   />
 ));
@@ -153,7 +153,7 @@ export const DropdownMenuSeparator = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.Separator ref={ref} className={cn('-mx-1 my-1 h-px bg-border dark:bg-border-dark', className)} {...props} />
+  <DropdownMenuPrimitive.Separator ref={ref} className={cn(uiStyles.separator, className)} {...props} />
 ));
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 
@@ -168,7 +168,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<
 >(({ className, children, inset = false, ...props }, ref) => (
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
-    className={cn(menuItemBase, itemVariantClasses.default, inset && 'pl-9', 'data-[state=open]:bg-primary-soft data-[state=open]:text-primary dark:data-[state=open]:bg-primary-dark-soft dark:data-[state=open]:text-primary-dark', className)}
+    className={cn(menuItemBase, itemVariantClasses.default, inset && 'pl-9', uiStyles.stateOpenPrimary, className)}
     {...props}
   >
     <span className="min-w-0 flex-1 truncate">{children}</span>
@@ -186,7 +186,7 @@ export const DropdownMenuSubContent = React.forwardRef<
     className={cn(
       'z-50 min-w-44 overflow-hidden p-1',
       uiStyles.floatingSurface,
-      'data-[state=open]:animate-select-in data-[state=closed]:animate-select-out',
+      uiStyles.floatingStateMotion,
       className,
     )}
     {...props}

@@ -16,10 +16,12 @@ export const ToastProvider = ({ duration = 5000, ...props }: ToastProviderProps)
   <ToastPrimitive.Provider duration={duration} {...props} />
 );
 
+const variantTextClassName = 'text-foreground dark:text-foreground-dark';
+
 const variantClasses: Record<ToastVariant, string> = {
-  success: 'border-success bg-success-soft text-foreground dark:border-success-dark dark:bg-success-dark-soft dark:text-foreground-dark',
-  error: 'border-danger bg-danger-soft text-foreground dark:border-danger-dark dark:bg-danger-dark-soft dark:text-foreground-dark',
-  info: 'border-primary bg-primary-soft text-foreground dark:border-primary-dark dark:bg-primary-dark-soft dark:text-foreground-dark',
+  success: cn('border-success bg-success-soft dark:border-success-dark dark:bg-success-dark-soft', variantTextClassName),
+  error: cn('border-danger bg-danger-soft dark:border-danger-dark dark:bg-danger-dark-soft', variantTextClassName),
+  info: cn('border-primary bg-primary-soft dark:border-primary-dark dark:bg-primary-dark-soft', variantTextClassName),
 };
 
 const variantIcons: Record<ToastVariant, React.ReactNode> = {

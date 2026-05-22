@@ -116,6 +116,17 @@ export interface MockSelectOption {
   value: string;
 }
 
+export interface MockTechnologyInterestOption {
+  label: string;
+  value: string;
+}
+
+export interface MockCascaderOption {
+  value: string;
+  label: string;
+  children?: MockCascaderOption[];
+}
+
 const userNames = ['林予安', '周明轩', '陈晓雨', '赵一诺', '王嘉宁', '许若辰', '李思远', '韩沐阳'];
 const projectNames = [
   '住建项目',
@@ -194,6 +205,65 @@ const selectOptionMap: Record<MockSelectOptionType, MockSelectOption[]> = {
   ],
 };
 
+const cascaderOrganizationOptions: MockCascaderOption[] = [
+  {
+    value: 'boao-hq',
+    label: '灵境实训总公司',
+    children: [
+      {
+        value: 'technology-center',
+        label: '技术中心',
+        children: [
+          { value: 'frontend-platform', label: '前端平台组' },
+          { value: 'ai-engineering', label: 'AI 工程组' },
+          { value: 'data-infra', label: '数据基础设施组' },
+        ],
+      },
+      {
+        value: 'learning-product-center',
+        label: '学习产品中心',
+        children: [
+          { value: 'course-design', label: '课程设计组' },
+          { value: 'exam-operations', label: '考试运营组' },
+          { value: 'certificate-service', label: '证书服务组' },
+        ],
+      },
+      {
+        value: 'growth-center',
+        label: '市场增长中心',
+        children: [
+          { value: 'brand-growth', label: '品牌增长组' },
+          { value: 'regional-sales', label: '区域拓展组' },
+          { value: 'partner-success', label: '渠道合作组' },
+        ],
+      },
+      {
+        value: 'customer-success-center',
+        label: '客户成功中心',
+        children: [
+          { value: 'implementation', label: '交付实施组' },
+          { value: 'support-service', label: '客户支持组' },
+          { value: 'quality-review', label: '质量稽核组' },
+        ],
+      },
+    ],
+  },
+];
+
+const trainingScheduleTimeSlots = [
+  { hour: 14, minute: 0 },
+  { hour: 14, minute: 30 },
+  { hour: 15, minute: 30 },
+  { hour: 16, minute: 0 },
+];
+
+const technologyInterestOptions: MockTechnologyInterestOption[] = [
+  { label: '前端', value: 'frontend' },
+  { label: 'Java', value: 'java' },
+  { label: 'AI Agent', value: 'ai-agent' },
+  { label: 'Go', value: 'go' },
+];
+
 const normalizeCount = (count: number) => Math.max(0, Math.floor(count));
 
 const createAvatarDataUrl = (name: string, index: number) => {
@@ -252,6 +322,45 @@ export const mockProjects = (count: number): MockProject[] =>
 export const mockCourses = (count: number): MockCourse[] => mockProjects(count);
 
 export const mockSelectOptions = (type: MockSelectOptionType): MockSelectOption[] => [...selectOptionMap[type]];
+
+export const mockCascaderOptions = (): MockCascaderOption[] =>
+  cascaderOrganizationOptions.map((option) => ({
+    ...option,
+    children: option.children?.map((child) => ({
+      ...child,
+      children: child.children ? [...child.children] : undefined,
+    })),
+  }));
+
+export const mockTrainingScheduleDateTime = (baseDate = new Date()): Date => {
+  const dayOffset = (baseDate.getDate() % 2) + 1;
+  const slot = trainingScheduleTimeSlots[(baseDate.getDate() + 3) % trainingScheduleTimeSlots.length];
+  const scheduleTime = new Date(baseDate);
+
+  scheduleTime.setDate(baseDate.getDate() + dayOffset);
+  scheduleTime.setHours(slot.hour, slot.minute, 0, 0);
+
+  return scheduleTime;
+};
+
+export const mockTechnologyInterestOptions = (): MockTechnologyInterestOption[] =>
+  technologyInterestOptions.map((option) => ({ ...option }));
+
+export const mockPickTechnologyInterests = (
+  options = mockTechnologyInterestOptions(),
+  seed = Date.now(),
+): string[] => {
+  if (options.length === 0) {
+    return [];
+  }
+
+  const count = Math.min(options.length, (Math.abs(Math.floor(seed)) % 2) + 1);
+  const startIndex = Math.abs(Math.floor(seed)) % options.length;
+
+  return Array.from({ length: count }, (_, index) => options[(startIndex + index) % options.length].value);
+};
+
+export const mockSwitchChecked = (seed = Date.now()) => Math.abs(Math.floor(seed)) % 2 === 0;
 
 export const mockCertificate = (type: MockCertificateType): MockCertificateData => {
   const user = mockUsers(3)[type === 'hours' ? 0 : type === 'qualified' ? 1 : 2];

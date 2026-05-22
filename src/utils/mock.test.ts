@@ -1,6 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
-import { mockCertificate, mockCourses, mockLearningProfile, mockProjects, mockSelectOptions, mockUsers } from './mock';
+import {
+  mockCascaderOptions,
+  mockCertificate,
+  mockCourses,
+  mockLearningProfile,
+  mockPickTechnologyInterests,
+  mockProjects,
+  mockSelectOptions,
+  mockSwitchChecked,
+  mockTechnologyInterestOptions,
+  mockTrainingScheduleDateTime,
+  mockUsers,
+} from './mock';
 
 describe('mock data workshop', () => {
   it('生成带脱敏信息的从业人员基本信息', () => {
@@ -43,6 +55,52 @@ describe('mock data workshop', () => {
     expect(mockSelectOptions('department')).toContainEqual({ label: '食品安全管理员项目', value: 'food-safety-manager' });
     expect(mockSelectOptions('trainingType')).toContainEqual({ label: '专项能力提升', value: 'special-capability' });
     expect(mockSelectOptions('status')).toContainEqual({ label: '进行中', value: 'ongoing' });
+  });
+
+  it('生成可直接用于 Cascader 的三层公司组织架构树', () => {
+    const options = mockCascaderOptions();
+
+    expect(options).toHaveLength(1);
+    expect(options[0]).toMatchObject({ value: 'boao-hq', label: '灵境实训总公司' });
+    expect(options[0].children).toHaveLength(4);
+    expect(options[0].children?.map((option) => option.label)).toEqual(
+      expect.arrayContaining(['技术中心', '学习产品中心', '市场增长中心', '客户成功中心']),
+    );
+    expect(options[0].children?.[0].children).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ value: 'frontend-platform', label: '前端平台组' }),
+        expect.objectContaining({ value: 'ai-engineering', label: 'AI 工程组' }),
+      ]),
+    );
+  });
+
+  it('生成符合培训排课场景的未来 mock 日期时间', () => {
+    const scheduleTime = mockTrainingScheduleDateTime(new Date(2026, 4, 22, 9, 0, 0));
+
+    expect(scheduleTime.getFullYear()).toBe(2026);
+    expect(scheduleTime.getMonth()).toBe(4);
+    expect(scheduleTime.getDate()).toBe(23);
+    expect(scheduleTime.getHours()).toBe(14);
+    expect(scheduleTime.getMinutes()).toBe(30);
+    expect(scheduleTime.getSeconds()).toBe(0);
+  });
+
+  it('生成 CheckboxGroup 技术方向选项和一键填表选中值', () => {
+    const options = mockTechnologyInterestOptions();
+    const selectedValues = mockPickTechnologyInterests(options, 2);
+
+    expect(options).toEqual([
+      { label: '前端', value: 'frontend' },
+      { label: 'Java', value: 'java' },
+      { label: 'AI Agent', value: 'ai-agent' },
+      { label: 'Go', value: 'go' },
+    ]);
+    expect(selectedValues).toEqual(['ai-agent']);
+  });
+
+  it('生成 switch 一键填表布尔值', () => {
+    expect(mockSwitchChecked(2)).toBe(true);
+    expect(mockSwitchChecked(3)).toBe(false);
   });
 
   it('按证书类型生成脱敏的公司证书 mock 数据', () => {

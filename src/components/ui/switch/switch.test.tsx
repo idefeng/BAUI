@@ -33,4 +33,15 @@ describe('Switch', () => {
     expect(control).toHaveAttribute('data-disabled');
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
+
+  it('支持 Form 友好的 checked 与 onChange 受控属性', async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+
+    render(<Switch aria-label="是否开通内网权限" checked={false} onChange={onChange} />);
+
+    await user.click(screen.getByRole('switch', { name: '是否开通内网权限' }));
+
+    expect(onChange).toHaveBeenCalledWith(true);
+  });
 });

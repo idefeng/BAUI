@@ -98,7 +98,7 @@ export const SelectScrollUpButton = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.ScrollUpButton
     ref={ref}
-    className={cn('flex cursor-default items-center justify-center py-2 text-muted-foreground dark:text-muted-dark-foreground', className)}
+    className={cn(uiStyles.scrollButton, className)}
     {...props}
   >
     <ChevronUp className="size-4" aria-hidden="true" />
@@ -112,7 +112,7 @@ export const SelectScrollDownButton = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.ScrollDownButton
     ref={ref}
-    className={cn('flex cursor-default items-center justify-center py-2 text-muted-foreground dark:text-muted-dark-foreground', className)}
+    className={cn(uiStyles.scrollButton, className)}
     {...props}
   >
     <ChevronDown className="size-4" aria-hidden="true" />
@@ -136,8 +136,8 @@ export const SelectContent = React.forwardRef<
       className={cn(
         'relative z-50 max-h-80 min-w-36 overflow-hidden',
         uiStyles.floatingSurface,
-        'data-[state=open]:animate-select-in data-[state=closed]:animate-select-out',
-        'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+        uiStyles.floatingStateMotion,
+        uiStyles.floatingSideMotion,
         className,
       )}
       {...props}
@@ -164,7 +164,7 @@ export const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn('px-3 py-2 text-xs font-medium text-muted-foreground dark:text-muted-dark-foreground', className)}
+    className={cn(uiStyles.sectionLabel, className)}
     {...props}
   />
 ));
@@ -177,8 +177,9 @@ export const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-default select-none items-center rounded-xl py-2.5 pl-9 pr-3 text-sm outline-none transition-colors',
-      'focus:bg-primary-soft focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-primary-dark-soft dark:focus:text-primary-dark',
+      uiStyles.menuItemBase,
+      uiStyles.menuItemDefault,
+      'w-full pl-9 pr-3',
       className,
     )}
     {...props}
@@ -197,6 +198,6 @@ export const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Separator ref={ref} className={cn('-mx-1 my-1 h-px bg-border dark:bg-border-dark', className)} {...props} />
+  <SelectPrimitive.Separator ref={ref} className={cn(uiStyles.separator, className)} {...props} />
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;

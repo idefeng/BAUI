@@ -38,9 +38,10 @@ export const AccordionTrigger = React.forwardRef<
       ref={ref}
       className={cn(
         'group flex w-full items-center justify-between gap-4 rounded-2xl px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors',
-        'hover:bg-primary-soft hover:text-primary data-[state=open]:text-primary',
+        uiStyles.primarySurfaceHover,
+        'data-[state=open]:text-primary',
         'disabled:pointer-events-none disabled:opacity-50',
-        'dark:text-foreground-dark dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark dark:data-[state=open]:text-primary-dark',
+        'dark:text-foreground-dark dark:data-[state=open]:text-primary-dark',
         uiStyles.buttonFocusVisibleRing,
         className,
       )}

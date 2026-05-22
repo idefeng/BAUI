@@ -132,10 +132,10 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>
         data-theme={currentTheme}
         onClick={handleClick}
         className={cn(
-          'group inline-flex h-11 items-center gap-3 rounded-2xl border border-border bg-surface px-3 text-sm font-medium text-foreground shadow-button transition-all duration-200',
-          'hover:border-primary hover:bg-primary-soft hover:text-primary active:scale-[0.98]',
-          'disabled:pointer-events-none disabled:bg-disabled disabled:text-disabled-foreground disabled:shadow-none',
-          'dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark dark:hover:border-primary-dark dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark dark:disabled:bg-disabled-dark dark:disabled:text-disabled-dark-foreground',
+          'group inline-flex h-11 items-center gap-3 rounded-2xl px-3 text-sm font-medium shadow-button transition-all duration-200',
+          uiStyles.surfaceInteractive,
+          uiStyles.buttonDisabled,
+          'text-foreground hover:border-primary active:scale-[0.98] dark:text-foreground-dark dark:hover:border-primary-dark',
           uiStyles.buttonFocusVisibleRing,
           className,
         )}

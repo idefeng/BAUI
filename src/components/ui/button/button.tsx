@@ -89,8 +89,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200',
           uiStyles.buttonFocusVisibleRing,
-          'disabled:pointer-events-none disabled:border-border disabled:bg-disabled disabled:text-disabled-foreground disabled:shadow-none dark:disabled:border-border-dark dark:disabled:bg-disabled-dark dark:disabled:text-disabled-dark-foreground',
-          'data-[disabled=true]:pointer-events-none data-[disabled=true]:border-border data-[disabled=true]:bg-disabled data-[disabled=true]:text-disabled-foreground data-[disabled=true]:shadow-none dark:data-[disabled=true]:border-border-dark dark:data-[disabled=true]:bg-disabled-dark dark:data-[disabled=true]:text-disabled-dark-foreground',
+          uiStyles.buttonDisabled,
+          uiStyles.dataDisabledButton,
           variantClasses[variant],
           sizeClasses[size],
           fullWidth && 'w-full',

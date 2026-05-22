@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { mockUsers } from '../../../utils/mock';
-import { Checkbox } from './checkbox';
+import { Checkbox, CheckboxGroup } from './checkbox';
 
 const meta = {
   title: 'UI/Checkbox',
@@ -112,4 +112,14 @@ export const MockModeDemo: Story = {
       </div>
     );
   },
+};
+
+export const Group: Story = {
+  render: () => (
+    <CheckboxGroup
+      aria-label="感兴趣的 IT 技术"
+      mock
+      defaultValue={['frontend', 'ai-agent']}
+    />
+  ),
 };

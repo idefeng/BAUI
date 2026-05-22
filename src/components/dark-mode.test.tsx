@@ -4,17 +4,20 @@ import { describe, expect, it } from 'vitest';
 
 import { CertificateTemplate } from './biz/certificate';
 import { LearningProfile } from './biz/profile';
+import { NavMenu } from './biz/navigation';
 import { SmartTable, type SmartTableColumn } from './biz/smart-table';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
 import { Modal, ModalContent, ModalTitle } from './ui/modal';
+import { Pagination } from './ui/pagination';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Skeleton } from './ui/skeleton';
 import { Switch } from './ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { ToastProvider, ToastRoot, ToastTitle, ToastViewport } from './ui/toast';
+import { Upload } from './ui/upload';
 
 interface Row {
   id: string;
@@ -39,8 +42,17 @@ describe('dark mode support', () => {
     expect(screen.getByTestId('boao-input-root').className).toContain('dark:');
     cleanup();
 
+    render(<Pagination total={80} currentPage={2} onPageChange={() => undefined} />);
+    expect(screen.getByTestId('pagination-root').className).toContain('dark:');
+    cleanup();
+
     render(<Skeleton data-testid="骨架屏" />);
     expect(screen.getByTestId('骨架屏').className).toContain('dark:');
+    cleanup();
+
+    render(<Upload />);
+    expect(screen.getByTestId('upload-root').className).toContain('dark:');
+    expect(screen.getByTestId('upload-dropzone').className).toContain('dark:');
     cleanup();
 
     render(
@@ -137,5 +149,12 @@ describe('dark mode support', () => {
 
     expect(screen.getByTestId('learning-profile-root').className).toContain('dark:');
     expect(screen.getByTestId('learning-profile-summary-card-totalHours').className).toContain('dark:');
+  });
+
+  it('NavMenu 包含暗黑模式下的企业导航样式', () => {
+    render(<NavMenu mock currentPath="/" />);
+
+    expect(screen.getByTestId('nav-menu-root').className).toContain('dark:');
+    expect(screen.getByTestId('nav-menu-item-home').className).toContain('dark:');
   });
 });
