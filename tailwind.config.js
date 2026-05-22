@@ -49,6 +49,18 @@ export default {
           'dark-active': '#8BE4CC',
           'dark-soft': '#063D35',
         },
+        warning: {
+          DEFAULT: '#D97706',
+          foreground: '#FFFFFF',
+          hover: '#B45309',
+          active: '#92400E',
+          soft: '#FFF7ED',
+          dark: '#FDBA74',
+          'dark-foreground': '#431407',
+          'dark-hover': '#FED7AA',
+          'dark-active': '#FFEDD5',
+          'dark-soft': '#431407',
+        },
         danger: {
           DEFAULT: '#F04438',
           foreground: '#FFFFFF',
@@ -135,6 +147,10 @@ export default {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        progressShine: {
+          from: { transform: 'translateX(-100%) skewX(-18deg)' },
+          to: { transform: 'translateX(220%) skewX(-18deg)' },
+        },
       },
       animation: {
         'select-in': 'selectIn 160ms ease-out',
@@ -147,6 +163,7 @@ export default {
         'toast-out': 'toastOut 160ms ease-in',
         'accordion-down': 'accordionDown 180ms ease-out',
         'accordion-up': 'accordionUp 160ms ease-in',
+        'progress-shine': 'progressShine 1.4s ease-in-out infinite',
       },
     },
   },

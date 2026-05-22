@@ -4,6 +4,9 @@
 
 ### Added
 
+- 新增展示类组件 `Avatar`、`Badge`、`Card`、`Carousel`、`Image`、`List`、`Popover`、`QRCode`，覆盖头像、状态、卡片、轮播、图片增强、列表、气泡卡片和扫码业务场景。
+- 新增运营展示组件 `Statistic`、`Tag`、`Progress`，支持趋势指标、可关闭标签、Radix Progress 进度条、暗黑模式和中央 Mock 驱动。
+- `src/utils/mock.ts` 新增头像、统计指标、标签和培训进度相关 Mock 数据，支持展示类组件一键本地预览。
 - 新增中央 Mock 数据工坊 `src/utils/mock.ts`，提供从业人员、培训项目、项目状态和培训类型等公司业务数据生成器。
 - `Input`、`Select`、`SmartTable` 增加 Mock 驱动能力，支持本地生成项目、从业人员、脱敏手机号/身份证、头像和培训类型数据。
 - 所有组件 Storybook 补充 `MockModeDemo`，用于展示组件在住建、食品安全管理员、继续医学教育、睡眠技师等业务场景下的真实预览。
@@ -29,6 +32,10 @@
 
 ### Changed
 
+- 公共样式 `uiStyles` 扩展 `textForeground`、`textMuted`、`panelSurface`、`surfaceShell`、`carouselArrowButton`、`iconGhostButton` 与 `uiStatusStyles`，集中管理状态色、趋势色、文本色和面板外壳，减少展示类组件重复 Tailwind 片段。
+- 公共入口补充导出 `Avatar`、`Badge`、`Card`、`Carousel`、`Image`、`List`、`Popover`、`QRCode`、`Statistic`、`Tag` 和 `Progress`。
+- 引入 Radix Avatar 与 Radix Progress 依赖，分别为头像加载兜底和进度条无障碍语义提供底座。
+- 引入 `qrcode.react` 依赖，为证书校验和学员签到二维码提供轻量渲染能力。
 - `SmartTable` 内置 Mock 表头从课程/学员口径调整为项目/从业人员口径，并保留 `mockType="course"` 与旧字段别名兼容。
 - Mock 下拉选项从班级/课程状态调整为项目、培训类型和项目状态，更贴合公司培训项目管理业务。
 - `Switch` 和 `Checkbox` 统一支持 `checked` / `onChange` 标准受控 Props，并保留 Radix 交互和无障碍语义。

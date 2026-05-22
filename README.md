@@ -19,16 +19,30 @@ npm run build-storybook
 ```tsx
 import {
   Cascader,
+  Avatar,
+  Badge,
+  Card,
+  Carousel,
   CheckboxGroup,
+  Image,
+  List,
+  Popover,
+  Progress,
+  QRCode,
   DateTimePicker,
   Form,
   LearningProfile,
   SmartTable,
   Slider,
+  Statistic,
+  Tag,
   Transfer,
   TreeSelect,
   mockLearningProfile,
+  mockProgress,
   mockProjects,
+  mockStatistic,
+  mockTags,
   mockTreeData,
   mockUsers,
 } from 'boao-ui';
@@ -37,6 +51,9 @@ const workers = mockUsers(8);
 const projects = mockProjects(8);
 const profile = mockLearningProfile('student-it-001');
 const organizationTree = mockTreeData();
+const metric = mockStatistic();
+const tags = mockTags();
+const progress = mockProgress();
 ```
 
 当前内置数据覆盖：
@@ -47,6 +64,7 @@ const organizationTree = mockTreeData();
 - 人员信息：姓名、脱敏身份证号、脱敏手机号、工作单位、住址、头像、所属项目。
 - 证书与学习档案：学时证明、培训合格证明、继续教育学分证书，以及 IT 培训成长轨迹。
 - 表单提效：公司组织架构级联、全球组织架构树、IT 技术方向、培训排课未来时间、候选人穿梭和滑块数值等高保真 Mock 场景。
+- 展示组件：学员头像、运营指标、业务标签、培训进度、二维码签到和课程海报等本地 Mock 预览场景。
 
 ## 组件 Mock 用法
 
@@ -96,6 +114,25 @@ const organizationTree = mockTreeData();
 <Slider min={8000} max={20000} step={1000} value={12000} onChange={(value) => console.log(value)} />
 <Transfer mock targetKeys={[]} onChange={(keys) => console.log(keys)} />
 <TreeSelect mock value={[]} onChange={(keys) => console.log(keys)} />
+```
+
+`Avatar`、`Statistic`、`Tag` 和 `Progress` 支持 `mock={true}`，适合在 Card、SmartTable 或控制台看板里快速预览展示态：
+
+```tsx
+<Avatar mock />
+<Statistic mock />
+<Tag mock closable onClose={() => console.log('close')} />
+<Progress mock animated />
+```
+
+展示类组件可直接组合业务场景：
+
+```tsx
+<Card>
+  <Statistic title="本周新增学员" value={1286} suffix="人" trend="up" trendText="同比 +12.6%" />
+  <Progress label="课程平均完成率" value={76} />
+  <Tag variant="success">已通过</Tag>
+</Card>
 ```
 
 `Form` 支持 Schema 驱动消费 `input`、`select`、`switch`、`checkbox`、`slider`、`transfer` 和 `treeselect`，并可用一键填表验证 Mock 链路：

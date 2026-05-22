@@ -119,14 +119,15 @@ export function Pagination({
       aria-label="分页"
       data-testid="pagination-root"
       className={cn(
-        'flex flex-col gap-3 rounded-2xl p-3 text-sm text-muted-foreground dark:text-muted-dark-foreground',
+        'flex flex-col gap-3 rounded-2xl p-3 text-sm',
+        uiStyles.textMuted,
         uiStyles.surfaceCard,
         className,
       )}
       {...props}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <span className="font-medium text-muted-foreground dark:text-muted-dark-foreground">共 {Math.max(0, total)} 条</span>
+        <span className={cn('font-medium', uiStyles.textMuted)}>共 {Math.max(0, total)} 条</span>
 
         <div className="flex flex-wrap items-center gap-2">
           {showSizeChanger ? (
@@ -154,7 +155,7 @@ export function Pagination({
                 pageButtonClassName,
                 uiStyles.buttonFocusVisibleRing,
                 uiStyles.surfaceInteractive,
-                'text-muted-foreground dark:text-muted-dark-foreground',
+                uiStyles.textMuted,
               )}
             >
               <ChevronLeft className="size-4" aria-hidden="true" />
@@ -173,7 +174,7 @@ export function Pagination({
                     uiStyles.buttonFocusVisibleRing,
                     item === safeCurrentPage
                       ? uiStyles.activePrimary
-                      : cn(uiStyles.surfaceInteractive, 'text-foreground dark:text-foreground-dark'),
+                      : cn(uiStyles.surfaceInteractive, uiStyles.textForeground),
                   )}
                 >
                   {item}
@@ -182,7 +183,7 @@ export function Pagination({
                 <span
                   key={item}
                   aria-hidden="true"
-                  className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground dark:text-muted-dark-foreground"
+                  className={cn('inline-flex size-9 items-center justify-center rounded-lg', uiStyles.textMuted)}
                 >
                   ...
                 </span>
@@ -198,7 +199,7 @@ export function Pagination({
                 pageButtonClassName,
                 uiStyles.buttonFocusVisibleRing,
                 uiStyles.surfaceInteractive,
-                'text-muted-foreground dark:text-muted-dark-foreground',
+                uiStyles.textMuted,
               )}
             >
               <ChevronRight className="size-4" aria-hidden="true" />

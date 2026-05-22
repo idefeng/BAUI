@@ -147,6 +147,30 @@ export interface MockTreeNode {
   children?: MockTreeNode[];
 }
 
+export type MockStatisticTrend = 'up' | 'down';
+export type MockTagVariant = 'primary' | 'success' | 'warning' | 'error' | 'gray';
+export type MockProgressStatus = 'normal' | 'success' | 'exception';
+
+export interface MockStatisticData {
+  title: string;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  trend?: MockStatisticTrend;
+  trendText?: string;
+}
+
+export interface MockTagData {
+  label: string;
+  variant: MockTagVariant;
+}
+
+export interface MockProgressData {
+  label: string;
+  value: number;
+  status: MockProgressStatus;
+}
+
 const userNames = ['林予安', '周明轩', '陈晓雨', '赵一诺', '王嘉宁', '许若辰', '李思远', '韩沐阳'];
 const projectNames = [
   '住建项目',
@@ -193,6 +217,24 @@ const lastLoginTimes = [
 const projectManagers = ['周亦辰', '林若楠', '陈致远', '王舒雅', '赵景行', '许安澜'];
 const projectStatuses: MockProjectStatus[] = ['进行中', '待开班', '已结项'];
 const startDates = ['2026-03-01', '2026-04-10', '2026-05-15', '2026-06-01', '2026-07-08', '2026-08-20'];
+const statisticMetrics: MockStatisticData[] = [
+  { title: '本周新增学员', value: 1286, suffix: '人', trend: 'up', trendText: '同比 +12.6%' },
+  { title: '课程完课率', value: 86.4, suffix: '%', trend: 'up', trendText: '较上周 +3.2%' },
+  { title: '待处理异常任务', value: 18, suffix: '项', trend: 'down', trendText: '环比 -4.8%' },
+  { title: '本月培训营收', value: 328600, prefix: '¥', suffix: '元', trend: 'up', trendText: '同比 +18.9%' },
+];
+const tagSamples: MockTagData[] = [
+  { label: 'React 组件库', variant: 'primary' },
+  { label: '已通过', variant: 'success' },
+  { label: '待复核', variant: 'warning' },
+  { label: '异常任务', variant: 'error' },
+  { label: '内部草稿', variant: 'gray' },
+];
+const progressSamples: MockProgressData[] = [
+  { label: '课程平均完成率', value: 76, status: 'normal' },
+  { label: '证书签发进度', value: 92, status: 'success' },
+  { label: '异常任务处理率', value: 42, status: 'exception' },
+];
 
 const selectOptionMap: Record<MockSelectOptionType, MockSelectOption[]> = {
   department: [
@@ -541,6 +583,23 @@ export const mockSliderValue = ({
 
   return Math.min(upper, lower + offset * safeStep);
 };
+
+export const mockStatistic = (seed = 0): MockStatisticData => ({
+  ...statisticMetrics[Math.abs(Math.floor(seed)) % statisticMetrics.length],
+});
+
+export const mockTags = (count = tagSamples.length, seed = 0): MockTagData[] => {
+  const safeCount = Math.min(tagSamples.length, Math.max(0, Math.floor(count)));
+  const startIndex = Math.abs(Math.floor(seed)) % tagSamples.length;
+
+  return Array.from({ length: safeCount }, (_, index) => ({
+    ...tagSamples[(startIndex + index) % tagSamples.length],
+  }));
+};
+
+export const mockProgress = (seed = 0): MockProgressData => ({
+  ...progressSamples[Math.abs(Math.floor(seed)) % progressSamples.length],
+});
 
 export const mockTransferData = (): MockTransferItem[] => transferCandidates.map((item) => ({ ...item }));
 

@@ -1,4 +1,41 @@
+export type UiStatusVariant = 'primary' | 'success' | 'warning' | 'error' | 'gray';
+export type UiProgressStatus = 'normal' | 'success' | 'exception';
+export type UiTrend = 'up' | 'down';
+
+export const uiStatusStyles = {
+  soft: {
+    primary: 'bg-primary-soft text-primary dark:bg-primary-dark-soft dark:text-primary-dark',
+    success: 'bg-success-soft text-success dark:bg-success-dark-soft dark:text-success-dark',
+    warning: 'bg-warning-soft text-warning dark:bg-warning-dark-soft dark:text-warning-dark',
+    error: 'bg-danger-soft text-danger dark:bg-danger-dark-soft dark:text-danger-dark',
+    gray: 'bg-secondary text-secondary-foreground dark:bg-secondary-dark dark:text-secondary-dark-foreground',
+  } satisfies Record<UiStatusVariant, string>,
+  tag: {
+    primary:
+      'border-primary/20 bg-primary-soft/70 text-primary dark:border-primary-dark/30 dark:bg-primary-dark-soft/70 dark:text-primary-dark',
+    success:
+      'border-success/20 bg-success-soft/70 text-success dark:border-success-dark/30 dark:bg-success-dark-soft/70 dark:text-success-dark',
+    warning:
+      'border-warning/20 bg-warning-soft/70 text-warning dark:border-warning-dark/30 dark:bg-warning-dark-soft/70 dark:text-warning-dark',
+    error:
+      'border-danger/20 bg-danger-soft/70 text-danger dark:border-danger-dark/30 dark:bg-danger-dark-soft/70 dark:text-danger-dark',
+    gray:
+      'border-border bg-secondary/80 text-secondary-foreground dark:border-border-dark dark:bg-secondary-dark/80 dark:text-secondary-dark-foreground',
+  } satisfies Record<UiStatusVariant, string>,
+  progress: {
+    normal: 'bg-primary dark:bg-primary-dark',
+    success: 'bg-success dark:bg-success-dark',
+    exception: 'bg-danger dark:bg-danger-dark',
+  } satisfies Record<UiProgressStatus, string>,
+  trend: {
+    up: 'text-success dark:text-success-dark',
+    down: 'text-danger dark:text-danger-dark',
+  } satisfies Record<UiTrend, string>,
+};
+
 export const uiStyles = {
+  textForeground: 'text-foreground dark:text-foreground-dark',
+  textMuted: 'text-muted-foreground dark:text-muted-dark-foreground',
   activePrimary:
     'bg-primary text-primary-foreground shadow-md dark:bg-primary-dark dark:text-primary-dark-foreground',
   primarySurfaceHover:
@@ -32,6 +69,14 @@ export const uiStyles = {
   iconSlot: 'inline-flex size-4 items-center justify-center [&>svg]:size-4',
   closeButton:
     'inline-flex items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark dark:focus-visible:ring-primary-dark/30',
+  iconGhostButton:
+    'inline-flex shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark dark:focus:ring-primary-dark/30',
+  panelSurface:
+    'rounded-2xl border border-border bg-surface text-foreground shadow-sm dark:border-border-dark dark:bg-surface-dark/50 dark:text-foreground-dark',
+  surfaceShell:
+    'rounded-2xl border border-border bg-surface shadow-sm dark:border-border-dark dark:bg-surface-dark',
+  carouselArrowButton:
+    'absolute top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-surface/90 text-foreground opacity-0 shadow-button backdrop-blur transition-all duration-200 hover:bg-primary-soft hover:text-primary group-hover:opacity-100 focus:opacity-100 dark:bg-surface-dark/90 dark:text-foreground-dark dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark',
   floatingSurface:
     'rounded-2xl border border-border bg-surface text-foreground shadow-button dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
   surfaceCard: 'border border-border bg-surface shadow-button dark:border-border-dark dark:bg-surface-dark',

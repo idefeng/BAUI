@@ -141,7 +141,8 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
               <label
                 htmlFor={checkboxId}
                 className={cn(
-                  'text-sm font-medium text-foreground dark:text-foreground-dark',
+                  'text-sm font-medium',
+                  uiStyles.textForeground,
                   disabled && 'text-disabled-foreground dark:text-disabled-dark-foreground',
                 )}
               >

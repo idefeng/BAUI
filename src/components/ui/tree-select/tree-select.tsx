@@ -271,7 +271,8 @@ export const TreeSelect = React.forwardRef<HTMLDivElement, TreeSelectProps>(
                 type="button"
                 aria-label={`${isExpanded ? '折叠' : '展开'} ${node.title}`}
                 className={cn(
-                  'inline-flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark dark:focus:ring-primary-dark/30',
+                  'size-6',
+                  uiStyles.iconGhostButton,
                   disabled && 'pointer-events-none',
                 )}
                 onClick={() => toggleExpanded(node.key)}
@@ -363,12 +364,12 @@ export const TreeSelect = React.forwardRef<HTMLDivElement, TreeSelectProps>(
                       ))}
                     </div>
                   ) : (
-                    <span className="block truncate text-sm font-medium text-foreground dark:text-foreground-dark">
+                    <span className={cn('block truncate text-sm font-medium', uiStyles.textForeground)}>
                       {selectedTitle}
                     </span>
                   )
                 ) : (
-                  <span className="block truncate text-sm text-muted-foreground dark:text-muted-dark-foreground">
+                  <span className={cn('block truncate text-sm', uiStyles.textMuted)}>
                     {placeholder}
                   </span>
                 )}
@@ -418,7 +419,7 @@ export const TreeSelect = React.forwardRef<HTMLDivElement, TreeSelectProps>(
               {resolvedTreeData.length > 0 ? (
                 resolvedTreeData.map((node) => renderNode(node, 0))
               ) : (
-                <div className="px-3 py-8 text-center text-sm text-muted-foreground dark:text-muted-dark-foreground">
+                <div className={cn('px-3 py-8 text-center text-sm', uiStyles.textMuted)}>
                   暂无可选节点
                 </div>
               )}

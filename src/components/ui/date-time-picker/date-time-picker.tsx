@@ -176,7 +176,7 @@ const TimeColumn = ({
 
   return (
     <div className="min-w-20">
-      <div className="mb-2 text-center text-xs font-medium text-muted-foreground dark:text-muted-dark-foreground">
+      <div className={cn('mb-2 text-center text-xs font-medium', uiStyles.textMuted)}>
         {shortLabel}
       </div>
       <div
@@ -198,7 +198,7 @@ const TimeColumn = ({
                 'flex h-9 w-full snap-center items-center justify-center rounded-xl text-sm transition-all duration-150 hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary focus:outline-none dark:hover:bg-primary-dark-soft/50 dark:hover:text-primary-dark dark:focus:bg-primary-dark-soft/50 dark:focus:text-primary-dark',
                 isSelected
                   ? 'bg-primary text-primary-foreground shadow-sm dark:bg-primary-dark dark:text-primary-dark-foreground'
-                  : 'text-foreground dark:text-foreground-dark',
+                  : uiStyles.textForeground,
               )}
               onClick={() => onSelect(value)}
             >
@@ -338,7 +338,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
               <span
                 className={cn(
                   'min-w-0 flex-1 truncate',
-                  !displayText && 'text-muted-foreground dark:text-muted-dark-foreground',
+                  !displayText && uiStyles.textMuted,
                 )}
               >
                 {displayText || currentPlaceholder}
@@ -400,7 +400,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                       <ChevronLeft className="size-4" aria-hidden="true" />
                     </button>
                   </div>
-                  <div className="text-sm font-semibold text-foreground dark:text-foreground-dark">
+                  <div className={cn('text-sm font-semibold', uiStyles.textForeground)}>
                     {viewDate.getFullYear()}年{viewDate.getMonth() + 1}月
                   </div>
                   <div className="flex items-center gap-1">
@@ -444,7 +444,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
                           className={cn(
                             'flex size-9 items-center justify-center rounded-full text-sm transition-all duration-150 hover:bg-primary/10 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none dark:hover:bg-primary-dark-soft/60 dark:hover:text-primary-dark dark:focus:bg-primary-dark-soft/60 dark:focus:text-primary-dark',
                             !isCurrentMonth && 'text-muted-foreground/70 dark:text-muted-dark-foreground',
-                            isCurrentMonth && 'text-foreground dark:text-foreground-dark',
+                            isCurrentMonth && uiStyles.textForeground,
                             selected &&
                               'bg-primary text-primary-foreground shadow-md hover:bg-primary hover:text-primary-foreground dark:bg-primary-dark dark:text-primary-dark-foreground dark:hover:bg-primary-dark',
                           )}
@@ -461,7 +461,7 @@ export const DateTimePicker = React.forwardRef<HTMLDivElement, DateTimePickerPro
 
             {shouldRenderTime ? (
               <div className="min-w-72 rounded-2xl border border-border/70 bg-background p-3 dark:border-border-dark/70 dark:bg-background-dark">
-                <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground dark:text-foreground-dark">
+                <div className={cn('mb-3 flex items-center gap-2 text-sm font-semibold', uiStyles.textForeground)}>
                   <Clock className="size-4 text-primary dark:text-primary-dark" aria-hidden="true" />
                   时间
                 </div>

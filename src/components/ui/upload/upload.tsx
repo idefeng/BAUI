@@ -346,7 +346,7 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
       <div
         ref={ref}
         data-testid="upload-root"
-        className={cn('grid gap-4 text-foreground dark:text-foreground-dark', className)}
+        className={cn('grid gap-4', uiStyles.textForeground, className)}
         {...props}
       >
         <label
@@ -387,8 +387,8 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
           <span className="flex size-16 items-center justify-center rounded-3xl bg-primary-soft text-primary transition-transform duration-300 group-hover:scale-105 dark:bg-primary-dark-soft dark:text-primary-dark">
             <UploadCloud className="size-8" aria-hidden="true" />
           </span>
-          <span className="mt-5 text-lg font-semibold text-foreground dark:text-foreground-dark">拖拽文件到这里，或点击上传</span>
-          <span className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground dark:text-muted-dark-foreground">
+          <span className={cn('mt-5 text-lg font-semibold', uiStyles.textForeground)}>拖拽文件到这里，或点击上传</span>
+          <span className={cn('mt-2 max-w-lg text-sm leading-6', uiStyles.textMuted)}>
             {multiple ? '支持多文件批量上传' : '支持单文件上传'}
             {accept ? ` · 类型限制：${accept}` : ''}
             {maxSize ? ` · 单文件不超过 ${maxSize}MB` : ''}
@@ -411,8 +411,8 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-foreground dark:text-foreground-dark">{item.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground dark:text-muted-dark-foreground">
+                    <p className={cn('truncate text-sm font-semibold', uiStyles.textForeground)}>{item.name}</p>
+                    <p className={cn('mt-1 text-xs', uiStyles.textMuted)}>
                       {formatFileSize(item.file)}
                       {item.status === 'success' ? ' · 上传完成' : item.status === 'error' ? ` · ${item.error}` : ' · 上传中'}
                     </p>
