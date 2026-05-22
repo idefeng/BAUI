@@ -92,6 +92,7 @@ export default {
       },
       boxShadow: {
         button: '0 10px 24px -12px rgb(16 24 40 / 0.32)',
+        tooltip: '0 14px 36px -18px rgb(16 24 40 / 0.42), 0 4px 12px -8px rgb(16 24 40 / 0.28)',
       },
       keyframes: {
         selectIn: {
