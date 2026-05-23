@@ -81,3 +81,4 @@ export * from './components/biz/profile';
 export * from './components/biz/smart-table';
 export * from './components/biz/transfer';
 export * from './utils/mock';
+export * from './utils/regions';

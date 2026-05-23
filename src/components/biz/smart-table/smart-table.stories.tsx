@@ -132,6 +132,24 @@ const meta = {
     columns,
     data: [],
     rowKey: 'id',
+    ba_training_project: 'NEXUS-2026-AI',
+    ba_trainning_title: 'AI-AGENT-ENGINEER',
+    ba_trainning_type: 'CONTINUING-EDUCATION',
+    ba_region_scope: '440000',
+  },
+  argTypes: {
+    ba_training_project: {
+      control: 'text',
+    },
+    ba_trainning_title: {
+      control: 'text',
+    },
+    ba_trainning_type: {
+      control: 'text',
+    },
+    ba_region_scope: {
+      control: 'text',
+    },
   },
   parameters: {
     layout: 'padded',
@@ -227,10 +245,29 @@ export const Empty: Story = {
 };
 
 export const MockModeDemo: Story = {
-  render: () => (
-    <div className="space-y-6">
-      <SmartTable mock mockType="user" selectable searchPlaceholder="搜索从业人员姓名、手机号或工作单位" actionLabel="新增从业人员" />
+  args: {
+    mock: true,
+  },
+  render: (args) => {
+    const businessProps = {
+      ba_training_project: args.ba_training_project,
+      ba_trainning_title: args.ba_trainning_title,
+      ba_trainning_type: args.ba_trainning_type,
+      ba_region_scope: args.ba_region_scope,
+    };
+
+    return (
+      <div className="space-y-6">
       <SmartTable
+        {...businessProps}
+        mock
+        mockType="user"
+        selectable
+        searchPlaceholder="搜索从业人员姓名、手机号或工作单位"
+        actionLabel="新增从业人员"
+      />
+      <SmartTable
+        {...businessProps}
         mock
         mockType="project"
         searchable={false}
@@ -240,5 +277,6 @@ export const MockModeDemo: Story = {
         emptyText="暂无项目数据"
       />
     </div>
-  ),
+    );
+  },
 };

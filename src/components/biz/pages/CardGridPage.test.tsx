@@ -17,6 +17,24 @@ describe('CardGridPage', () => {
     expect(screen.getByTestId('pagination-root')).toHaveTextContent('共 12 条');
   });
 
+  it('继续教育业务属性会透传给搜索表单和卡片数据源', () => {
+    render(
+      <CardGridPage
+        mock
+        ba_training_project="NEXUS-2026-AI"
+        ba_trainning_title="AI-AGENT-ENGINEER"
+        ba_trainning_type="CONTINUING-EDUCATION"
+      />,
+    );
+
+    expect(screen.getAllByText('继续教育').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/继续教育：/).length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole('button', { name: '一键填表' }));
+
+    expect(screen.getAllByText('NEXUS 2026 AI 实训项目').length).toBeGreaterThan(0);
+  });
+
   it('点击 Form 一键填表后联动下方卡片流骨架屏，再恢复卡片列表', () => {
     vi.useFakeTimers();
 

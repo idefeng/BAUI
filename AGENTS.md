@@ -93,7 +93,20 @@ src/components/biz/component-name/
 - **SmartTable 联动规范**：当 `SmartTable` 接收到 `mock={true}` 且外部无真实数据传入时，必须强制模拟 `Skeleton`（骨架屏）动画加载 500ms~1000ms，以100%还原真实的异步接口请求场景。
 - **生产安全边界**：组件内部的 mock 逻辑必须编写得足够轻量，且作为外部 Props 的兜底（Fallback）方案。当外部传入真实数据时，真实数据永远拥有最高优先级，mock 逻辑必须自动失效。
 
-## 9. Storybook 规范
+## 9. 企业业务属性内嵌规范 (Business Context Rules)
+- **核心全局属性**：所有展示类（Table, Profile, Certificate）和数据收集类（Form, Input）组件，必须向后兼容并支持以下可选 Props：
+  - `mock?: boolean`（是否启用Mock）
+  - `ba_training_project?: string`（培训项目代号）
+  - `ba_trainning_title?: string`（培训岗位代号）
+  - `ba_trainning_type?: string`（培训类型代号）
+- **全国行政区划驱动规范**：
+  - 支持可选 Props：`ba_region_scope?: string`（属地范围 Adcode）和 `ba_region_level?: 'PROVINCE' | 'CITY' | 'DISTRICT'`。
+  - **中央区划数据源**：在 `src/utils/regions.ts` 中存放一份压缩后的、包含国标编码的常用全国省市区三级联动静态数据。
+  - **Cascader 语义化拦截**：当 `Cascader` 组件接收到 `type="region"` 时，必须自动读取并渲染中央区划数据，且深度受 `ba_region_level` 严格控制；普通 `mock={true}` 继续保留公司组织架构 Mock 语义。
+- **白名单机制**：必须在 `src/utils/mock.ts` 中硬编码上述三个属性的【预设值白名单】。如果外部传入的值不在白名单内，必须将其视为 `undefined`（相当于没设置），绝不允许非法数据污染 Mock 数据源。
+- **降级与过滤**：当 `mock={true}` 且设置了合法的业务属性时，Mock 生成器必须返回与该业务强相关的数据。如果未设置业务属性，则默认返回通用的混合型假数据。
+
+## 10. Storybook 规范
 
 - 每个组件必须提供完整 Storybook 用例。
 - Storybook 至少覆盖基础用法和一个真实业务使用场景。
@@ -101,7 +114,7 @@ src/components/biz/component-name/
 - Storybook 预览应直接展示可用组件，不做营销式 landing page。
 - 组件故事中的样式同样不得硬编码 hex 颜色。
 
-## 10. 验证规则
+## 11. 验证规则
 
 完成组件或功能开发后，默认执行：
 

@@ -51,6 +51,33 @@ describe('LearningProfile', () => {
     expect(screen.getByText('成绩合格，特发此证')).toBeInTheDocument();
   });
 
+  it('继续教育业务属性会清洗学习档案、时间线和课程明细', async () => {
+    vi.useFakeTimers();
+
+    try {
+      render(
+        <LearningProfile
+          studentId="student-ai-001"
+          mock
+          ba_training_project="NEXUS-2026-AI"
+          ba_trainning_title="AI-AGENT-ENGINEER"
+          ba_trainning_type="CONTINUING-EDUCATION"
+        />,
+      );
+
+      await act(async () => {
+        vi.advanceTimersByTime(600);
+      });
+
+      expect(screen.getByText('AI Agent 工程师')).toBeInTheDocument();
+      expect(screen.getAllByText(/继续教育：/).length).toBeGreaterThan(0);
+      expect(screen.getByText('年度继续教育学分达标')).toBeInTheDocument();
+      expect(screen.getByTestId('learning-profile-summary-card-annualCredits')).toHaveTextContent('32');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('根容器与摘要卡片保留暗黑模式舒适阅读样式', () => {
     render(<LearningProfile studentId="student-it-001" />);
 

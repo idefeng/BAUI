@@ -4,6 +4,7 @@ import { Check, ChevronDown, ChevronRight, X } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
 import { mockCascaderOptions } from '../../../utils/mock';
+import { getRegionOptions, type BaRegionLevel } from '../../../utils/regions';
 import { hasChildItems } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
@@ -16,6 +17,10 @@ export interface CascaderOption {
 export interface CascaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /** 树状数据源；mock=true 且未传入真实数据时会自动使用内置组织架构树。 */
   options?: CascaderOption[];
+  /** default 使用外部 options / 组织 mock，region 自动加载全国行政区划树。 */
+  type?: 'default' | 'region';
+  /** region 模式下允许选择到的最深层级，CITY 会在市级断开。 */
+  ba_region_level?: BaRegionLevel;
   /** 当前选中的完整路径 value，例如 ['zhejiang', 'hangzhou', 'xihu']。 */
   value?: string[];
   /** 点击叶子节点或清除时触发，第二个参数返回完整节点路径。 */
@@ -87,6 +92,8 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
       onChange,
       options,
       placeholder = '请选择',
+      type = 'default',
+      ba_region_level = 'DISTRICT',
       value = [],
       ...props
     },
@@ -94,8 +101,14 @@ export const Cascader = React.forwardRef<HTMLDivElement, CascaderProps>(
   ) => {
     const [open, setOpen] = React.useState(false);
     const resolvedOptions = React.useMemo(
-      () => (options && options.length > 0 ? options : mock ? mockCascaderOptions() : []),
-      [mock, options],
+      () => {
+        if (type === 'region') {
+          return getRegionOptions(ba_region_level);
+        }
+
+        return options && options.length > 0 ? options : mock ? mockCascaderOptions() : [];
+      },
+      [ba_region_level, mock, options, type],
     );
     const selectedPath = React.useMemo(
       () => findOptionPath(resolvedOptions, value),

@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Activity, Award, BookOpenCheck, LineChart, Radar, ShieldAlert, TrendingDown, TrendingUp } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
-import { mockDashboardMetrics, type MockDashboardMetric } from '../../../utils/mock';
+import { mockDashboardMetrics, type BaBusinessProps, type MockDashboardMetric } from '../../../utils/mock';
 import { BrandLogo, BrandWatermark } from '../../ui/branding';
 import { Card } from '../../ui/card';
 import { ThemeToggle } from '../../ui/theme-toggle';
 
 export type DashboardMetric = MockDashboardMetric;
 
-export interface DashboardTemplateProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
+export interface DashboardTemplateProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'>, BaBusinessProps {
   /** 开启后从中央 mock 数据源生成 4 个大屏指标。 */
   mock?: boolean;
   /** 外部真实指标数据；传入后优先级高于 mock 数据。 */
@@ -149,6 +149,10 @@ function TrendPlaceholder({ title }: { title: React.ReactNode }) {
 
 /** DashboardTemplate 是科技大屏风格的业务页面模板，适合作为运营驾驶舱首屏。 */
 export function DashboardTemplate({
+  ba_training_project,
+  ba_trainning_title,
+  ba_trainning_type,
+  ba_region_scope,
   className,
   description = '聚合培训项目、学员活跃、证书签发和异常预警，适合大屏、首页与运营中心复用。',
   metrics,
@@ -157,17 +161,21 @@ export function DashboardTemplate({
   trendTitle = '趋势分析图表占位',
   ...props
 }: DashboardTemplateProps) {
+  const businessProps = React.useMemo<BaBusinessProps>(
+    () => ({ ba_training_project, ba_trainning_title, ba_trainning_type, ba_region_scope }),
+    [ba_region_scope, ba_training_project, ba_trainning_title, ba_trainning_type],
+  );
   const displayMetrics = React.useMemo(() => {
     if (metrics && metrics.length > 0) {
       return metrics.slice(0, 4);
     }
 
     if (mock) {
-      return mockDashboardMetrics();
+      return mockDashboardMetrics(businessProps);
     }
 
     return fallbackMetrics;
-  }, [metrics, mock]);
+  }, [businessProps, metrics, mock]);
 
   return (
     <section

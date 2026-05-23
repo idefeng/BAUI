@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
+import type { BaBusinessProps } from '../../../utils/mock';
 import { Form, type FormSchemaField, type FormValues } from './form';
 
 const learnerProfileSchema: FormSchemaField[] = [
@@ -24,6 +25,14 @@ const learnerProfileSchema: FormSchemaField[] = [
     type: 'select',
     placeholder: '请选择报名项目',
     mock: 'project',
+  },
+  {
+    name: 'homeRegion',
+    label: '家庭住址',
+    type: 'cascader',
+    cascaderType: 'region',
+    ba_region_level: 'DISTRICT',
+    placeholder: '请选择省市区',
   },
   {
     name: 'intranetEnabled',
@@ -60,11 +69,12 @@ const learnerProfileSchema: FormSchemaField[] = [
   },
 ];
 
-const LearnerProfileForm = () => {
+const LearnerProfileForm = (businessProps: BaBusinessProps) => {
   const [value, setValue] = React.useState<FormValues>({
     studentName: '',
     phone: '',
     project: '',
+    homeRegion: [],
     intranetEnabled: false,
     techDirections: [],
     expectedSalary: 12000,
@@ -74,7 +84,7 @@ const LearnerProfileForm = () => {
 
   return (
     <div className="w-[min(94vw,72rem)] rounded-2xl border border-border bg-surface p-6 shadow-button dark:border-border-dark dark:bg-surface-dark">
-      <Form schema={learnerProfileSchema} value={value} onChange={setValue} />
+      <Form schema={learnerProfileSchema} value={value} onChange={setValue} {...businessProps} />
     </div>
   );
 };
@@ -85,6 +95,24 @@ const meta = {
   tags: ['autodocs'],
   args: {
     schema: learnerProfileSchema,
+    ba_training_project: 'NEXUS-2026-AI',
+    ba_trainning_title: 'AI-AGENT-ENGINEER',
+    ba_trainning_type: 'CONTINUING-EDUCATION',
+    ba_region_scope: '440000',
+  },
+  argTypes: {
+    ba_training_project: {
+      control: 'text',
+    },
+    ba_trainning_title: {
+      control: 'text',
+    },
+    ba_trainning_type: {
+      control: 'text',
+    },
+    ba_region_scope: {
+      control: 'text',
+    },
   },
   parameters: {
     layout: 'centered',
@@ -96,5 +124,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const LearnerProfile: Story = {
-  render: () => <LearnerProfileForm />,
+  render: (args) => (
+    <LearnerProfileForm
+      ba_training_project={args.ba_training_project}
+      ba_trainning_title={args.ba_trainning_title}
+      ba_trainning_type={args.ba_trainning_type}
+      ba_region_scope={args.ba_region_scope}
+    />
+  ),
 };

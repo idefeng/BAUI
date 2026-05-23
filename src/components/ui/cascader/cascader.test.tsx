@@ -29,10 +29,14 @@ const orgOptions: CascaderOption[] = [
 
 const ControlledCascader = ({
   defaultValue = [],
+  baRegionLevel,
+  type = 'default',
   onChange,
   mock = false,
 }: {
   defaultValue?: string[];
+  baRegionLevel?: 'PROVINCE' | 'CITY' | 'DISTRICT';
+  type?: 'default' | 'region';
   onChange?: (value: string[], selectedOptions: CascaderOption[]) => void;
   mock?: boolean;
 }) => {
@@ -42,6 +46,8 @@ const ControlledCascader = ({
     <Cascader
       mock={mock}
       options={mock ? undefined : orgOptions}
+      type={type}
+      ba_region_level={baRegionLevel}
       value={value}
       placeholder="请选择组织"
       onChange={(nextValue, selectedOptions) => {
@@ -115,5 +121,47 @@ describe('Cascader', () => {
 
     expect(screen.getByRole('menuitem', { name: /技术中心/ })).toBeInTheDocument();
     expect(screen.getByRole('menuitem', { name: /学习产品中心/ })).toBeInTheDocument();
+  });
+
+  it('region 模式自动加载全国行政区划，并支持选择到区县级', async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+
+    render(<ControlledCascader type="region" defaultValue={[]} onChange={onChange} />);
+
+    await user.click(screen.getByRole('combobox', { name: '请选择组织' }));
+    await user.click(screen.getByRole('menuitem', { name: /广东省/ }));
+    await user.click(screen.getByRole('menuitem', { name: /广州市/ }));
+    await user.click(screen.getByRole('menuitem', { name: '天河区' }));
+
+    expect(onChange).toHaveBeenCalledWith(
+      ['440000', '440100', '440106'],
+      [
+        expect.objectContaining({ value: '440000', label: '广东省' }),
+        expect.objectContaining({ value: '440100', label: '广州市' }),
+        expect.objectContaining({ value: '440106', label: '天河区' }),
+      ],
+    );
+    expect(screen.getByRole('combobox', { name: '广东省 / 广州市 / 天河区' })).toBeInTheDocument();
+  });
+
+  it('region 模式设置 ba_region_level=CITY 时只能选择到市级', async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+
+    render(<ControlledCascader type="region" baRegionLevel="CITY" defaultValue={[]} onChange={onChange} />);
+
+    await user.click(screen.getByRole('combobox', { name: '请选择组织' }));
+    await user.click(screen.getByRole('menuitem', { name: /广东省/ }));
+    await user.click(screen.getByRole('menuitem', { name: '广州市' }));
+
+    expect(onChange).toHaveBeenCalledWith(
+      ['440000', '440100'],
+      [
+        expect.objectContaining({ value: '440000', label: '广东省' }),
+        expect.objectContaining({ value: '440100', label: '广州市' }),
+      ],
+    );
+    expect(screen.queryByRole('menuitem', { name: '天河区' })).not.toBeInTheDocument();
   });
 });

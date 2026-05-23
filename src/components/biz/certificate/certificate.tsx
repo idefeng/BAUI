@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Printer } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
-import { mockCertificate, type MockCertificateData, type MockCertificateType } from '../../../utils/mock';
+import { mockCertificate, type BaBusinessProps, type MockCertificateData, type MockCertificateType } from '../../../utils/mock';
 import { Button } from '../../ui/button';
 
 export type CertificateType = MockCertificateType;
 
 export interface CertificateData extends MockCertificateData {}
 
-export interface CertificateTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CertificateTemplateProps extends React.HTMLAttributes<HTMLDivElement>, BaBusinessProps {
   /** 证书类型：学时证明、培训合格证明或继续教育学分证书。 */
   type: CertificateType;
   /** 真实证书数据；当 mock=true 且未传 data 时会自动使用 mockCertificate(type)。 */
@@ -90,6 +90,10 @@ const CertificateInfoItem = ({ label, value }: { label: string; value?: React.Re
 
 /** CertificateTemplate 公司专属证书模板，支持真实数据和 mock 数据两种模式。 */
 export function CertificateTemplate({
+  ba_training_project,
+  ba_trainning_title,
+  ba_trainning_type,
+  ba_region_scope,
   className,
   data,
   mock = false,
@@ -97,8 +101,13 @@ export function CertificateTemplate({
   type,
   ...props
 }: CertificateTemplateProps) {
-  const content = certificateCopy[type];
-  const certificateData = data ?? (mock ? mockCertificate(type) : emptyCertificateData);
+  const businessProps = React.useMemo<BaBusinessProps>(
+    () => ({ ba_training_project, ba_trainning_title, ba_trainning_type, ba_region_scope }),
+    [ba_region_scope, ba_training_project, ba_trainning_title, ba_trainning_type],
+  );
+  const certificateData = data ?? (mock ? mockCertificate(type, businessProps) : emptyCertificateData);
+  const effectiveType = data ? type : certificateData.certificateType ?? type;
+  const content = certificateCopy[effectiveType];
 
   const handlePrint = () => {
     // 使用浏览器原生打印，交给业务侧或用户选择保存为 PDF。

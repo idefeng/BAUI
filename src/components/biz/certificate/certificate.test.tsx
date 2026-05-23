@@ -50,6 +50,24 @@ describe('CertificateTemplate', () => {
     expect(screen.getByText('NX-CERT-HOURS-2026-0001')).toBeInTheDocument();
   });
 
+  it('继续教育业务属性会让 mock 证书自动切换为学分证书', () => {
+    render(
+      <CertificateTemplate
+        type="hours"
+        mock
+        ba_training_project="NEXUS-2026-AI"
+        ba_trainning_title="AI-AGENT-ENGINEER"
+        ba_trainning_type="CONTINUING-EDUCATION"
+      />,
+    );
+
+    const certificate = screen.getByRole('article', { name: '继续教育学分证书' });
+
+    expect(screen.getByText('继续教育学分证书')).toBeInTheDocument();
+    expect(certificate).toHaveTextContent('继续教育：');
+    expect(certificate).toHaveTextContent(/授予继续教育\s*\d+\s*学分/);
+  });
+
   it('点击打印证书按钮时调用 window.print', async () => {
     const user = userEvent.setup();
     const printSpy = vi.spyOn(window, 'print').mockImplementation(() => undefined);

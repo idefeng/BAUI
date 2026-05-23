@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { LearningProfile } from './learning-profile';
+import { AccountSettingsPage } from './AccountSettingsPage';
 
 const meta = {
-  title: 'Biz/LearningProfile',
-  component: LearningProfile,
+  title: 'Biz/Pages/AccountSettingsPage',
+  component: AccountSettingsPage,
   tags: ['autodocs'],
   args: {
-    studentId: 'student-it-001',
     mock: true,
     ba_training_project: 'NEXUS-2026-AI',
     ba_trainning_title: 'AI-AGENT-ENGINEER',
@@ -15,6 +14,9 @@ const meta = {
     ba_region_scope: '440000',
   },
   argTypes: {
+    mock: {
+      control: 'boolean',
+    },
     ba_training_project: {
       control: 'text',
     },
@@ -29,20 +31,20 @@ const meta = {
     },
   },
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
   },
-} satisfies Meta<typeof LearningProfile>;
+} satisfies Meta<typeof AccountSettingsPage>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const MockProfile: Story = {};
+export const MockSettings: Story = {};
 
 export const DarkMode: Story = {
   render: (args) => (
-    <div className="dark rounded-3xl bg-background-dark p-6">
-      <LearningProfile {...args} />
+    <div className="dark">
+      <AccountSettingsPage {...args} />
     </div>
   ),
 };

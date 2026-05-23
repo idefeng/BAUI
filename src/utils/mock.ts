@@ -1,3 +1,40 @@
+import { getRegionPath, getRegionValuePath } from './regions';
+
+export const BA_TRAINING_PROJECT_WHITELIST = [
+  'NEXUS-2026-AI',
+  'NEXUS-2026-FRONTEND',
+  'HIGASHI-CORE-2026',
+] as const;
+
+export const BA_TRAINNING_TITLE_WHITELIST = [
+  'AI-AGENT-ENGINEER',
+  'FULLSTACK-DEVELOPER',
+  'IT-PROJECT-MANAGER',
+] as const;
+
+export const BA_TRAINNING_TYPE_WHITELIST = [
+  'INITIAL-TRAINING',
+  'QUALIFICATION-CERT',
+  'CONTINUING-EDUCATION',
+] as const;
+
+export type BaTrainingProject = (typeof BA_TRAINING_PROJECT_WHITELIST)[number];
+export type BaTrainningTitle = (typeof BA_TRAINNING_TITLE_WHITELIST)[number];
+export type BaTrainningType = (typeof BA_TRAINNING_TYPE_WHITELIST)[number];
+
+export interface BaBusinessProps {
+  /** 是否启用组件内置 Mock 造数逻辑；真实业务数据传入时应始终优先。 */
+  mock?: boolean;
+  /** 培训项目代号，只接受 BA_TRAINING_PROJECT_WHITELIST 内的官方值。 */
+  ba_training_project?: BaTrainingProject | string;
+  /** 培训岗位代号，只接受 BA_TRAINNING_TITLE_WHITELIST 内的官方值。 */
+  ba_trainning_title?: BaTrainningTitle | string;
+  /** 培训类型代号，只接受 BA_TRAINNING_TYPE_WHITELIST 内的官方值。 */
+  ba_trainning_type?: BaTrainningType | string;
+  /** 属地范围 Adcode；必须能命中 Region Base，否则视为未设置。 */
+  ba_region_scope?: string;
+}
+
 export interface MockUser {
   id: string;
   /** 人员编号，统一使用 NX-2026-XXXX 格式，便于演示业务系统编码。 */
@@ -25,7 +62,7 @@ export interface MockUser {
   lastLoginAt: string;
 }
 
-export type MockTrainingType = '职业培训' | '继续教育' | '专项能力提升';
+export type MockTrainingType = '职业培训' | '继续教育' | '专项能力提升' | '初任培训' | '合格证培训';
 export type MockProjectStatus = '进行中' | '待开班' | '已结项';
 export type MockCourseStatus = MockProjectStatus;
 
@@ -57,6 +94,8 @@ export type MockLearningCourseStatus = '已完成' | '进行中' | '待开始';
 export type MockLearningExamResult = '优秀' | '合格' | '学习中' | '待考核';
 
 export interface MockCertificateData {
+  /** mock 引擎根据业务属性推导出的证书类型，组件可用它覆盖默认展示模板。 */
+  certificateType?: MockCertificateType;
   studentName: string;
   idCardMasked: string;
   projectName: string;
@@ -518,7 +557,296 @@ const transferCandidates: MockTransferItem[] = [
   { key: 'transfer-user-015', title: '唐星澜', description: '客户支持组 / 工单响应', disabled: true },
 ];
 
+interface BusinessProjectPreset {
+  projectName: string;
+  organizer: string;
+  courseSubjects: string[];
+}
+
+interface BusinessTitlePreset {
+  jobTitle: string;
+  courseSubjects: string[];
+  technologyOptions: MockTechnologyInterestOption[];
+  preferredTechnologyValues: string[];
+}
+
+interface BusinessTypePreset {
+  trainingType: MockTrainingType;
+  coursePrefix: string;
+  certificateType: MockCertificateType;
+  annualCredits: number;
+  baseHours: number;
+  learnerBase: number;
+}
+
+interface RegionalBusinessPreset {
+  provinceName: string;
+  branchName: string;
+  addresses: string[];
+  phonePrefixes: string[];
+  coursePrefix: string;
+}
+
+interface BusinessContext {
+  project?: BaTrainingProject;
+  title?: BaTrainningTitle;
+  type?: BaTrainningType;
+  regionScope?: string;
+  regionPath?: string[];
+  regionProvinceName?: string;
+  regionBranchName?: string;
+  regionAddresses?: string[];
+  regionPhonePrefixes?: string[];
+  regionCoursePrefix?: string;
+  projectName?: string;
+  organizer?: string;
+  jobTitle?: string;
+  trainingType?: MockTrainingType;
+  coursePrefix?: string;
+  certificateType?: MockCertificateType;
+  annualCredits?: number;
+  baseHours?: number;
+  learnerBase?: number;
+  courseSubjects: string[];
+  technologyOptions?: MockTechnologyInterestOption[];
+  preferredTechnologyValues?: string[];
+}
+
+const businessProjectPresets: Record<BaTrainingProject, BusinessProjectPreset> = {
+  'NEXUS-2026-AI': {
+    projectName: 'NEXUS 2026 AI 实训项目',
+    organizer: '灵境 AI 实训中心',
+    courseSubjects: ['Python 智能体开发', '大模型 fine-tune 实战', 'AI Agent 生产部署'],
+  },
+  'NEXUS-2026-FRONTEND': {
+    projectName: 'NEXUS 2026 前端工程项目',
+    organizer: '灵境前端体验中心',
+    courseSubjects: ['React 组件工程', 'TypeScript 业务建模', '前端质量工程'],
+  },
+  'HIGASHI-CORE-2026': {
+    projectName: 'HIGASHI 2026 企业核心项目',
+    organizer: 'HIGASHI 企业核心人才中心',
+    courseSubjects: ['核心业务流程', '项目交付治理', '企业数字化协同'],
+  },
+};
+
+const businessTitlePresets: Record<BaTrainningTitle, BusinessTitlePreset> = {
+  'AI-AGENT-ENGINEER': {
+    jobTitle: 'AI Agent 工程师',
+    courseSubjects: ['Python 智能体开发', '大模型 fine-tune 实战', 'Agent 评测与安全'],
+    technologyOptions: [
+      { label: 'Python', value: 'python' },
+      { label: '大模型 fine-tune', value: 'llm-fine-tune' },
+      { label: 'Prompt Engineering', value: 'prompt-engineering' },
+      { label: 'AI Agent', value: 'ai-agent' },
+    ],
+    preferredTechnologyValues: ['python', 'llm-fine-tune'],
+  },
+  'FULLSTACK-DEVELOPER': {
+    jobTitle: '全栈开发工程师',
+    courseSubjects: ['React 全栈交付', 'Node.js 服务端实战', '云原生部署流水线'],
+    technologyOptions: [
+      { label: 'React', value: 'react' },
+      { label: 'Node.js', value: 'nodejs' },
+      { label: 'TypeScript', value: 'typescript' },
+      { label: '云原生', value: 'cloud-native' },
+    ],
+    preferredTechnologyValues: ['react', 'nodejs'],
+  },
+  'IT-PROJECT-MANAGER': {
+    jobTitle: 'IT 项目经理',
+    courseSubjects: ['项目范围管理', '敏捷交付治理', '风险与质量复盘'],
+    technologyOptions: [
+      { label: '项目管理', value: 'project-management' },
+      { label: '敏捷交付', value: 'agile-delivery' },
+      { label: '风险治理', value: 'risk-governance' },
+      { label: '质量复盘', value: 'quality-review' },
+    ],
+    preferredTechnologyValues: ['project-management', 'risk-governance'],
+  },
+};
+
+const businessTypePresets: Record<BaTrainningType, BusinessTypePreset> = {
+  'INITIAL-TRAINING': {
+    trainingType: '初任培训',
+    coursePrefix: '初任培训：',
+    certificateType: 'hours',
+    annualCredits: 8,
+    baseHours: 40,
+    learnerBase: 188,
+  },
+  'QUALIFICATION-CERT': {
+    trainingType: '合格证培训',
+    coursePrefix: '合格证培训：',
+    certificateType: 'qualified',
+    annualCredits: 16,
+    baseHours: 64,
+    learnerBase: 236,
+  },
+  'CONTINUING-EDUCATION': {
+    trainingType: '继续教育',
+    coursePrefix: '继续教育：',
+    certificateType: 'education',
+    annualCredits: 32,
+    baseHours: 24,
+    learnerBase: 168,
+  },
+};
+
+const regionalBusinessPresets: Record<string, RegionalBusinessPreset> = {
+  '110000': {
+    provinceName: '北京市',
+    branchName: '北京市华北培训分部',
+    addresses: ['北京市朝阳区建国路88号', '北京市海淀区中关村南大街5号', '北京市丰台区丽泽路16号'],
+    phonePrefixes: ['136', '138', '139'],
+    coursePrefix: '北京市医学继续教育必修课',
+  },
+  '310000': {
+    provinceName: '上海市',
+    branchName: '上海市华东培训分部',
+    addresses: ['上海市浦东新区张江路128号', '上海市徐汇区漕溪北路18号', '上海市闵行区申长路988号'],
+    phonePrefixes: ['135', '136', '139'],
+    coursePrefix: '上海市医学继续教育必修课',
+  },
+  '440000': {
+    provinceName: '广东省',
+    branchName: '广东省华南培训分部',
+    addresses: ['广东省广州市天河区珠江新城华夏路10号', '广东省深圳市南山区粤海街道科技园一路19号', '广东省佛山市顺德区大良街道凤山东路6号'],
+    phonePrefixes: ['135', '136', '138', '139'],
+    coursePrefix: '广东省医学继续教育必修课',
+  },
+  '320000': {
+    provinceName: '江苏省',
+    branchName: '江苏省长三角培训分部',
+    addresses: ['江苏省南京市鼓楼区中山北路101号', '江苏省苏州市姑苏区人民路318号', '江苏省南京市江宁区胜太路88号'],
+    phonePrefixes: ['135', '138', '139'],
+    coursePrefix: '江苏省医学继续教育必修课',
+  },
+  '330000': {
+    provinceName: '浙江省',
+    branchName: '浙江省数字教育培训分部',
+    addresses: ['浙江省杭州市滨江区江南大道388号', '浙江省杭州市西湖区文三路90号', '浙江省宁波市鄞州区首南中路398号'],
+    phonePrefixes: ['135', '136', '138'],
+    coursePrefix: '浙江省医学继续教育必修课',
+  },
+  '510000': {
+    provinceName: '四川省',
+    branchName: '四川省西南培训分部',
+    addresses: ['四川省成都市武侯区人民南路四段35号', '四川省成都市锦江区红星路三段1号', '四川省绵阳市涪城区临园路东段54号'],
+    phonePrefixes: ['135', '136', '138'],
+    coursePrefix: '四川省医学继续教育必修课',
+  },
+  '420000': {
+    provinceName: '湖北省',
+    branchName: '湖北省华中培训分部',
+    addresses: ['湖北省武汉市洪山区珞喻路89号', '湖北省武汉市武昌区中南路99号', '湖北省宜昌市西陵区沿江大道68号'],
+    phonePrefixes: ['135', '136', '139'],
+    coursePrefix: '湖北省医学继续教育必修课',
+  },
+  '370000': {
+    provinceName: '山东省',
+    branchName: '山东省北方培训分部',
+    addresses: ['山东省济南市历下区经十路9999号', '山东省青岛市崂山区香港东路195号', '山东省济南市历城区工业北路58号'],
+    phonePrefixes: ['135', '138', '139'],
+    coursePrefix: '山东省医学继续教育必修课',
+  },
+};
+
 const normalizeCount = (count: number) => Math.max(0, Math.floor(count));
+
+const isAllowedBusinessValue = <T extends readonly string[]>(value: unknown, whitelist: T): value is T[number] =>
+  typeof value === 'string' && whitelist.includes(value as T[number]);
+
+const createRegionalContext = (regionScope: unknown) => {
+  if (typeof regionScope !== 'string') {
+    return undefined;
+  }
+
+  const regionValuePath = getRegionValuePath(regionScope);
+  const regionPath = getRegionPath(regionScope);
+
+  if (regionValuePath.length === 0 || regionPath.length === 0) {
+    return undefined;
+  }
+
+  const provinceAdcode = regionValuePath[0];
+  const provinceName = regionPath[0];
+  const preset = regionalBusinessPresets[provinceAdcode] ?? {
+    provinceName,
+    branchName: `${provinceName}区域培训分部`,
+    addresses: [`${regionPath.join('')}示范培训服务中心`],
+    phonePrefixes: ['135', '136', '138'],
+    coursePrefix: `${provinceName}医学继续教育必修课`,
+  };
+
+  return {
+    regionScope: provinceAdcode,
+    regionPath,
+    regionProvinceName: preset.provinceName,
+    regionBranchName: preset.branchName,
+    regionAddresses: preset.addresses,
+    regionPhonePrefixes: preset.phonePrefixes,
+    regionCoursePrefix: preset.coursePrefix,
+  };
+};
+
+const createBusinessContext = (businessProps: BaBusinessProps = {}): BusinessContext => {
+  const project = isAllowedBusinessValue(businessProps.ba_training_project, BA_TRAINING_PROJECT_WHITELIST)
+    ? businessProps.ba_training_project
+    : undefined;
+  const title = isAllowedBusinessValue(businessProps.ba_trainning_title, BA_TRAINNING_TITLE_WHITELIST)
+    ? businessProps.ba_trainning_title
+    : undefined;
+  const type = isAllowedBusinessValue(businessProps.ba_trainning_type, BA_TRAINNING_TYPE_WHITELIST)
+    ? businessProps.ba_trainning_type
+    : undefined;
+  const projectPreset = project ? businessProjectPresets[project] : undefined;
+  const titlePreset = title ? businessTitlePresets[title] : undefined;
+  const typePreset = type ? businessTypePresets[type] : undefined;
+  const regionalContext = createRegionalContext(businessProps.ba_region_scope);
+
+  return {
+    project,
+    title,
+    type,
+    ...regionalContext,
+    projectName: projectPreset?.projectName,
+    organizer: projectPreset?.organizer,
+    jobTitle: titlePreset?.jobTitle,
+    trainingType: typePreset?.trainingType,
+    coursePrefix: typePreset?.coursePrefix,
+    certificateType: typePreset?.certificateType,
+    annualCredits: typePreset?.annualCredits,
+    baseHours: typePreset?.baseHours,
+    learnerBase: typePreset?.learnerBase,
+    courseSubjects: titlePreset?.courseSubjects ?? projectPreset?.courseSubjects ?? [],
+    technologyOptions: titlePreset?.technologyOptions,
+    preferredTechnologyValues: titlePreset?.preferredTechnologyValues,
+  };
+};
+
+const hasBusinessContext = (context: BusinessContext) =>
+  Boolean(context.project || context.title || context.type || context.regionScope);
+
+const getBusinessProjectName = (context: BusinessContext, index: number) =>
+  context.projectName ?? projectNames[index % projectNames.length];
+
+const getBusinessTrainingType = (context: BusinessContext, index: number) =>
+  context.trainingType ?? trainingTypes[index % trainingTypes.length];
+
+const getBusinessJobTitle = (context: BusinessContext) => context.jobTitle ?? '从业人员';
+
+const getBusinessCourseName = (projectName: string, context: BusinessContext, index: number) => {
+  if (!hasBusinessContext(context)) {
+    return projectName;
+  }
+
+  const subject = context.courseSubjects[index % Math.max(1, context.courseSubjects.length)] ?? projectName;
+  const baseName = context.projectName ? subject : projectName;
+  const coursePrefix = context.regionCoursePrefix ? `${context.regionCoursePrefix}：` : context.coursePrefix ?? '';
+
+  return `${coursePrefix}${baseName}`;
+};
 
 const createAvatarDataUrl = (name: string, index: number) => {
   const hue = 205 + (index % 6) * 18;
@@ -528,26 +856,32 @@ const createAvatarDataUrl = (name: string, index: number) => {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 };
 
-export const mockUsers = (count: number): MockUser[] =>
-  Array.from({ length: normalizeCount(count) }, (_, index) => {
+export const mockUsers = (count: number, businessProps: BaBusinessProps = {}): MockUser[] => {
+  const businessContext = createBusinessContext(businessProps);
+
+  return Array.from({ length: normalizeCount(count) }, (_, index) => {
     const code = `NX-2026-${String(index + 1).padStart(4, '0')}`;
     const name = userNames[index % userNames.length];
-    const projectName = projectNames[index % projectNames.length];
-    const trainingType = trainingTypes[index % trainingTypes.length];
-    const phoneMasked = `138****${String(2026 + index).padStart(4, '0')}`;
+    const projectName = getBusinessProjectName(businessContext, index);
+    const trainingType = getBusinessTrainingType(businessContext, index);
+    const jobTitle = getBusinessJobTitle(businessContext);
+    const phonePrefix = businessContext.regionPhonePrefixes?.[index % businessContext.regionPhonePrefixes.length] ?? '138';
+    const phoneMasked = `${phonePrefix}****${String(2026 + index).padStart(4, '0')}`;
+    const workUnit = businessContext.regionBranchName ?? workUnits[index % workUnits.length];
+    const address = businessContext.regionAddresses?.[index % businessContext.regionAddresses.length] ?? addresses[index % addresses.length];
 
     return {
       id: code,
       code,
       name,
-      jobTitle: '从业人员',
-      position: '从业人员',
+      jobTitle,
+      position: jobTitle,
       idCardMasked: `110101********${String(2026 + index).padStart(4, '0')}`,
       phone: phoneMasked,
       phoneMasked,
-      workUnit: workUnits[index % workUnits.length],
-      workplace: workUnits[index % workUnits.length],
-      address: addresses[index % addresses.length],
+      workUnit,
+      workplace: workUnit,
+      address,
       avatarUrl: createAvatarDataUrl(name, index),
       projectName,
       trainingType,
@@ -556,26 +890,58 @@ export const mockUsers = (count: number): MockUser[] =>
       lastLoginAt: lastLoginTimes[index % lastLoginTimes.length],
     };
   });
+};
 
-export const mockProjects = (count: number): MockProject[] =>
-  Array.from({ length: normalizeCount(count) }, (_, index) => ({
-    id: `PROJECT-${String(index + 1).padStart(4, '0')}`,
-    projectName: projectNames[index % projectNames.length],
-    courseName: projectNames[index % projectNames.length],
-    trainingType: trainingTypes[index % trainingTypes.length],
-    jobTitle: '从业人员',
-    enrolledCount: 286 + index * 43,
-    learnerCount: 286 + index * 43,
-    organizer: workUnits[index % workUnits.length],
-    projectManager: projectManagers[index % projectManagers.length],
-    teacher: projectManagers[index % projectManagers.length],
-    startDate: startDates[index % startDates.length],
-    status: projectStatuses[index % projectStatuses.length],
-  }));
+export const mockProjects = (count: number, businessProps: BaBusinessProps = {}): MockProject[] => {
+  const businessContext = createBusinessContext(businessProps);
 
-export const mockCourses = (count: number): MockCourse[] => mockProjects(count);
+  return Array.from({ length: normalizeCount(count) }, (_, index) => {
+    const projectName = getBusinessProjectName(businessContext, index);
+    const learnerCount = (businessContext.learnerBase ?? 286) + index * 43;
 
-export const mockSelectOptions = (type: MockSelectOptionType): MockSelectOption[] => [...selectOptionMap[type]];
+    return {
+      id: `PROJECT-${String(index + 1).padStart(4, '0')}`,
+      projectName,
+      courseName: getBusinessCourseName(projectName, businessContext, index),
+      trainingType: getBusinessTrainingType(businessContext, index),
+      jobTitle: getBusinessJobTitle(businessContext),
+      enrolledCount: learnerCount,
+      learnerCount,
+      organizer: businessContext.regionBranchName ?? businessContext.organizer ?? workUnits[index % workUnits.length],
+      projectManager: projectManagers[index % projectManagers.length],
+      teacher: projectManagers[index % projectManagers.length],
+      startDate: startDates[index % startDates.length],
+      status: projectStatuses[index % projectStatuses.length],
+    };
+  });
+};
+
+export const mockCourses = (count: number, businessProps: BaBusinessProps = {}): MockCourse[] =>
+  mockProjects(count, businessProps);
+
+export const mockSelectOptions = (
+  type: MockSelectOptionType,
+  businessProps: BaBusinessProps = {},
+): MockSelectOption[] => {
+  const businessContext = createBusinessContext(businessProps);
+  const options = [...selectOptionMap[type]];
+
+  if ((type === 'project' || type === 'department') && businessContext.project && businessContext.projectName) {
+    return [
+      { label: businessContext.projectName, value: businessContext.project },
+      ...options.filter((option) => option.value !== businessContext.project),
+    ];
+  }
+
+  if (type === 'trainingType' && businessContext.type && businessContext.trainingType) {
+    return [
+      { label: businessContext.trainingType, value: businessContext.type },
+      ...options.filter((option) => option.value !== businessContext.type),
+    ];
+  }
+
+  return options;
+};
 
 export const mockAutoCompleteOptions = (type: MockSelectOptionType = 'project'): MockSelectOption[] =>
   mockSelectOptions(type);
@@ -590,8 +956,8 @@ export const mockWatermarkContent = (): string[] => [...watermarkContents];
 export const mockColorOptions = (): MockColorOption[] =>
   colorOptions.map((option) => ({ ...option }));
 
-export const mockMentionOptions = (count = 6): MockMentionOption[] =>
-  mockUsers(count).map((user) => ({
+export const mockMentionOptions = (count = 6, businessProps: BaBusinessProps = {}): MockMentionOption[] =>
+  mockUsers(count, businessProps).map((user) => ({
     label: user.name,
     value: user.id,
     description: `${user.projectName} / ${user.workUnit}`,
@@ -643,15 +1009,28 @@ export const mockTrainingScheduleDateTime = (baseDate = new Date()): Date => {
   return scheduleTime;
 };
 
-export const mockTechnologyInterestOptions = (): MockTechnologyInterestOption[] =>
-  technologyInterestOptions.map((option) => ({ ...option }));
+export const mockTechnologyInterestOptions = (businessProps: BaBusinessProps = {}): MockTechnologyInterestOption[] => {
+  const businessContext = createBusinessContext(businessProps);
+
+  return (businessContext.technologyOptions ?? technologyInterestOptions).map((option) => ({ ...option }));
+};
 
 export const mockPickTechnologyInterests = (
   options = mockTechnologyInterestOptions(),
   seed = Date.now(),
+  businessProps: BaBusinessProps = {},
 ): string[] => {
   if (options.length === 0) {
     return [];
+  }
+
+  const businessContext = createBusinessContext(businessProps);
+  const preferredValues = businessContext.preferredTechnologyValues?.filter((value) =>
+    options.some((option) => option.value === value),
+  );
+
+  if (preferredValues?.length) {
+    return preferredValues;
   }
 
   const count = Math.min(options.length, (Math.abs(Math.floor(seed)) % 2) + 1);
@@ -682,13 +1061,59 @@ export const mockStatistic = (seed = 0): MockStatisticData => ({
   ...statisticMetrics[Math.abs(Math.floor(seed)) % statisticMetrics.length],
 });
 
-export const mockDashboardMetrics = (): MockDashboardMetric[] =>
-  dashboardMetrics.map((metric) => ({ ...metric }));
+export const mockDashboardMetrics = (businessProps: BaBusinessProps = {}): MockDashboardMetric[] => {
+  const businessContext = createBusinessContext(businessProps);
 
-export const mockCardGridItems = (count = 12): MockCardGridItem[] =>
-  mockProjects(count).map((project, index) => ({
+  if (businessContext.regionProvinceName) {
+    const provinceName = businessContext.regionProvinceName;
+
+    if (businessContext.type === 'CONTINUING-EDUCATION') {
+      return [
+        {
+          id: 'region-annual-continuing-credits',
+          label: `${provinceName}年度继续教育学分`,
+          value: businessContext.annualCredits ?? 32,
+          suffix: '学分',
+          trend: 'up',
+          trendText: `${provinceName}学分达标率提升`,
+        },
+        { id: 'region-credit-completion-rate', label: `${provinceName}学分达标率`, value: '94.6', suffix: '%', trend: 'up', trendText: `${provinceName}较上周 +5.1%` },
+        { id: 'region-education-certificates', label: `${provinceName}证书签发`, value: '1.2w', suffix: '张', trend: 'up', trendText: `${provinceName}本月 +14.8%` },
+        { id: 'region-credit-risk-learners', label: `${provinceName}待补学分`, value: 18, suffix: '人', trend: 'down', trendText: `${provinceName}环比 -6.4%` },
+      ];
+    }
+
+    return [
+      { id: 'region-active-learners', label: `${provinceName}活跃学员`, value: 986, suffix: '人', trend: 'up', trendText: `${provinceName}本周 +9.8%` },
+      { id: 'region-branch-projects', label: `${provinceName}分部项目`, value: 28, suffix: '项', trend: 'up', trendText: `${provinceName}覆盖核心城市` },
+      { id: 'region-certificates-issued', label: `${provinceName}证书签发`, value: '1.2w', suffix: '张', trend: 'up', trendText: `${provinceName}本月 +13.2%` },
+      { id: 'region-risk-tasks', label: `${provinceName}待处理异常`, value: 9, suffix: '项', trend: 'down', trendText: `${provinceName}环比 -5.1%` },
+    ];
+  }
+
+  if (businessContext.type === 'CONTINUING-EDUCATION') {
+    return [
+      {
+        id: 'annual-continuing-credits',
+        label: '年度继续教育学分',
+        value: businessContext.annualCredits ?? 32,
+        suffix: '学分',
+        trend: 'up',
+        trendText: businessContext.projectName ?? '继续教育项目',
+      },
+      { id: 'credit-completion-rate', label: '学分达标率', value: '92.8', suffix: '%', trend: 'up', trendText: '较上周 +4.6%' },
+      { id: 'education-certificates', label: '学分证书签发', value: '1.8w', suffix: '张', trend: 'up', trendText: '本月 +16.4%' },
+      { id: 'credit-risk-learners', label: '待补学分学员', value: 36, suffix: '人', trend: 'down', trendText: '环比 -7.2%' },
+    ];
+  }
+
+  return dashboardMetrics.map((metric) => ({ ...metric }));
+};
+
+export const mockCardGridItems = (count = 12, businessProps: BaBusinessProps = {}): MockCardGridItem[] =>
+  mockProjects(count, businessProps).map((project, index) => ({
     id: `card-project-${String(index + 1).padStart(4, '0')}`,
-    title: project.projectName,
+    title: project.courseName,
     description: `${project.organizer} 发起的${project.trainingType}项目，面向${project.jobTitle}提供报名、学习、考核与证书跟踪。`,
     status: project.status,
     projectName: project.projectName,
@@ -736,41 +1161,122 @@ export const mockTransferTargetKeys = (
   return Array.from({ length: targetCount }, (_, index) => enabledItems[(startIndex + index) % enabledItems.length].key);
 };
 
-export const mockCertificate = (type: MockCertificateType): MockCertificateData => {
-  const user = mockUsers(3)[type === 'hours' ? 0 : type === 'qualified' ? 1 : 2];
-  const project = mockProjects(3)[type === 'hours' ? 0 : type === 'qualified' ? 1 : 2];
+export const mockCertificate = (
+  type: MockCertificateType,
+  businessProps: BaBusinessProps = {},
+): MockCertificateData => {
+  const businessContext = createBusinessContext(businessProps);
+  const effectiveType = businessContext.certificateType ?? type;
+  const dataIndex = effectiveType === 'hours' ? 0 : effectiveType === 'qualified' ? 1 : 2;
+  const user = mockUsers(3, businessProps)[dataIndex];
+  const project = mockProjects(3, businessProps)[dataIndex];
   const certificateMeta: Record<MockCertificateType, Pick<MockCertificateData, 'hours' | 'credits' | 'certificateNo'>> = {
     hours: {
-      hours: 48,
+      hours: businessContext.baseHours ?? 48,
       certificateNo: 'NX-CERT-HOURS-2026-0001',
     },
     qualified: {
-      hours: 64,
+      hours: businessContext.baseHours ?? 64,
       certificateNo: 'NX-CERT-QUALIFIED-2026-0002',
     },
     education: {
-      credits: 12,
+      credits: businessContext.annualCredits ?? 12,
       certificateNo: 'NX-CERT-EDU-2026-0003',
     },
   };
 
   return {
+    certificateType: effectiveType,
     studentName: user.name,
     idCardMasked: user.idCardMasked,
     projectName: project.projectName,
     courseName:
-      type === 'education'
-        ? '继续教育规范化能力提升课程'
-        : type === 'qualified'
+      hasBusinessContext(businessContext)
+        ? project.courseName
+        : effectiveType === 'education'
+          ? '继续教育规范化能力提升课程'
+          : effectiveType === 'qualified'
           ? `${project.projectName}培训合格班`
           : `${project.projectName}在线学时课程`,
     issuedAt: '2026-05-22',
-    organization: '灵境实训',
-    ...certificateMeta[type],
+    organization: businessContext.regionBranchName ?? businessContext.organizer ?? '灵境实训',
+    ...certificateMeta[effectiveType],
   };
 };
 
-export const mockLearningProfile = (studentId = 'student-it-001'): MockLearningProfileData => {
+export const mockLearningProfile = (
+  studentId = 'student-it-001',
+  businessProps: BaBusinessProps = {},
+): MockLearningProfileData => {
+  const businessContext = createBusinessContext(businessProps);
+
+  if (hasBusinessContext(businessContext)) {
+    const [user] = mockUsers(1, businessProps);
+    const projects = mockProjects(4, businessProps);
+    const educationCertificate = mockCertificate('education', businessProps);
+    const hours = businessContext.baseHours ?? 24;
+    const annualCredits = businessContext.annualCredits ?? 32;
+    const courses: MockLearningProfileCourse[] = projects.map((project, index) => ({
+      id: `course-business-${index + 1}`,
+      courseName: project.courseName,
+      hours: hours + index * 4,
+      credits: Math.max(4, Math.floor(annualCredits / 4)),
+      examResult: index === 2 ? '学习中' : index === 3 ? '待考核' : '优秀',
+      status: index === 2 ? '进行中' : index === 3 ? '待开始' : '已完成',
+      completedAt: index >= 2 ? '进行中' : startDates[index % startDates.length],
+    }));
+
+    return {
+      student: {
+        id: studentId,
+        name: user.name,
+        idCardMasked: user.idCardMasked,
+        jobTitle: user.jobTitle,
+        workUnit: user.workUnit,
+        joinedAt: '2026-02-28',
+      },
+      summary: {
+        totalHours: courses.reduce((sum, course) => sum + course.hours, 0),
+        certificateCount: 1,
+        activeCourseCount: courses.filter((course) => course.status === '进行中').length,
+        annualCredits,
+      },
+      timeline: [
+        {
+          id: 'timeline-business-joined',
+          date: '2026-02-28',
+          type: 'joined',
+          title: `加入${user.projectName}`,
+          description: `完成${user.jobTitle}方向入学评估，进入${user.trainingType}学习计划。`,
+        },
+        {
+          id: 'timeline-business-course',
+          date: '2026-03-22',
+          type: 'course',
+          title: `完成《${courses[0].courseName}》课程`,
+          description: `累计完成 ${courses[0].hours} 学时，按${user.trainingType}规则折算年度学分。`,
+        },
+        {
+          id: 'timeline-business-credits',
+          date: '2026-04-08',
+          type: 'exam',
+          title: '年度继续教育学分达标',
+          description: `当前年度已累计 ${annualCredits} 学分，满足${user.projectName}继续教育要求。`,
+        },
+        {
+          id: 'timeline-business-certificate',
+          date: '2026-04-18',
+          type: 'certificate',
+          title: '获得《继续教育学分证书》',
+          description: `完成${courses[0].courseName}及配套任务，获得继续教育学分证书。`,
+          certificateType: 'education',
+          certificateData: educationCertificate,
+        },
+      ],
+      courses,
+    };
+  }
+
   const qualifiedCertificate: MockCertificateData = {
     ...mockCertificate('qualified'),
     studentName: '张三',

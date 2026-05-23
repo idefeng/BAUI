@@ -2,7 +2,7 @@ import * as React from 'react';
 import { LoaderCircle, Plus, Search } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
-import { mockProjects, mockUsers, type MockProject, type MockUser } from '../../../utils/mock';
+import { mockProjects, mockUsers, type BaBusinessProps, type MockProject, type MockUser } from '../../../utils/mock';
 import { Button, type ButtonVariant } from '../../ui/button';
 import { BrandLogo } from '../../ui/branding';
 import { Input } from '../../ui/input';
@@ -58,7 +58,7 @@ export interface SmartTablePagination {
   total: number;
 }
 
-export interface SmartTableProps<T extends object = Record<string, unknown>> {
+export interface SmartTableProps<T extends object = Record<string, unknown>> extends BaBusinessProps {
   /** 表格列配置。 */
   columns?: SmartTableColumn<T>[];
   /** 当前页数据，通常由外部 API 请求后传入。 */
@@ -183,7 +183,7 @@ const mockUserColumns: SmartTableColumn<MockUser>[] = [
 ];
 
 const mockProjectColumns: SmartTableColumn<MockProject>[] = [
-  { key: 'projectName', title: '项目名称', dataIndex: 'projectName', ellipsis: true, width: 220 },
+  { key: 'courseName', title: '项目名称', dataIndex: 'courseName', ellipsis: true, width: 220 },
   { key: 'trainingType', title: '培训类型', dataIndex: 'trainingType', width: 130 },
   { key: 'jobTitle', title: '岗位', dataIndex: 'jobTitle', width: 110 },
   { key: 'enrolledCount', title: '从业人员人数', dataIndex: 'enrolledCount', width: 140, align: 'right' },
@@ -243,6 +243,10 @@ export function SmartTable<T extends object>({
   actionIcon = <Plus />,
   actionLabel,
   actionVariant = 'solid',
+  ba_training_project,
+  ba_trainning_title,
+  ba_trainning_type,
+  ba_region_scope,
   className,
   columns: externalColumns,
   data: externalData,
@@ -270,6 +274,10 @@ export function SmartTable<T extends object>({
   selectionMode = 'multiple',
   tableClassName,
 }: SmartTableProps<T>) {
+  const businessProps = React.useMemo<BaBusinessProps>(
+    () => ({ ba_training_project, ba_trainning_title, ba_trainning_type, ba_region_scope }),
+    [ba_region_scope, ba_training_project, ba_trainning_title, ba_trainning_type],
+  );
   const shouldUseMockData = mock && externalData === undefined;
   const [mockRows, setMockRows] = React.useState<T[]>([]);
   const [mockLoading, setMockLoading] = React.useState(shouldUseMockData);
@@ -300,14 +308,14 @@ export function SmartTable<T extends object>({
 
     const timer = window.setTimeout(() => {
       // 延时结束后再生成数据，模拟真实接口返回并避免 Storybook 一闪而过。
-      const nextRows = mockType === 'user' ? mockUsers(8) : mockProjects(8);
+      const nextRows = mockType === 'user' ? mockUsers(8, businessProps) : mockProjects(8, businessProps);
 
       setMockRows(nextRows as unknown as T[]);
       setMockLoading(false);
     }, 800);
 
     return () => window.clearTimeout(timer);
-  }, [mockType, shouldUseMockData]);
+  }, [businessProps, mockType, shouldUseMockData]);
 
   const getRecordKey = React.useCallback(
     (record: T, index = 0) => {

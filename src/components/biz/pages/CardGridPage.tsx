@@ -4,6 +4,7 @@ import { CalendarClock, GraduationCap, Layers3, Search, UsersRound } from 'lucid
 import { cn } from '../../../lib/utils';
 import {
   mockCardGridItems,
+  type BaBusinessProps,
   type MockCardGridItem,
 } from '../../../utils/mock';
 import { Card } from '../../ui/card';
@@ -13,7 +14,7 @@ import { Skeleton } from '../../ui/skeleton';
 
 export type CardGridItem = MockCardGridItem;
 
-export interface CardGridPageProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
+export interface CardGridPageProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'>, BaBusinessProps {
   /** 开启后使用中央 mock 卡片数据，并让 Form 一键填表触发卡片区骨架屏。 */
   mock?: boolean;
   /** 外部真实卡片数据；传入后优先级高于 mock 数据。 */
@@ -160,6 +161,10 @@ function CardGridItemCard({ item }: { item: CardGridItem }) {
 
 /** CardGridPage 是带搜索表单、卡片流和分页的业务模板页。 */
 export function CardGridPage({
+  ba_training_project,
+  ba_trainning_title,
+  ba_trainning_type,
+  ba_region_scope,
   className,
   description = '用表单筛选项目卡片，适合项目库、课程库、证书模板库等业务入口。',
   items,
@@ -168,6 +173,10 @@ export function CardGridPage({
   title = '项目卡片检索',
   ...props
 }: CardGridPageProps) {
+  const businessProps = React.useMemo<BaBusinessProps>(
+    () => ({ ba_training_project, ba_trainning_title, ba_trainning_type, ba_region_scope }),
+    [ba_region_scope, ba_training_project, ba_trainning_title, ba_trainning_type],
+  );
   const [formValue, setFormValue] = React.useState<FormValues>(defaultFormValue);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [loading, setLoading] = React.useState(false);
@@ -177,8 +186,8 @@ export function CardGridPage({
       return items;
     }
 
-    return mock ? mockCardGridItems(12) : [];
-  }, [items, mock]);
+    return mock ? mockCardGridItems(12, businessProps) : [];
+  }, [businessProps, items, mock]);
   const pageCount = getPageCount(dataSource.length, pageSize);
   const safeCurrentPage = Math.min(currentPage, pageCount);
   const visibleItems = dataSource.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
@@ -267,6 +276,7 @@ export function CardGridPage({
           <Form
             schema={searchSchema}
             value={formValue}
+            {...businessProps}
             showMockFill
             onChange={handleFormChange}
             onSubmit={handleSearchSubmit}

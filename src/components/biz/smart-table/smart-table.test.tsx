@@ -155,4 +155,47 @@ describe('SmartTable', () => {
       vi.useRealTimers();
     }
   });
+
+  it('mock 模式会把合法业务属性透传给中央数据源', async () => {
+    vi.useFakeTimers();
+
+    try {
+      render(
+        <SmartTable
+          mock
+          mockType="project"
+          ba_training_project="NEXUS-2026-AI"
+          ba_trainning_title="AI-AGENT-ENGINEER"
+          ba_trainning_type="CONTINUING-EDUCATION"
+        />,
+      );
+
+      await act(async () => {
+        vi.advanceTimersByTime(800);
+      });
+
+      expect(screen.getAllByText(/继续教育：/).length).toBeGreaterThan(0);
+      expect(screen.getAllByText('继续教育').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('AI Agent 工程师').length).toBeGreaterThan(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('mock 模式会把 ba_region_scope 透传给属地 mock 数据源', async () => {
+    vi.useFakeTimers();
+
+    try {
+      render(<SmartTable mock mockType="user" ba_region_scope="440000" />);
+
+      await act(async () => {
+        vi.advanceTimersByTime(800);
+      });
+
+      expect(screen.getAllByText(/广东省/).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/13[5689]\*\*\*\*/).length).toBeGreaterThan(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

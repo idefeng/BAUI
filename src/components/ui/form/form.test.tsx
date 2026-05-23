@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
+import { getRegionPath } from '../../../utils/regions';
 import { Form, type FormSchemaField } from './form';
 
 const learnerProfileSchema: FormSchemaField[] = [
@@ -44,6 +45,17 @@ const learnerProfileSchema: FormSchemaField[] = [
     type: 'treeselect',
     placeholder: '请选择组织范围',
     mock: true,
+  },
+];
+
+const regionProfileSchema: FormSchemaField[] = [
+  {
+    name: 'homeRegion',
+    label: '家庭住址',
+    type: 'cascader',
+    cascaderType: 'region',
+    ba_region_level: 'DISTRICT',
+    placeholder: '请选择省市区',
   },
 ];
 
@@ -117,5 +129,46 @@ describe('Form schema consumer', () => {
     expect(latestValue.organizationScope.length).toBeGreaterThanOrEqual(2);
     expect(latestValue.organizationScope.length).toBeLessThanOrEqual(4);
     expect(latestValue.organizationScope.every((key: string) => key.startsWith('global-'))).toBe(true);
+  });
+
+  it('AI Agent 工程师业务属性会让一键填表选中 Python 与大模型 fine-tune', async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <Form
+        schema={learnerProfileSchema}
+        ba_training_project="NEXUS-2026-AI"
+        ba_trainning_title="AI-AGENT-ENGINEER"
+        ba_trainning_type="CONTINUING-EDUCATION"
+        onChange={onChange}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: '一键填表' }));
+
+    const latestValue = onChange.mock.calls.at(-1)?.[0];
+
+    expect(screen.getByRole('checkbox', { name: 'Python' })).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: '大模型 fine-tune' })).toBeInTheDocument();
+    expect(latestValue.techDirections).toEqual(['python', 'llm-fine-tune']);
+  });
+
+  it('region Cascader 字段在一键填表时生成真实省市区 Adcode 路径并回显中文路径', async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+
+    render(<Form schema={regionProfileSchema} onChange={onChange} />);
+
+    await user.click(screen.getByRole('button', { name: '一键填表' }));
+
+    const latestValue = onChange.mock.calls.at(-1)?.[0];
+    const selectedRegion = latestValue.homeRegion as string[];
+    const selectedLeafAdcode = selectedRegion[selectedRegion.length - 1];
+    const selectedRegionLabels = getRegionPath(selectedLeafAdcode);
+
+    expect(selectedRegion).toHaveLength(3);
+    expect(selectedRegionLabels).toHaveLength(3);
+    expect(screen.getByRole('combobox', { name: selectedRegionLabels.join(' / ') })).toBeInTheDocument();
   });
 });

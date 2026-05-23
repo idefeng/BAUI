@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  BA_TRAINING_PROJECT_WHITELIST,
+  BA_TRAINNING_TITLE_WHITELIST,
+  BA_TRAINNING_TYPE_WHITELIST,
   mockCascaderOptions,
   mockCardGridItems,
   mockCertificate,
@@ -23,6 +26,24 @@ import {
 } from './mock';
 
 describe('mock data workshop', () => {
+  it('暴露公司业务属性官方白名单，供组件和 Storybook 统一复用', () => {
+    expect(BA_TRAINING_PROJECT_WHITELIST).toEqual([
+      'NEXUS-2026-AI',
+      'NEXUS-2026-FRONTEND',
+      'HIGASHI-CORE-2026',
+    ]);
+    expect(BA_TRAINNING_TITLE_WHITELIST).toEqual([
+      'AI-AGENT-ENGINEER',
+      'FULLSTACK-DEVELOPER',
+      'IT-PROJECT-MANAGER',
+    ]);
+    expect(BA_TRAINNING_TYPE_WHITELIST).toEqual([
+      'INITIAL-TRAINING',
+      'QUALIFICATION-CERT',
+      'CONTINUING-EDUCATION',
+    ]);
+  });
+
   it('生成带脱敏信息的从业人员基本信息', () => {
     const users = mockUsers(3);
 
@@ -41,6 +62,96 @@ describe('mock data workshop', () => {
     });
     expect(users[0].avatarUrl).toMatch(/^data:image\/svg\+xml;charset=UTF-8,/);
     expect(users[0].lastLoginAt).toMatch(/^2026-05-\d{2} \d{2}:\d{2}$/);
+  });
+
+  it('非法业务属性会被中央 mock 引擎擦除并回落到通用数据', () => {
+    const baselineUser = mockUsers(1)[0];
+    const baselineCourse = mockCourses(1)[0];
+    const invalidUser = mockUsers(1, {
+      ba_training_project: 'INVALID-PROJECT',
+      ba_trainning_title: 'INVALID-TITLE',
+      ba_trainning_type: 'INVALID-TYPE',
+    })[0];
+    const invalidCourse = mockCourses(1, {
+      ba_training_project: 'INVALID-PROJECT',
+      ba_trainning_title: 'INVALID-TITLE',
+      ba_trainning_type: 'INVALID-TYPE',
+    })[0];
+
+    expect(invalidUser.projectName).toBe(baselineUser.projectName);
+    expect(invalidUser.jobTitle).toBe(baselineUser.jobTitle);
+    expect(invalidUser.trainingType).toBe(baselineUser.trainingType);
+    expect(invalidCourse.projectName).toBe(baselineCourse.projectName);
+    expect(invalidCourse.jobTitle).toBe(baselineCourse.jobTitle);
+    expect(invalidCourse.trainingType).toBe(baselineCourse.trainingType);
+  });
+
+  it('合法业务属性会让人员、课程、证书和学习档案切换为继续教育 AI 岗位语义', () => {
+    const businessProps = {
+      ba_training_project: 'NEXUS-2026-AI',
+      ba_trainning_title: 'AI-AGENT-ENGINEER',
+      ba_trainning_type: 'CONTINUING-EDUCATION',
+    };
+    const users = mockUsers(2, businessProps);
+    const courses = mockCourses(3, businessProps);
+    const certificate = mockCertificate('hours', businessProps);
+    const profile = mockLearningProfile('student-ai-001', businessProps);
+
+    expect(users.every((user) => user.projectName === 'NEXUS 2026 AI 实训项目')).toBe(true);
+    expect(users.every((user) => user.jobTitle === 'AI Agent 工程师')).toBe(true);
+    expect(users.every((user) => user.trainingType === '继续教育')).toBe(true);
+    expect(courses.every((course) => course.courseName.startsWith('继续教育：'))).toBe(true);
+    expect(courses.every((course) => course.trainingType === '继续教育')).toBe(true);
+    expect(certificate.courseName).toContain('继续教育：');
+    expect(certificate.credits).toBeGreaterThanOrEqual(24);
+    expect(certificate.certificateNo).toContain('EDU');
+    expect(profile.student.jobTitle).toBe('AI Agent 工程师');
+    expect(profile.summary.annualCredits).toBeGreaterThanOrEqual(24);
+    expect(profile.courses.every((course) => course.courseName.startsWith('继续教育：'))).toBe(true);
+    expect(profile.timeline.map((event) => event.title).join(' ')).toContain('继续教育');
+  });
+
+  it('ba_region_scope 会让学员、手机号段和课程前缀具备广东属地特征', () => {
+    const users = mockUsers(3, {
+      ba_region_scope: '440000',
+      ba_trainning_type: 'CONTINUING-EDUCATION',
+    });
+    const courses = mockCourses(2, {
+      ba_region_scope: '440000',
+      ba_trainning_type: 'CONTINUING-EDUCATION',
+    });
+
+    expect(users.every((user) => user.address.includes('广东省'))).toBe(true);
+    expect(users.every((user) => user.workUnit.includes('广东省'))).toBe(true);
+    expect(users.every((user) => /^13[5689]\*\*\*\*\d{4}$/.test(user.phoneMasked))).toBe(true);
+    expect(courses.every((course) => course.courseName.startsWith('广东省医学继续教育必修课'))).toBe(true);
+    expect(courses.every((course) => course.organizer.includes('广东省'))).toBe(true);
+  });
+
+  it('Dashboard 指标能根据 ba_region_scope 切换为属地大屏数据', () => {
+    const metrics = mockDashboardMetrics({
+      ba_region_scope: '440000',
+    });
+
+    expect(metrics[0].label).toBe('广东省活跃学员');
+    expect(metrics.map((metric) => metric.trendText).join(' ')).toContain('广东省');
+  });
+
+  it('AI Agent 工程师岗位会让技术方向一键填表偏向 Python 与大模型 fine-tune', () => {
+    const options = mockTechnologyInterestOptions({
+      ba_trainning_title: 'AI-AGENT-ENGINEER',
+    });
+    const selectedValues = mockPickTechnologyInterests(options, 1, {
+      ba_trainning_title: 'AI-AGENT-ENGINEER',
+    });
+
+    expect(options).toEqual(
+      expect.arrayContaining([
+        { label: 'Python', value: 'python' },
+        { label: '大模型 fine-tune', value: 'llm-fine-tune' },
+      ]),
+    );
+    expect(selectedValues).toEqual(['python', 'llm-fine-tune']);
   });
 
   it('生成项目与培训类型数据，并保留 mockCourses 兼容出口', () => {

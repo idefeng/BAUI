@@ -4,6 +4,7 @@ import { Award, BookOpen, CalendarDays, CheckCircle2, Clock, GraduationCap } fro
 import { cn } from '../../../lib/utils';
 import {
   mockLearningProfile,
+  type BaBusinessProps,
   type MockLearningCourseStatus,
   type MockLearningProfileCourse,
   type MockLearningProfileData,
@@ -15,7 +16,7 @@ import { Skeleton } from '../../ui/skeleton';
 import { SmartTable, type SmartTableColumn } from '../smart-table';
 import { CertificateTemplate } from '../certificate';
 
-export interface LearningProfileProps extends React.HTMLAttributes<HTMLElement> {
+export interface LearningProfileProps extends React.HTMLAttributes<HTMLElement>, BaBusinessProps {
   /** 学员 ID，用于 mock 数据生成时保持外部业务主键一致。 */
   studentId?: string;
   /** 是否启用 600ms 全局骨架屏并自动灌入高保真学习轨迹数据。 */
@@ -148,13 +149,21 @@ const LearningProfileSkeleton = ({ className }: { className?: string }) => (
 
 /** LearningProfile 综合性学习档案，把学习摘要、成长时间线和历史课程表格聚合展示。 */
 export function LearningProfile({
+  ba_training_project,
+  ba_trainning_title,
+  ba_trainning_type,
+  ba_region_scope,
   className,
   mock = false,
   studentId = 'student-it-001',
   ...props
 }: LearningProfileProps) {
+  const businessProps = React.useMemo<BaBusinessProps>(
+    () => ({ ba_training_project, ba_trainning_title, ba_trainning_type, ba_region_scope }),
+    [ba_region_scope, ba_training_project, ba_trainning_title, ba_trainning_type],
+  );
   const [profile, setProfile] = React.useState<MockLearningProfileData | null>(() =>
-    mock ? null : mockLearningProfile(studentId),
+    mock ? null : mockLearningProfile(studentId, businessProps),
   );
   const [loading, setLoading] = React.useState(mock);
   const [selectedCertificateEvent, setSelectedCertificateEvent] =
@@ -162,7 +171,7 @@ export function LearningProfile({
 
   React.useEffect(() => {
     if (!mock) {
-      setProfile(mockLearningProfile(studentId));
+      setProfile(mockLearningProfile(studentId, businessProps));
       setLoading(false);
       return;
     }
@@ -172,12 +181,12 @@ export function LearningProfile({
 
     const timer = window.setTimeout(() => {
       // mock 模式使用一次性灌入，便于 Storybook 观察全局骨架屏到真实数据的切换。
-      setProfile(mockLearningProfile(studentId));
+      setProfile(mockLearningProfile(studentId, businessProps));
       setLoading(false);
     }, 600);
 
     return () => window.clearTimeout(timer);
-  }, [mock, studentId]);
+  }, [businessProps, mock, studentId]);
 
   const courseColumns = React.useMemo(() => createCourseColumns(), []);
   const summaryCards = React.useMemo<SummaryCard[]>(() => {

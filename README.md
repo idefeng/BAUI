@@ -45,8 +45,11 @@ import {
   mockLoginAccount,
   mockDashboardMetrics,
   mockCardGridItems,
+  getRegionPath,
+  getRegionOptions,
   mockProgress,
   mockProjects,
+  mockCourses,
   mockStatistic,
   mockTags,
   mockTreeData,
@@ -55,6 +58,7 @@ import {
 
 const workers = mockUsers(8);
 const projects = mockProjects(8);
+const guangdongCourses = mockCourses(4, { ba_region_scope: '440000' });
 const profile = mockLearningProfile('student-it-001');
 const loginAccount = mockLoginAccount();
 const dashboardMetrics = mockDashboardMetrics();
@@ -63,6 +67,8 @@ const organizationTree = mockTreeData();
 const metric = mockStatistic();
 const tags = mockTags();
 const progress = mockProgress();
+const regionPath = getRegionPath('440106'); // ['广东省', '广州市', '天河区']
+const cityRegionOptions = getRegionOptions('CITY');
 ```
 
 当前内置数据覆盖：
@@ -73,8 +79,25 @@ const progress = mockProgress();
 - 人员信息：姓名、脱敏身份证号、脱敏手机号、工作单位、住址、头像、所属项目。
 - 证书与学习档案：学时证明、培训合格证明、继续教育学分证书，以及 IT 培训成长轨迹。
 - 登录与模板页：多行业登录账号、科技大屏指标和项目卡片流。
-- 表单提效：公司组织架构级联、全球组织架构树、IT 技术方向、培训排课未来时间、候选人穿梭和滑块数值等高保真 Mock 场景。
+- 表单提效：公司组织架构级联、全国行政区划级联、全球组织架构树、IT 技术方向、培训排课未来时间、候选人穿梭和滑块数值等高保真 Mock 场景。
 - 展示组件：学员头像、运营指标、业务标签、培训进度、二维码签到和课程海报等本地 Mock 预览场景。
+
+## 企业业务属性与属地数据
+
+核心业务组件支持可选企业业务属性。非法培训属性会被中央 Mock 引擎擦除；非法 `ba_region_scope` 会因无法命中 Region Base 而降级为未设置。
+
+```tsx
+<SmartTable
+  mock
+  mockType="user"
+  ba_training_project="NEXUS-2026-AI"
+  ba_trainning_title="AI-AGENT-ENGINEER"
+  ba_trainning_type="CONTINUING-EDUCATION"
+  ba_region_scope="440000"
+/>
+```
+
+`ba_region_scope="440000"` 会让人员住址、所属分部、手机号段、课程前缀和 Dashboard 指标切换为广东属地语义。
 
 ## 组件 Mock 用法
 
@@ -132,10 +155,16 @@ const progress = mockProgress();
 <CardGridPage mock />
 ```
 
-`Cascader`、`DateTimePicker`、`CheckboxGroup`、`Slider`、`Transfer` 和 `TreeSelect` 支持 `mock={true}`，可直接走查三级联动、排课时间、技术方向多选、滑块填值、穿梭搬运和组织树父子联动：
+`Cascader` 支持公司组织架构 mock，也支持 `type="region"` 自动加载全国行政区划树；`ba_region_level="CITY"` 会在市级断开，不允许继续选区县：
 
 ```tsx
 <Cascader mock placeholder="请选择组织架构" onChange={(path) => console.log(path)} />
+<Cascader type="region" ba_region_level="CITY" placeholder="请选择省市" onChange={(path) => console.log(path)} />
+```
+
+`DateTimePicker`、`CheckboxGroup`、`Slider`、`Transfer` 和 `TreeSelect` 支持 `mock={true}`，可直接走查排课时间、技术方向多选、滑块填值、穿梭搬运和组织树父子联动：
+
+```tsx
 <DateTimePicker type="datetime" mock onChange={(value) => console.log(value)} />
 <CheckboxGroup mock value={['frontend']} onChange={(value) => console.log(value)} />
 <Slider min={8000} max={20000} step={1000} value={12000} onChange={(value) => console.log(value)} />
@@ -162,7 +191,7 @@ const progress = mockProgress();
 </Card>
 ```
 
-`Form` 支持 Schema 驱动消费 `input`、`select`、`switch`、`checkbox`、`slider`、`transfer` 和 `treeselect`，并可用一键填表验证 Mock 链路：
+`Form` 支持 Schema 驱动消费 `input`、`select`、`switch`、`checkbox`、`slider`、`transfer`、`treeselect` 和 `cascader`，并可用一键填表验证 Mock 链路：
 
 ```tsx
 <Form
@@ -173,6 +202,7 @@ const progress = mockProgress();
     { name: 'salary', label: '期望薪资', type: 'slider', min: 8000, max: 20000, step: 1000 },
     { name: 'learners', label: '分配学员', type: 'transfer', mock: true },
     { name: 'orgScope', label: '组织范围', type: 'treeselect', mock: true },
+    { name: 'homeRegion', label: '家庭住址', type: 'cascader', cascaderType: 'region', ba_region_level: 'DISTRICT' },
   ]}
 />
 ```

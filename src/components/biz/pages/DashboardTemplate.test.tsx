@@ -16,6 +16,29 @@ describe('DashboardTemplate', () => {
     expect(screen.getByTestId('dashboard-trend-panel')).toHaveClass('dark:border-primary-dark/30');
   });
 
+  it('继续教育业务属性会清洗大屏指标为学分和证书维度', () => {
+    render(
+      <DashboardTemplate
+        mock
+        ba_training_project="NEXUS-2026-AI"
+        ba_trainning_title="AI-AGENT-ENGINEER"
+        ba_trainning_type="CONTINUING-EDUCATION"
+      />,
+    );
+
+    expect(screen.getByText('年度继续教育学分')).toBeInTheDocument();
+    expect(screen.getByText('学分达标率')).toBeInTheDocument();
+    expect(screen.getByText('NEXUS 2026 AI 实训项目')).toBeInTheDocument();
+  });
+
+  it('ba_region_scope 会让大屏指标切换为属地数据', () => {
+    render(<DashboardTemplate mock ba_region_scope="440000" />);
+
+    expect(screen.getByText('广东省活跃学员')).toBeInTheDocument();
+    expect(screen.getByText('广东省分部项目')).toBeInTheDocument();
+    expect(screen.getAllByText(/广东省/).length).toBeGreaterThan(1);
+  });
+
   it('外部传入 metrics 时优先展示真实数据而不是 mock 数据', () => {
     const metrics: DashboardMetric[] = [
       { id: 'sales', label: '今日成交额', value: '¥ 82.6w', trend: 'up', trendText: '环比 +8.2%' },

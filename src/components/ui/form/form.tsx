@@ -12,10 +12,13 @@ import {
   mockTransferData,
   mockTransferTargetKeys,
   mockUsers,
+  type BaBusinessProps,
   type MockSelectOptionType,
 } from '../../../utils/mock';
+import { mockRegionValuePath } from '../../../utils/regions';
 import { Transfer, type TransferItem } from '../../biz/transfer';
 import { Button } from '../button';
+import { Cascader, type CascaderOption, type CascaderProps } from '../cascader';
 import { Checkbox, CheckboxGroup, type CheckboxGroupOption } from '../checkbox';
 import { Input, type InputProps } from '../input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
@@ -24,12 +27,22 @@ import { Slider, type SliderValue } from '../slider';
 import { Switch } from '../switch';
 import { TreeSelect, type TreeSelectNode } from '../tree-select';
 
-export type FormFieldType = 'input' | 'select' | 'switch' | 'checkbox' | 'slider' | 'transfer' | 'treeselect';
+export type FormFieldType =
+  | 'input'
+  | 'select'
+  | 'switch'
+  | 'checkbox'
+  | 'slider'
+  | 'transfer'
+  | 'treeselect'
+  | 'cascader';
 export type FormValues = Record<string, unknown>;
 
 export interface FormOption {
   label: string;
   value: string;
+  /** cascader 字段可复用 options 承载多级选项，其它字段会忽略 children。 */
+  children?: FormOption[];
 }
 
 export interface FormSchemaField {
@@ -43,6 +56,10 @@ export interface FormSchemaField {
   placeholder?: string;
   /** select 或 CheckboxGroup 的可选项。 */
   options?: FormOption[];
+  /** cascader 业务模式；region 会自动加载全国行政区划数据。 */
+  cascaderType?: CascaderProps['type'];
+  /** cascaderType=region 时允许选择到的最深行政层级。 */
+  ba_region_level?: CascaderProps['ba_region_level'];
   /** transfer 源数据。 */
   dataSource?: TransferItem[];
   /** transfer 左右面板标题。 */
@@ -63,7 +80,9 @@ export interface FormSchemaField {
   mock?: boolean | InputProps['mock'] | MockSelectOptionType;
 }
 
-export interface FormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'defaultValue' | 'onChange' | 'onSubmit'> {
+export interface FormProps
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'defaultValue' | 'onChange' | 'onSubmit'>,
+    BaBusinessProps {
   /** Schema 驱动字段配置。 */
   schema: FormSchemaField[];
   /** 受控表单值。 */
@@ -84,17 +103,17 @@ const isInputMockType = (mock: FormSchemaField['mock']): mock is InputProps['moc
 const isSelectMockType = (mock: FormSchemaField['mock']): mock is MockSelectOptionType =>
   mock === 'department' || mock === 'project' || mock === 'trainingType' || mock === 'status';
 
-const getFieldOptions = (field: FormSchemaField): CheckboxGroupOption[] => {
+const getFieldOptions = (field: FormSchemaField, businessProps: BaBusinessProps = {}): CheckboxGroupOption[] => {
   if (field.options && field.options.length > 0) {
     return field.options;
   }
 
   if (field.type === 'checkbox' && field.mock === true) {
-    return mockTechnologyInterestOptions();
+    return mockTechnologyInterestOptions(businessProps);
   }
 
   if (field.type === 'select' && isSelectMockType(field.mock)) {
-    return mockSelectOptions(field.mock);
+    return mockSelectOptions(field.mock, businessProps);
   }
 
   return [];
@@ -124,8 +143,16 @@ const getTreeSelectData = (field: FormSchemaField): TreeSelectNode[] => {
   return [];
 };
 
-const getMockInputValue = (mock: FormSchemaField['mock']) => {
-  const user = mockUsers(1)[0];
+const getCascaderOptions = (field: FormSchemaField): CascaderOption[] | undefined => {
+  if (!field.options || field.options.length === 0) {
+    return undefined;
+  }
+
+  return field.options as CascaderOption[];
+};
+
+const getMockInputValue = (mock: FormSchemaField['mock'], businessProps: BaBusinessProps = {}) => {
+  const user = mockUsers(1, businessProps)[0];
 
   if (mock === 'phone') {
     return user.phoneMasked;
@@ -161,9 +188,13 @@ const getMockSliderValue = (field: FormSchemaField, index: number) => {
   });
 };
 
-const getMockValue = (field: FormSchemaField, index: number) => {
+const getMockValue = (field: FormSchemaField, index: number, businessProps: BaBusinessProps = {}) => {
   if (field.type === 'treeselect') {
     return mockTreeSelectValue(getTreeSelectData(field), index + 1);
+  }
+
+  if (field.type === 'cascader' && field.cascaderType === 'region') {
+    return mockRegionValuePath(index + 1, field.ba_region_level ?? 'DISTRICT');
   }
 
   if (field.type === 'transfer') {
@@ -179,16 +210,16 @@ const getMockValue = (field: FormSchemaField, index: number) => {
   }
 
   if (field.type === 'checkbox') {
-    const options = getFieldOptions(field);
+    const options = getFieldOptions(field, businessProps);
 
-    return options.length > 0 ? mockPickTechnologyInterests(options, index + 1) : mockSwitchChecked(index);
+    return options.length > 0 ? mockPickTechnologyInterests(options, index + 1, businessProps) : mockSwitchChecked(index);
   }
 
   if (field.type === 'select') {
-    return getFieldOptions(field)[0]?.value ?? '';
+    return getFieldOptions(field, businessProps)[0]?.value ?? '';
   }
 
-  return getMockInputValue(field.mock);
+  return getMockInputValue(field.mock, businessProps);
 };
 
 const isSliderValue = (value: unknown): value is SliderValue =>
@@ -204,7 +235,12 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>(
   (
     {
       className,
+      ba_training_project,
+      ba_trainning_title,
+      ba_trainning_type,
+      ba_region_scope,
       defaultValue = {},
+      mock: _mock = false,
       onChange,
       onSubmit,
       schema,
@@ -214,6 +250,11 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>(
     },
     ref,
   ) => {
+    void _mock;
+    const businessProps = React.useMemo<BaBusinessProps>(
+      () => ({ ba_training_project, ba_trainning_title, ba_trainning_type, ba_region_scope }),
+      [ba_region_scope, ba_training_project, ba_trainning_title, ba_trainning_type],
+    );
     const isControlled = value !== undefined;
     const [innerValue, setInnerValue] = React.useState<FormValues>(defaultValue);
     const formValue = isControlled ? value : innerValue;
@@ -237,7 +278,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>(
       const nextValue = schema.reduce<FormValues>(
         (result, field, index) => ({
           ...result,
-          [field.name]: getMockValue(field, index),
+          [field.name]: getMockValue(field, index, businessProps),
         }),
         { ...formValue },
       );
@@ -266,7 +307,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>(
       }
 
       if (field.type === 'checkbox') {
-        const options = getFieldOptions(field);
+        const options = getFieldOptions(field, businessProps);
 
         if (options.length > 0) {
           return (
@@ -335,8 +376,22 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>(
         );
       }
 
+      if (field.type === 'cascader') {
+        return (
+          <Cascader
+            options={getCascaderOptions(field)}
+            value={isStringArray(fieldValue) ? fieldValue : []}
+            placeholder={field.placeholder ?? `请选择${field.label}`}
+            type={field.cascaderType}
+            ba_region_level={field.ba_region_level}
+            disabled={field.disabled}
+            onChange={(selectedValue) => updateField(field.name, selectedValue)}
+          />
+        );
+      }
+
       if (field.type === 'select') {
-        const options = getFieldOptions(field);
+        const options = getFieldOptions(field, businessProps);
 
         return (
           <Select

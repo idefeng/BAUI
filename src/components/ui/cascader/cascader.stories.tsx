@@ -44,11 +44,15 @@ const departmentOptions: CascaderOption[] = [
 ];
 
 const StatefulCascader = ({
+  ba_region_level,
   defaultValue = [],
   mock = false,
+  type = 'default',
 }: {
+  ba_region_level?: 'PROVINCE' | 'CITY' | 'DISTRICT';
   defaultValue?: string[];
   mock?: boolean;
+  type?: 'default' | 'region';
 }) => {
   const [value, setValue] = React.useState(defaultValue);
 
@@ -56,6 +60,8 @@ const StatefulCascader = ({
     <Cascader
       mock={mock}
       options={mock ? undefined : departmentOptions}
+      type={type}
+      ba_region_level={ba_region_level}
       value={value}
       placeholder="请选择组织"
       onChange={setValue}
@@ -69,6 +75,16 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+  },
+  argTypes: {
+    type: {
+      control: 'select',
+      options: ['default', 'region'],
+    },
+    ba_region_level: {
+      control: 'select',
+      options: ['PROVINCE', 'CITY', 'DISTRICT'],
+    },
   },
 } satisfies Meta<typeof Cascader>;
 
@@ -96,6 +112,18 @@ export const MockModeDemo: Story = {
   render: () => (
     <div className="w-80">
       <StatefulCascader mock />
+    </div>
+  ),
+};
+
+export const RegionSelector: Story = {
+  args: {
+    type: 'region',
+    ba_region_level: 'DISTRICT',
+  },
+  render: (args) => (
+    <div className="w-80">
+      <StatefulCascader type={args.type} ba_region_level={args.ba_region_level} />
     </div>
   ),
 };
