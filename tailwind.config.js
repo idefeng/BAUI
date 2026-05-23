@@ -151,6 +151,10 @@ export default {
           from: { transform: 'translateX(-100%) skewX(-18deg)' },
           to: { transform: 'translateX(220%) skewX(-18deg)' },
         },
+        brandPulse: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.12' },
+          '50%': { transform: 'scale(1.08)', opacity: '0.2' },
+        },
       },
       animation: {
         'select-in': 'selectIn 160ms ease-out',
@@ -164,6 +168,7 @@ export default {
         'accordion-down': 'accordionDown 180ms ease-out',
         'accordion-up': 'accordionUp 160ms ease-in',
         'progress-shine': 'progressShine 1.4s ease-in-out infinite',
+        'brand-pulse': 'brandPulse 1.8s ease-in-out infinite',
       },
     },
   },

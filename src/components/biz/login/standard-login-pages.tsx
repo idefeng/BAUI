@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
   BookOpenCheck,
-  Building2,
   GraduationCap,
   KeyRound,
   LockKeyhole,
@@ -13,6 +12,7 @@ import {
 
 import { cn } from '../../../lib/utils';
 import { mockLoginAccount, type MockLoginRole } from '../../../utils/mock';
+import { BrandBackground, BrandLogo } from '../../ui/branding';
 import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
 import { Carousel, type CarouselSlide } from '../../ui/carousel';
@@ -327,6 +327,15 @@ function LoginFormPanel({
 
   const panelContent = (
     <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
+      <div className="flex justify-center">
+        <BrandLogo
+          data-testid="standard-login-brand-logo"
+          variant="full"
+          size="md"
+          className={cn(tone === 'tech' && 'text-white dark:text-white')}
+        />
+      </div>
+
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-3">
           <span className={cn('inline-flex size-11 items-center justify-center rounded-2xl [&>svg]:size-5', tone === 'tech' ? 'bg-white/10 text-sky-200' : 'bg-primary-soft text-primary dark:bg-primary-dark-soft dark:text-primary-dark')}>
@@ -561,10 +570,14 @@ export function StandardLoginPages({
         className={cn('grid min-h-screen bg-background text-foreground dark:bg-background-dark dark:text-foreground-dark lg:grid-cols-2', className)}
       >
         <section className="relative flex min-h-[50vh] flex-col justify-between overflow-hidden bg-primary p-8 text-primary-foreground dark:bg-primary-dark-soft dark:text-foreground-dark lg:min-h-screen">
-          <div className="absolute inset-x-0 top-0 h-64 bg-primary-hover/40 blur-3xl dark:bg-primary-dark/20" aria-hidden="true" />
+          <BrandBackground
+            data-testid="standard-login-brand-background"
+            className="bg-primary text-white/20 before:bg-white/20 after:bg-success-dark/20 dark:bg-primary-dark-soft dark:text-primary-dark/25"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/75 to-primary-hover/80 dark:from-background-dark/80 dark:via-primary-dark-soft/75 dark:to-background-dark/90" aria-hidden="true" />
           <div className="relative flex items-center gap-3">
-            <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-white/15 [&>svg]:size-6">
-              <Building2 />
+            <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-white/15 shadow-sm backdrop-blur">
+              <BrandLogo variant="icon" size="sm" className="size-8" aria-hidden="true" />
             </span>
             <div>
               <p className="text-sm font-medium text-white/75 dark:text-foreground-dark/75">BOAO Enterprise</p>
@@ -596,6 +609,10 @@ export function StandardLoginPages({
               />
             </div>
           </div>
+
+          <p className="relative text-xs font-medium tracking-[0.08em] text-white/70 dark:text-foreground-dark/60">
+            © 2026 HIGASHIKAWA CO., LTD. All Rights Reserved.
+          </p>
         </section>
 
         <section className="relative flex min-h-[50vh] items-center justify-center p-6 lg:min-h-screen">

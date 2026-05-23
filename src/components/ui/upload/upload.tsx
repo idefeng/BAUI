@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
+import { BrandLogo } from '../branding';
 import { Button } from '../button';
 import { clampNumber } from '../shared/logic';
 import { uiStatusStyles, uiStyles, type UiProgressStatus } from '../shared/styles';
@@ -368,7 +369,7 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
           }}
           onDrop={handleDrop}
           className={cn(
-            'group flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-border bg-surface p-8 text-center shadow-button transition-all duration-300 dark:border-border-dark dark:bg-surface-dark',
+            'group relative flex min-h-56 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-border bg-surface p-8 text-center shadow-button transition-all duration-300 dark:border-border-dark dark:bg-surface-dark',
             uiStyles.focusBreathingRing,
             'hover:border-primary hover:bg-primary/5 dark:hover:border-primary-dark dark:hover:bg-primary-dark-soft/35',
             isDragging && 'scale-[1.01] border-primary bg-primary/5 dark:border-primary-dark dark:bg-primary-dark-soft/45',
@@ -390,15 +391,27 @@ export const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
             className="sr-only"
             onChange={handleInputChange}
           />
-          <span className="flex size-16 items-center justify-center rounded-3xl bg-primary-soft text-primary transition-transform duration-300 group-hover:scale-105 dark:bg-primary-dark-soft dark:text-primary-dark">
-            <UploadCloud className="size-8" aria-hidden="true" />
-          </span>
-          <span className={cn('mt-5 text-lg font-semibold', uiStyles.textForeground)}>拖拽文件到这里，或点击上传</span>
-          <span className={cn('mt-2 max-w-lg text-sm leading-6', uiStyles.textMuted)}>
-            {multiple ? '支持多文件批量上传' : '支持单文件上传'}
-            {accept ? ` · 类型限制：${accept}` : ''}
-            {maxSize ? ` · 单文件不超过 ${maxSize}MB` : ''}
-          </span>
+          <div
+            data-testid="upload-brand-watermark"
+            className={cn(
+              'pointer-events-none absolute inset-0 flex items-center justify-center text-primary transition-all duration-500 dark:text-primary-dark',
+              isDragging ? 'animate-brand-pulse opacity-20' : 'opacity-10',
+            )}
+            aria-hidden="true"
+          >
+            <BrandLogo variant="icon" size="lg" className="size-36" />
+          </div>
+          <div className="relative z-10 flex flex-col items-center">
+            <span className="flex size-16 items-center justify-center rounded-3xl bg-primary-soft text-primary transition-transform duration-300 group-hover:scale-105 dark:bg-primary-dark-soft dark:text-primary-dark">
+              <UploadCloud className="size-8" aria-hidden="true" />
+            </span>
+            <span className={cn('mt-5 text-lg font-semibold', uiStyles.textForeground)}>拖拽文件到这里，或点击上传</span>
+            <span className={cn('mt-2 max-w-lg text-sm leading-6', uiStyles.textMuted)}>
+              {multiple ? '支持多文件批量上传' : '支持单文件上传'}
+              {accept ? ` · 类型限制：${accept}` : ''}
+              {maxSize ? ` · 单文件不超过 ${maxSize}MB` : ''}
+            </span>
+          </div>
         </label>
 
         {items.length > 0 ? (

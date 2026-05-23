@@ -106,6 +106,8 @@ describe('SmartTable', () => {
 
     rerender(<SmartTable columns={columns} data={[]} rowKey="id" emptyText="暂无项目数据" />);
 
+    expect(screen.getByTestId('smart-table-brand-placeholder')).toBeInTheDocument();
+    expect(screen.getByText('公司专属资产')).toBeInTheDocument();
     expect(screen.getByText('暂无项目数据')).toBeInTheDocument();
   });
 
@@ -138,6 +140,7 @@ describe('SmartTable', () => {
       render(<SmartTable mock mockType="project" />);
 
       expect(screen.getByTestId('smart-table-skeleton')).toBeInTheDocument();
+      expect(screen.getByTestId('smart-table-brand-placeholder')).toHaveTextContent('公司专属资产');
 
       await act(async () => {
         vi.advanceTimersByTime(800);

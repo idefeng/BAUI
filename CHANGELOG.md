@@ -4,6 +4,11 @@
 
 ### Added
 
+- 新增 Ant Design 覆盖清单 `docs/ant-design-component-coverage.md`，按 Ant 6.4.3 组件总览记录 BAUI 原子层覆盖状态、业务覆盖关系和后续建议。
+- 新增一批通用/布局/导航/数据录入/数据展示/反馈/其他类原子组件：`Affix`、`Alert`、`Anchor`、`App`、`AutoComplete`、`BorderBeam`、`Breadcrumb`、`Calendar`、`ColorPicker`、`ConfigProvider`、`Descriptions`、`Divider`、`Drawer`、`Empty`、`Flex`、`FloatButton`、`Grid`、`InputNumber`、`Layout`、`Masonry`、`Mentions`、`Menu`、`Popconfirm`、`Rate`、`Result`、`Segmented`、`Space`、`Spin`、`Splitter`、`Steps`、`Table`、`Timeline`、`Tour`、`Tree`、`Typography` 和 `Watermark`。
+- 新增纯 UI `Table`，支持中央 mock、选择列、排序、固定列、轻量虚拟窗口和展开行；`SmartTable` 继续保留搜索、筛选、分页和接口模拟等业务增强能力。
+- 新增纯 UI `Transfer`，根入口以 `UiTransfer` 导出以避免破坏既有业务 `Transfer`；支持搜索、左右移动、拖拽选择、面板全选和 Shift 键区间选择。
+- 新增 `Branding` 与 `Icons` 视觉基础组件，提供 BOAO/BA 品牌徽标、品牌背景层、水印和图标画廊 Storybook 验证场景。
 - 新增 `StandardLoginPages` 通用登录页模板，支持 `tech`、`education`、`minimal`、`split-screen` 和 `classic` 五种行业风格，覆盖暗黑模式、AI 一键填表和表单校验后提交回调。
 - 新增 `DashboardTemplate` 科技大屏模板页，支持 `mock={true}`、四格指标卡片和趋势分析图表占位。
 - 新增 `CardGridPage` 卡片网格模板页，整合 `Form` 搜索、`Card` 网格、`Skeleton` 加载态和 `Pagination` 分页，支持 mock 一键填表联动骨架屏。
@@ -12,6 +17,9 @@
 
 ### Changed
 
+- 公共入口补充导出 Ant 覆盖批次新增的原子组件，并将纯 UI Transfer 以 `UiTransfer`、`UiTransferItem` 和 `UiTransferProps` 暴露，保留业务 `Transfer` 默认导出兼容。
+- `StandardLoginPages`、`DashboardTemplate`、`SmartTable` 和 `Upload` 接入品牌徽标、品牌背景或品牌水印，统一 Storybook 代表页面中的 BOAO 视觉识别。
+- `.gitignore` 增加 `.playwright-cli/`，避免本地浏览器冒烟日志目录进入版本库。
 - 公共入口导出 `src/components/biz/login` 与 `src/components/biz/pages`，便于业务系统直接引用登录页与模板页。
 - 公共样式 `uiStyles` 补充浮层容器、选项交互态、空态面板、图标占位、Card footer 和 placeholder 等 Tailwind 片段，减少 `src/components/ui/` 内重复类名。
 - `Cascader`、`DateTimePicker`、`TreeSelect`、`Popover`、`Tooltip`、`Upload`、`Progress`、`Pagination` 和 `Card` 复用共享样式与轻量逻辑，保持原有 Props 和交互行为不变。

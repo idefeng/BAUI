@@ -3,7 +3,9 @@ import { Activity, Award, BookOpenCheck, LineChart, Radar, ShieldAlert, Trending
 
 import { cn } from '../../../lib/utils';
 import { mockDashboardMetrics, type MockDashboardMetric } from '../../../utils/mock';
+import { BrandLogo, BrandWatermark } from '../../ui/branding';
 import { Card } from '../../ui/card';
+import { ThemeToggle } from '../../ui/theme-toggle';
 
 export type DashboardMetric = MockDashboardMetric;
 
@@ -178,9 +180,15 @@ export function DashboardTemplate({
     >
       <div className="absolute -right-24 top-10 size-80 rounded-full bg-primary-soft/70 blur-3xl dark:bg-primary-dark-soft/35" aria-hidden="true" />
       <div className="absolute -left-20 bottom-20 size-72 rounded-full bg-success-soft/60 blur-3xl dark:bg-success-dark-soft/25" aria-hidden="true" />
-      <div className="relative mx-auto grid max-w-7xl gap-6">
+      <BrandWatermark
+        data-testid="dashboard-brand-watermark"
+        text="NEXUS 内部资产"
+        className="z-0 opacity-[0.045] dark:opacity-[0.08]"
+      />
+      <div className="relative z-10 mx-auto grid max-w-7xl gap-6">
         <header className="flex flex-col justify-between gap-4 rounded-3xl border border-primary/20 bg-surface/70 p-6 shadow-button backdrop-blur dark:border-primary-dark/25 dark:bg-surface-dark/60 lg:flex-row lg:items-center">
-          <div className="space-y-3">
+          <div className="space-y-4">
+            <BrandLogo data-testid="dashboard-brand-logo" variant="full" size="md" />
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-3 py-1.5 text-xs font-semibold text-primary dark:border-primary-dark/30 dark:bg-primary-dark-soft dark:text-primary-dark">
               <LineChart className="size-3.5" aria-hidden="true" />
               BOAO DATA SCREEN
@@ -194,14 +202,17 @@ export function DashboardTemplate({
               </p>
             </div>
           </div>
-          <div className="grid w-full max-w-sm grid-cols-2 gap-3 text-sm lg:w-72">
-            <div className="rounded-2xl border border-border bg-background/70 p-3 dark:border-border-dark dark:bg-background-dark/55">
-              <p className="text-muted-foreground dark:text-muted-dark-foreground">刷新频率</p>
-              <p className="mt-1 font-bold text-foreground dark:text-foreground-dark">5s</p>
-            </div>
-            <div className="rounded-2xl border border-border bg-background/70 p-3 dark:border-border-dark dark:bg-background-dark/55">
-              <p className="text-muted-foreground dark:text-muted-dark-foreground">数据状态</p>
-              <p className="mt-1 font-bold text-success dark:text-success-dark">在线</p>
+          <div className="flex w-full max-w-sm flex-col items-start gap-4 lg:w-72 lg:items-end">
+            <ThemeToggle />
+            <div className="grid w-full grid-cols-2 gap-3 text-sm">
+              <div className="rounded-2xl border border-border bg-background/70 p-3 dark:border-border-dark dark:bg-background-dark/55">
+                <p className="text-muted-foreground dark:text-muted-dark-foreground">刷新频率</p>
+                <p className="mt-1 font-bold text-foreground dark:text-foreground-dark">5s</p>
+              </div>
+              <div className="rounded-2xl border border-border bg-background/70 p-3 dark:border-border-dark dark:bg-background-dark/55">
+                <p className="text-muted-foreground dark:text-muted-dark-foreground">数据状态</p>
+                <p className="mt-1 font-bold text-success dark:text-success-dark">在线</p>
+              </div>
             </div>
           </div>
         </header>

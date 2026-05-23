@@ -176,3 +176,17 @@ const progress = mockProgress();
   ]}
 />
 ```
+
+## Ant Design 覆盖推进
+
+组件覆盖盘点记录在 `docs/ant-design-component-coverage.md`。BAUI 不按 Ant Design API 逐字复制，而是按企业培训业务组件库的原子层、业务层和品牌视觉边界做兼容实现。
+
+当前新增覆盖包含：
+
+- 通用与布局：`FloatButton`、`Typography`、`Divider`、`Flex`、`Grid`、`Layout`、`Masonry`、`Space`、`Splitter`。
+- 导航与数据录入：`Anchor`、`Breadcrumb`、`Menu`、`Steps`、`AutoComplete`、`ColorPicker`、`InputNumber`、`Mentions`、`Rate`、`UiTransfer`。
+- 数据展示：`Calendar`、`Descriptions`、`Empty`、`Segmented`、`Table`、`Timeline`、`Tour`、`Tree`。
+- 反馈与其他：`Alert`、`Drawer`、`Popconfirm`、`Result`、`Spin`、`Watermark`、`Affix`、`App`、`ConfigProvider`、`BorderBeam`。
+- 品牌基础：`Branding`、`Icons` 为登录页、Dashboard、SmartTable 空态和 Upload 提供统一 BOAO 视觉元素。
+
+纯 UI `Table` 和业务 `SmartTable` 分层使用：`Table` 负责排序、固定列、虚拟窗口和展开行；`SmartTable` 继续负责搜索、筛选、分页、动作按钮和接口模拟。根入口保留业务 `Transfer`，纯 UI 穿梭框通过 `UiTransfer` 导出。

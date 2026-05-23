@@ -201,6 +201,25 @@ export interface MockProgressData {
   status: MockProgressStatus;
 }
 
+export type MockCalendarEventStatus = 'primary' | 'success' | 'warning' | 'error';
+
+export interface MockCalendarEvent {
+  date: string;
+  title: string;
+  status: MockCalendarEventStatus;
+}
+
+export interface MockColorOption {
+  label: string;
+  value: string;
+}
+
+export interface MockMentionOption {
+  label: string;
+  value: string;
+  description?: string;
+}
+
 const userNames = ['林予安', '周明轩', '陈晓雨', '赵一诺', '王嘉宁', '许若辰', '李思远', '韩沐阳'];
 const projectNames = [
   '住建项目',
@@ -271,6 +290,18 @@ const progressSamples: MockProgressData[] = [
   { label: '课程平均完成率', value: 76, status: 'normal' },
   { label: '证书签发进度', value: 92, status: 'success' },
   { label: '异常任务处理率', value: 42, status: 'exception' },
+];
+const calendarEvents: MockCalendarEvent[] = [
+  { date: '2026-05-22', title: '线上直播', status: 'primary' },
+  { date: '2026-05-24', title: '证书复核', status: 'success' },
+  { date: '2026-05-28', title: '排课确认', status: 'warning' },
+];
+const watermarkContents = ['BOAO 内部预览', '仅供培训项目使用'];
+const colorOptions: MockColorOption[] = [
+  { label: '科技蓝', value: 'hsl(218 100% 43%)' },
+  { label: '成功绿', value: 'hsl(167 66% 44%)' },
+  { label: '警示橙', value: 'hsl(32 95% 44%)' },
+  { label: '危险红', value: 'hsl(4 86% 58%)' },
 ];
 const loginAccounts: Record<MockLoginRole, MockLoginAccount> = {
   admin: { username: 'boao.admin', password: 'Boao@2026', role: 'admin' },
@@ -545,6 +576,26 @@ export const mockProjects = (count: number): MockProject[] =>
 export const mockCourses = (count: number): MockCourse[] => mockProjects(count);
 
 export const mockSelectOptions = (type: MockSelectOptionType): MockSelectOption[] => [...selectOptionMap[type]];
+
+export const mockAutoCompleteOptions = (type: MockSelectOptionType = 'project'): MockSelectOption[] =>
+  mockSelectOptions(type);
+
+export const mockRateValue = (seed = Date.now()) => (Math.abs(Math.floor(seed)) % 2) + 4;
+
+export const mockCalendarEvents = (): MockCalendarEvent[] =>
+  calendarEvents.map((event) => ({ ...event }));
+
+export const mockWatermarkContent = (): string[] => [...watermarkContents];
+
+export const mockColorOptions = (): MockColorOption[] =>
+  colorOptions.map((option) => ({ ...option }));
+
+export const mockMentionOptions = (count = 6): MockMentionOption[] =>
+  mockUsers(count).map((user) => ({
+    label: user.name,
+    value: user.id,
+    description: `${user.projectName} / ${user.workUnit}`,
+  }));
 
 export const mockCascaderOptions = (): MockCascaderOption[] =>
   cascaderOrganizationOptions.map((option) => ({

@@ -8,6 +8,8 @@ describe('DashboardTemplate', () => {
     render(<DashboardTemplate mock />);
 
     expect(screen.getByTestId('dashboard-template-root')).toHaveClass('dark:bg-background-dark');
+    expect(screen.getByTestId('dashboard-brand-logo')).toHaveAttribute('aria-label', '灵境实训 / NEXUS LEARN 品牌标识');
+    expect(screen.getByTestId('dashboard-brand-watermark')).toHaveTextContent('NEXUS 内部资产');
     expect(screen.getAllByTestId('dashboard-metric-card')).toHaveLength(4);
     expect(screen.getByText('运营驾驶舱')).toBeInTheDocument();
     expect(screen.getAllByText('趋势分析图表占位')).toHaveLength(2);

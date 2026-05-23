@@ -41,16 +41,21 @@ describe('Upload', () => {
     render(<Upload />);
 
     const dropzone = screen.getByTestId('upload-dropzone');
+    const watermark = screen.getByTestId('upload-brand-watermark');
+
+    expect(watermark).toHaveClass('opacity-10');
 
     fireEvent.dragEnter(dropzone);
 
     expect(dropzone.className).toContain('border-primary');
     expect(dropzone.className).toContain('bg-primary/5');
     expect(dropzone.className).toContain('scale-[1.01]');
+    expect(watermark).toHaveClass('animate-brand-pulse');
 
     fireEvent.dragLeave(dropzone);
 
     expect(dropzone.className).not.toContain('scale-[1.01]');
+    expect(watermark).not.toHaveClass('animate-brand-pulse');
   });
 
   it('根据 accept 和 maxSize 拦截不合规文件', async () => {

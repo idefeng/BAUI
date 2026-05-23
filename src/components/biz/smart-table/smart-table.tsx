@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Inbox, LoaderCircle, Plus, Search } from 'lucide-react';
+import { LoaderCircle, Plus, Search } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
 import { mockProjects, mockUsers, type MockProject, type MockUser } from '../../../utils/mock';
 import { Button, type ButtonVariant } from '../../ui/button';
+import { BrandLogo } from '../../ui/branding';
 import { Input } from '../../ui/input';
 import {
   Select,
@@ -214,6 +215,29 @@ const getFallbackRecordKey = <T extends object>(record: T, index: number): Smart
 
   return typeof candidate === 'string' || typeof candidate === 'number' ? candidate : index;
 };
+
+function SmartTableBrandPlaceholder({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      data-testid="smart-table-brand-placeholder"
+      className={cn(
+        'flex flex-col items-center justify-center text-center',
+        compact ? 'gap-2 opacity-70' : 'gap-3',
+      )}
+    >
+      <div
+        className={cn(
+          'relative flex items-center justify-center rounded-3xl border border-primary/15 bg-primary-soft/60 text-primary shadow-sm dark:border-primary-dark/25 dark:bg-primary-dark-soft/40 dark:text-primary-dark',
+          compact ? 'size-20' : 'size-28',
+        )}
+      >
+        <div className="absolute inset-3 rounded-2xl border border-primary/15 dark:border-primary-dark/25" aria-hidden="true" />
+        <BrandLogo variant="icon" size="lg" className={compact ? 'size-12 opacity-80' : 'size-16 opacity-85'} aria-hidden="true" />
+      </div>
+      <p className="text-xs font-semibold tracking-[0.18em] text-primary dark:text-primary-dark">公司专属资产</p>
+    </div>
+  );
+}
 
 export function SmartTable<T extends object>({
   actionIcon = <Plus />,
@@ -483,15 +507,21 @@ export function SmartTable<T extends object>({
           </table>
         </div>
 
+        {isMockLoading ? (
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 top-12 z-10 flex items-center justify-center bg-gradient-to-b from-transparent via-surface/60 to-surface/85 backdrop-blur-[1px] dark:via-surface-dark/60 dark:to-surface-dark/85"
+            aria-hidden="true"
+          >
+            <SmartTableBrandPlaceholder compact />
+          </div>
+        ) : null}
+
         {data.length === 0 && !loading && !isMockLoading ? (
           <div
             data-testid="smart-table-empty"
             className="flex min-h-72 flex-col items-center justify-center gap-3 p-8 text-center dark:bg-surface-dark"
           >
-            <div className="relative flex size-24 items-center justify-center rounded-3xl bg-primary-soft text-primary dark:bg-primary-dark-soft dark:text-primary-dark">
-              <div className="absolute inset-3 rounded-2xl border border-primary/20 dark:border-primary-dark/30" />
-              <Inbox className="size-10" aria-hidden="true" />
-            </div>
+            <SmartTableBrandPlaceholder />
             <div className="space-y-1">
               <p className="text-sm font-semibold text-foreground dark:text-foreground-dark">{emptyText}</p>
               <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">调整搜索或筛选条件后再试试</p>

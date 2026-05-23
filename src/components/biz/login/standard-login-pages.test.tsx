@@ -5,6 +5,18 @@ import { describe, expect, it, vi } from 'vitest';
 import { StandardLoginPages } from './standard-login-pages';
 
 describe('StandardLoginPages', () => {
+  it.each(['tech', 'education', 'minimal', 'split-screen', 'classic'] as const)(
+    '%s 模板在表单正上方自动渲染标准品牌标识',
+    (type) => {
+      render(<StandardLoginPages type={type} onSubmit={() => undefined} />);
+
+      expect(screen.getByTestId('standard-login-brand-logo')).toHaveAttribute(
+        'aria-label',
+        '灵境实训 / NEXUS LEARN 品牌标识',
+      );
+    },
+  );
+
   it('education 模板展示学堂轮播、角色选择器和进入学堂按钮', () => {
     render(<StandardLoginPages type="education" onSubmit={() => undefined} />);
 
@@ -82,5 +94,12 @@ describe('StandardLoginPages', () => {
       username: 'gov_admin',
       password: 'Boao@2026',
     });
+  });
+
+  it('split-screen 模板左侧展示品牌背景与企业版权声明', () => {
+    render(<StandardLoginPages type="split-screen" onSubmit={() => undefined} />);
+
+    expect(screen.getByTestId('standard-login-brand-background')).toBeInTheDocument();
+    expect(screen.getByText('© 2026 HIGASHIKAWA CO., LTD. All Rights Reserved.')).toBeInTheDocument();
   });
 });
