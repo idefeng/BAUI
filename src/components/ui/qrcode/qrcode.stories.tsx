@@ -9,7 +9,7 @@ const meta = {
   component: QRCode,
   tags: ['autodocs'],
   args: {
-    value: 'https://boao.example.com/sign/check-in-2026',
+    value: 'https://etlchina.example.com/sign/check-in-2026',
     size: 176,
     status: 'active',
   },
@@ -32,8 +32,8 @@ export const Basic: Story = {};
 
 export const WithLogo: Story = {
   args: {
-    icon: <span>BO</span>,
-    value: 'https://boao.example.com/certificate/verify/BA-2026-0001',
+    icon: <span>ET</span>,
+    value: 'https://etlchina.example.com/certificate/verify/ETLCHINA-2026-0001',
   },
 };
 
@@ -44,8 +44,8 @@ export const Expired: Story = {
     return (
       <div className="space-y-4">
         <QRCode
-          value="https://boao.example.com/sign/expired"
-          icon={<span>BO</span>}
+          value="https://etlchina.example.com/sign/expired"
+          icon={<span>ET</span>}
           status={status}
           onRefresh={() => setStatus('active')}
         />

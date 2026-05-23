@@ -45,7 +45,7 @@ interface UploadItem {
   previewUrl?: string;
 }
 
-const mockCdnPrefix = 'https://cdn.nexus.internal/materials/';
+const mockCdnPrefix = 'https://cdn.etlchina.internal/materials/';
 const imageTypePrefix = 'image/';
 const spreadsheetExtensions = ['.xls', '.xlsx', '.csv'];
 const documentExtensions = ['.doc', '.docx'];

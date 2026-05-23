@@ -14,6 +14,13 @@
     transition-duration: 200ms;
   }
 
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, currentColor 1px, transparent 1px),
+      linear-gradient(to bottom, currentColor 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
   .focus-breathing-ring:focus-visible {
     --boao-focus-offset: theme('colors.background.DEFAULT');
     --boao-focus-core: rgb(0 82 217 / 0.28);

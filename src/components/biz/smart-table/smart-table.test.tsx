@@ -164,7 +164,7 @@ describe('SmartTable', () => {
         <SmartTable
           mock
           mockType="project"
-          ba_training_project="NEXUS-2026-AI"
+          ba_training_project="ETLCHINA-2026-AI"
           ba_trainning_title="AI-AGENT-ENGINEER"
           ba_trainning_type="CONTINUING-EDUCATION"
         />,

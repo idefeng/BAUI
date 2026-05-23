@@ -1,8 +1,8 @@
 import { getRegionPath, getRegionValuePath } from './regions';
 
 export const BA_TRAINING_PROJECT_WHITELIST = [
-  'NEXUS-2026-AI',
-  'NEXUS-2026-FRONTEND',
+  'ETLCHINA-2026-AI',
+  'ETLCHINA-2026-FRONTEND',
   'HIGASHI-CORE-2026',
 ] as const;
 
@@ -37,7 +37,7 @@ export interface BaBusinessProps {
 
 export interface MockUser {
   id: string;
-  /** 人员编号，统一使用 NX-2026-XXXX 格式，便于演示业务系统编码。 */
+  /** 人员编号，统一使用 ETLCHINA-2026-XXXX 格式，便于演示业务系统编码。 */
   code: string;
   name: string;
   /** 岗位名称，当前公司业务 mock 默认是从业人员。 */
@@ -208,6 +208,87 @@ export interface MockDashboardMetric {
   trendText: string;
 }
 
+export type MockFinanceTone = 'primary' | 'success' | 'warning' | 'danger' | 'gray';
+
+export interface MockFinanceChartPoint {
+  label: string;
+  savings: number;
+  income: number;
+  expenses: number;
+  /** 当前选中的柱形，用于还原参考图中的高亮日。 */
+  active?: boolean;
+}
+
+export interface MockFinanceSummaryMetric {
+  label: string;
+  value: string;
+  trendText: string;
+  trend: MockStatisticTrend;
+}
+
+export interface MockFinanceLimit {
+  label: string;
+  used: number;
+  limit: number;
+  helperText: string;
+}
+
+export interface MockFinanceCostCategory {
+  label: string;
+  percent: number;
+  tone: MockFinanceTone;
+}
+
+export interface MockFinanceGoal {
+  id: string;
+  label: string;
+  current: number;
+  target: number;
+  helperText: string;
+  tone: MockFinanceTone;
+}
+
+export interface MockFinanceTransaction {
+  id: string;
+  name: string;
+  date: string;
+  amount: string;
+  status: 'Completed' | 'Declined';
+  tone: MockFinanceTone;
+}
+
+export interface MockFinancePaymentContact {
+  id: string;
+  name: string;
+  initials: string;
+  tone: MockFinanceTone;
+}
+
+export interface MockFinanceDashboardData {
+  balance: string;
+  chart: MockFinanceChartPoint[];
+  summary: MockFinanceSummaryMetric[];
+  spendingLimit: MockFinanceLimit;
+  budgetTip: {
+    title: string;
+    description: string;
+  };
+  costAnalysis: {
+    month: string;
+    total: string;
+    categories: MockFinanceCostCategory[];
+  };
+  financialHealth: {
+    total: string;
+    trendText: string;
+    score: number;
+    description: string;
+  };
+  goals: MockFinanceGoal[];
+  quickPayments: MockFinancePaymentContact[];
+  transactions: MockFinanceTransaction[];
+}
+
 export interface MockCardGridItem {
   id: string;
   title: string;
@@ -273,7 +354,7 @@ const trainingTypes: MockTrainingType[] = ['职业培训', '继续教育', '专�
 const workUnits = [
   '南溪住建工程有限公司',
   '安心食品服务有限公司',
-  '博鳌继续医学教育中心',
+  '博奥继续医学教育中心',
   '康眠健康管理有限公司',
   '南溪社区营养服务中心',
   '华安应急救援服务站',
@@ -317,6 +398,75 @@ const dashboardMetrics: MockDashboardMetric[] = [
   { id: 'certificate-issued', label: '证书签发', value: '5.2w', suffix: '张', trend: 'up', trendText: '本月 +18.9%' },
   { id: 'risk-tasks', label: '异常预警', value: 18, suffix: '项', trend: 'down', trendText: '环比 -4.8%' },
 ];
+const financeDashboardData: MockFinanceDashboardData = {
+  balance: '$12,450',
+  chart: [
+    { label: 'Sun', savings: 10, income: 12, expenses: 3 },
+    { label: 'Mon', savings: 8, income: 10, expenses: 2 },
+    { label: 'Tue', savings: 11, income: 15, expenses: 3 },
+    { label: 'Wed', savings: 19, income: 15, expenses: 4, active: true },
+    { label: 'Thu', savings: 14, income: 17, expenses: 3 },
+    { label: 'Fri', savings: 18, income: 21, expenses: 6 },
+    { label: 'Sat', savings: 22, income: 24, expenses: 6 },
+  ],
+  summary: [
+    { label: 'Total income', value: '$15,000', trend: 'up', trendText: '5.1% from last month' },
+    { label: 'Total expenses', value: '$6,700', trend: 'down', trendText: '15.5% from last month' },
+    { label: 'Saved balance', value: '$8,300', trend: 'up', trendText: '20.7% from last month' },
+  ],
+  spendingLimit: {
+    label: 'Monthly spending limit',
+    used: 8600,
+    limit: 10000,
+    helperText: 'Recipient accounts',
+  },
+  budgetTip: {
+    title: 'Optimize your budget with these quick tips',
+    description: 'Start preparing for the 2025 tax season by saving 10-15% for deductions.',
+  },
+  costAnalysis: {
+    month: 'January',
+    total: '$8,450',
+    categories: [
+      { label: 'Housing', percent: 18, tone: 'warning' },
+      { label: 'Debt payments', percent: 7, tone: 'warning' },
+      { label: 'Food', percent: 6, tone: 'primary' },
+      { label: 'Transportation', percent: 9, tone: 'success' },
+      { label: 'Healthcare', percent: 10, tone: 'success' },
+      { label: 'Investments', percent: 17, tone: 'success' },
+      { label: 'Other', percent: 33, tone: 'gray' },
+    ],
+  },
+  financialHealth: {
+    total: '$15,780',
+    trendText: '17.5% from last month',
+    score: 75,
+    description: 'Based on aggregated transaction metrics over the past 30 days',
+  },
+  goals: [
+    { id: 'reserve', label: 'Reserve', current: 7000, target: 10000, helperText: 'Left to save 4 months', tone: 'success' },
+    { id: 'travel', label: 'Travel', current: 2500, target: 4000, helperText: 'Left to save 3 months', tone: 'warning' },
+    { id: 'car', label: 'Car', current: 1600, target: 20000, helperText: 'Left to save 3 years 6 months', tone: 'warning' },
+    { id: 'real-estate', label: 'Real estate', current: 8300, target: 70000, helperText: 'Left to save 5 years 8 months', tone: 'warning' },
+  ],
+  quickPayments: [
+    { id: 'davis', name: 'Davis', initials: 'DR', tone: 'primary' },
+    { id: 'elli', name: 'Elli', initials: 'EA', tone: 'warning' },
+    { id: 'leo', name: 'Leo', initials: 'LR', tone: 'gray' },
+    { id: 'amanda', name: 'Amanda', initials: 'AM', tone: 'success' },
+    { id: 'ann', name: 'Ann', initials: 'AN', tone: 'warning' },
+    { id: 'sin', name: 'Sin', initials: 'SN', tone: 'primary' },
+  ],
+  transactions: [
+    { id: 'dividend', name: 'Dividend payout', date: '25 Feb 2025', amount: '+ $1,100', status: 'Completed', tone: 'success' },
+    { id: 'subscriptions', name: 'Corporate subscriptions', date: '25 Feb 2025', amount: '- $6,400', status: 'Declined', tone: 'danger' },
+    { id: 'etf', name: 'Investment in ETF', date: '21 Feb 2025', amount: '- $900', status: 'Completed', tone: 'gray' },
+    { id: 'consulting', name: 'Consulting services', date: '21 Feb 2025', amount: '- $2,100', status: 'Completed', tone: 'primary' },
+    { id: 'equipment', name: 'Equipment purchase', date: '20 Feb 2025', amount: '- $1,700', status: 'Completed', tone: 'warning' },
+    { id: 'elli-harper', name: 'Elli Harper', date: '15 Feb 2025', amount: '+ $600', status: 'Completed', tone: 'warning' },
+    { id: 'davis-rowen', name: 'Davis Rowen', date: '15 Feb 2025', amount: '+ $800', status: 'Completed', tone: 'primary' },
+  ],
+};
 const cardTagPool = ['线上班', '可报名', '证书服务', '教务跟进', '企业内训', '质量复核'];
 const tagSamples: MockTagData[] = [
   { label: 'React 组件库', variant: 'primary' },
@@ -335,7 +485,7 @@ const calendarEvents: MockCalendarEvent[] = [
   { date: '2026-05-24', title: '证书复核', status: 'success' },
   { date: '2026-05-28', title: '排课确认', status: 'warning' },
 ];
-const watermarkContents = ['BOAO 内部预览', '仅供培训项目使用'];
+const watermarkContents = ['ETLCHINA 内部预览', '仅供培训项目使用'];
 const colorOptions: MockColorOption[] = [
   { label: '科技蓝', value: 'hsl(218 100% 43%)' },
   { label: '成功绿', value: 'hsl(167 66% 44%)' },
@@ -343,10 +493,10 @@ const colorOptions: MockColorOption[] = [
   { label: '危险红', value: 'hsl(4 86% 58%)' },
 ];
 const loginAccounts: Record<MockLoginRole, MockLoginAccount> = {
-  admin: { username: 'boao.admin', password: 'Boao@2026', role: 'admin' },
-  student: { username: 'student.demo', password: 'Boao@2026', role: 'student' },
-  teacher: { username: 'teacher.demo', password: 'Boao@2026', role: 'teacher' },
-  'academic-admin': { username: 'academic.admin', password: 'Boao@2026', role: 'academic-admin' },
+  admin: { username: 'etlchina.admin', password: 'EtlChina@2026', role: 'admin' },
+  student: { username: 'student.demo', password: 'EtlChina@2026', role: 'student' },
+  teacher: { username: 'teacher.demo', password: 'EtlChina@2026', role: 'teacher' },
+  'academic-admin': { username: 'academic.admin', password: 'EtlChina@2026', role: 'academic-admin' },
 };
 
 const selectOptionMap: Record<MockSelectOptionType, MockSelectOption[]> = {
@@ -383,7 +533,7 @@ const selectOptionMap: Record<MockSelectOptionType, MockSelectOption[]> = {
 const cascaderOrganizationOptions: MockCascaderOption[] = [
   {
     value: 'boao-hq',
-    label: '灵境实训总公司',
+    label: '博奥教育总公司',
     children: [
       {
         value: 'technology-center',
@@ -428,7 +578,7 @@ const cascaderOrganizationOptions: MockCascaderOption[] = [
 const globalOrganizationTree: MockTreeNode[] = [
   {
     key: 'global-hq',
-    title: '灵境实训集团总部',
+    title: '博奥教育集团总部',
     children: [
       {
         key: 'global-apac',
@@ -613,14 +763,14 @@ interface BusinessContext {
 }
 
 const businessProjectPresets: Record<BaTrainingProject, BusinessProjectPreset> = {
-  'NEXUS-2026-AI': {
-    projectName: 'NEXUS 2026 AI 实训项目',
-    organizer: '灵境 AI 实训中心',
+  'ETLCHINA-2026-AI': {
+    projectName: 'ETLCHINA 2026 AI 实训项目',
+    organizer: '博奥教育 AI 实训中心',
     courseSubjects: ['Python 智能体开发', '大模型 fine-tune 实战', 'AI Agent 生产部署'],
   },
-  'NEXUS-2026-FRONTEND': {
-    projectName: 'NEXUS 2026 前端工程项目',
-    organizer: '灵境前端体验中心',
+  'ETLCHINA-2026-FRONTEND': {
+    projectName: 'ETLCHINA 2026 前端工程项目',
+    organizer: '博奥教育前端体验中心',
     courseSubjects: ['React 组件工程', 'TypeScript 业务建模', '前端质量工程'],
   },
   'HIGASHI-CORE-2026': {
@@ -860,7 +1010,7 @@ export const mockUsers = (count: number, businessProps: BaBusinessProps = {}): M
   const businessContext = createBusinessContext(businessProps);
 
   return Array.from({ length: normalizeCount(count) }, (_, index) => {
-    const code = `NX-2026-${String(index + 1).padStart(4, '0')}`;
+    const code = `ETLCHINA-2026-${String(index + 1).padStart(4, '0')}`;
     const name = userNames[index % userNames.length];
     const projectName = getBusinessProjectName(businessContext, index);
     const trainingType = getBusinessTrainingType(businessContext, index);
@@ -1110,6 +1260,22 @@ export const mockDashboardMetrics = (businessProps: BaBusinessProps = {}): MockD
   return dashboardMetrics.map((metric) => ({ ...metric }));
 };
 
+export const mockFinanceDashboardData = (): MockFinanceDashboardData => ({
+  ...financeDashboardData,
+  chart: financeDashboardData.chart.map((point) => ({ ...point })),
+  summary: financeDashboardData.summary.map((metric) => ({ ...metric })),
+  spendingLimit: { ...financeDashboardData.spendingLimit },
+  budgetTip: { ...financeDashboardData.budgetTip },
+  costAnalysis: {
+    ...financeDashboardData.costAnalysis,
+    categories: financeDashboardData.costAnalysis.categories.map((category) => ({ ...category })),
+  },
+  financialHealth: { ...financeDashboardData.financialHealth },
+  goals: financeDashboardData.goals.map((goal) => ({ ...goal })),
+  quickPayments: financeDashboardData.quickPayments.map((contact) => ({ ...contact })),
+  transactions: financeDashboardData.transactions.map((transaction) => ({ ...transaction })),
+});
+
 export const mockCardGridItems = (count = 12, businessProps: BaBusinessProps = {}): MockCardGridItem[] =>
   mockProjects(count, businessProps).map((project, index) => ({
     id: `card-project-${String(index + 1).padStart(4, '0')}`,
@@ -1173,15 +1339,15 @@ export const mockCertificate = (
   const certificateMeta: Record<MockCertificateType, Pick<MockCertificateData, 'hours' | 'credits' | 'certificateNo'>> = {
     hours: {
       hours: businessContext.baseHours ?? 48,
-      certificateNo: 'NX-CERT-HOURS-2026-0001',
+      certificateNo: 'ETLCHINA-CERT-HOURS-2026-0001',
     },
     qualified: {
       hours: businessContext.baseHours ?? 64,
-      certificateNo: 'NX-CERT-QUALIFIED-2026-0002',
+      certificateNo: 'ETLCHINA-CERT-QUALIFIED-2026-0002',
     },
     education: {
       credits: businessContext.annualCredits ?? 12,
-      certificateNo: 'NX-CERT-EDU-2026-0003',
+      certificateNo: 'ETLCHINA-CERT-EDU-2026-0003',
     },
   };
 
@@ -1199,7 +1365,7 @@ export const mockCertificate = (
           ? `${project.projectName}培训合格班`
           : `${project.projectName}在线学时课程`,
     issuedAt: '2026-05-22',
-    organization: businessContext.regionBranchName ?? businessContext.organizer ?? '灵境实训',
+    organization: '博奥教育 (ETLCHINA)',
     ...certificateMeta[effectiveType],
   };
 };
@@ -1284,7 +1450,7 @@ export const mockLearningProfile = (
     projectName: '企业级前端全栈工程化训练营',
     courseName: 'Next.js全栈工程化',
     hours: 48,
-    certificateNo: 'NX-IT-QUALIFIED-2026-0408',
+    certificateNo: 'ETLCHINA-IT-QUALIFIED-2026-0408',
     issuedAt: '2026-04-08',
   };
   const hoursCertificate: MockCertificateData = {
@@ -1294,7 +1460,7 @@ export const mockLearningProfile = (
     projectName: '云原生应用研发能力提升计划',
     courseName: 'Node.js服务端实战',
     hours: 64,
-    certificateNo: 'NX-IT-HOURS-2026-0318',
+    certificateNo: 'ETLCHINA-IT-HOURS-2026-0318',
     issuedAt: '2026-03-18',
   };
 
@@ -1304,7 +1470,7 @@ export const mockLearningProfile = (
       name: '张三',
       idCardMasked: '110101********1234',
       jobTitle: '前端工程师',
-      workUnit: '灵境实训数字化研发中心',
+      workUnit: '博奥教育数字化研发中心',
       joinedAt: '2026-02-28',
     },
     summary: {

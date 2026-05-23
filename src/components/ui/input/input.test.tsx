@@ -29,10 +29,10 @@ describe('Input', () => {
     const onClear = vi.fn();
     const user = userEvent.setup();
 
-    render(<Input aria-label="姓名" clearable defaultValue="博鳌" onClear={onClear} />);
+    render(<Input aria-label="姓名" clearable defaultValue="博奥" onClear={onClear} />);
 
     const input = screen.getByRole('textbox', { name: '姓名' });
-    expect(input).toHaveValue('博鳌');
+    expect(input).toHaveValue('博奥');
 
     await user.click(screen.getByRole('button', { name: '清除输入内容' }));
 
@@ -41,7 +41,7 @@ describe('Input', () => {
   });
 
   it('禁用时不展示清除按钮并保留 disabled 语义', () => {
-    render(<Input aria-label="编码" clearable disabled defaultValue="BA-001" />);
+    render(<Input aria-label="编码" clearable disabled defaultValue="ETLCHINA-001" />);
 
     expect(screen.getByRole('textbox', { name: '编码' })).toBeDisabled();
     expect(screen.queryByRole('button', { name: '清除输入内容' })).not.toBeInTheDocument();

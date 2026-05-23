@@ -37,7 +37,7 @@ export const Gallery: Story = {
   render: (args) => (
     <div className="grid gap-6 rounded-3xl border border-border bg-background p-6 dark:border-border-dark dark:bg-background-dark">
       <div>
-        <h3 className="text-lg font-semibold text-foreground dark:text-foreground-dark">BOAO 企业业务图标</h3>
+        <h3 className="text-lg font-semibold text-foreground dark:text-foreground-dark">ETLCHINA 企业业务图标</h3>
         <p className="mt-2 text-sm text-muted-foreground dark:text-muted-dark-foreground">
           统一圆角线性风格，主色跟随 currentColor，强调色默认使用 success 语义 token。
         </p>

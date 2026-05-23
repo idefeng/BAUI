@@ -1,3 +1,7 @@
+// 样式合并工具作为组件库公共入口，方便业务项目统一消费 Tailwind className 合并规则。
+export { cn } from './lib/utils';
+
+// UI 原子组件导出区。
 export * from './components/ui/button';
 export * from './components/ui/accordion';
 export * from './components/ui/affix';
@@ -73,12 +77,17 @@ export {
   type TransferProps as UiTransferProps,
 } from './components/ui/transfer';
 export * from './components/ui/watermark';
+
+// Biz 业务组件与页面模板导出区。
 export * from './components/biz/certificate';
+export * from './components/biz/hub';
 export * from './components/biz/login';
 export * from './components/biz/navigation';
 export * from './components/biz/pages';
 export * from './components/biz/profile';
 export * from './components/biz/smart-table';
 export * from './components/biz/transfer';
+
+// 企业业务属性、Mock 造血机和全国行政区划基础设施导出区。
 export * from './utils/mock';
 export * from './utils/regions';

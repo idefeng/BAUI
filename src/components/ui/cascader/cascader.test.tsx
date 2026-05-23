@@ -117,7 +117,7 @@ describe('Cascader', () => {
     render(<ControlledCascader mock />);
 
     await user.click(screen.getByRole('combobox', { name: '请选择组织' }));
-    await user.click(screen.getByRole('menuitem', { name: /灵境实训总公司/ }));
+    await user.click(screen.getByRole('menuitem', { name: /博奥教育总公司/ }));
 
     expect(screen.getByRole('menuitem', { name: /技术中心/ })).toBeInTheDocument();
     expect(screen.getByRole('menuitem', { name: /学习产品中心/ })).toBeInTheDocument();

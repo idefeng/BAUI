@@ -15,14 +15,14 @@ type Story = StoryObj<typeof meta>;
 export const AdminShell: Story = {
   render: () => (
     <Layout className="w-[860px] flex-col overflow-hidden rounded-2xl border border-border dark:border-border-dark">
-      <LayoutHeader>BOAO UI 后台</LayoutHeader>
+      <LayoutHeader>ETLCHINA UI 后台</LayoutHeader>
       <Layout className="min-h-80">
         <LayoutSider>项目管理</LayoutSider>
         <LayoutContent>
           <div className="rounded-2xl bg-secondary p-6 dark:bg-secondary-dark">页面内容区域</div>
         </LayoutContent>
       </Layout>
-      <LayoutFooter>© BOAO UI</LayoutFooter>
+      <LayoutFooter>© ETLCHINA UI</LayoutFooter>
     </Layout>
   ),
 };

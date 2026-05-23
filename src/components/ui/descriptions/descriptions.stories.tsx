@@ -8,7 +8,7 @@ const items = [
   { label: '负责人', children: '李老师' },
   { label: '报名人数', children: '128 人' },
   { label: '开班时间', children: '2026-05-24 14:45' },
-  { label: '承训机构', children: '博鳌继续教育中心', span: 2 },
+  { label: '承训机构', children: '博奥继续教育中心', span: 2 },
 ];
 
 const meta = {

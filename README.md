@@ -1,6 +1,6 @@
-# BOAO UI
+# ETLCHINA UI
 
-BOAO UI 是面向公司业务系统的 React + Tailwind 组件库，当前以 Storybook 作为主要预览和验收入口。
+ETLCHINA UI 是面向公司业务系统的 React + Tailwind 组件库，当前以 Storybook 作为主要预览和验收入口。
 
 ## 开发命令
 
@@ -10,6 +10,62 @@ npm run test:run
 npm run typecheck
 npm run build
 npm run build-storybook
+```
+
+## 工程文档
+
+- [版本管理与工程打包指南](docs/version-management-and-packaging.md)
+
+## 库构建与本地消费联调
+
+ETLCHINA UI 使用 Vite Library Mode 打包，入口为 `src/index.ts`，构建后输出 ESM、CommonJS 和完整类型声明：
+
+```bash
+npm run build
+```
+
+产物入口：
+
+- ESM：`dist/index.js`
+- CommonJS：`dist/index.cjs`
+- 类型声明：`dist/index.d.ts`
+
+本地消费项目联调建议走 tarball，能更接近真实 npm 安装：
+
+```bash
+npm pack
+cd /path/to/consumer-app
+npm install /Users/idefeng/Documents/BAUI/etlchina-ui-0.1.0.tgz
+```
+
+调用方需要提供 React、Tailwind CSS 和 Radix 底座依赖。Tailwind 配置最小示例：
+
+```ts
+import etlChinaTailwindConfig from 'etlchina-ui/tailwind.config';
+
+export default {
+  presets: [etlChinaTailwindConfig],
+  content: ['./src/**/*.{ts,tsx}', './node_modules/etlchina-ui/dist/**/*.{js,cjs}'],
+};
+```
+
+业务入口快速冒烟：
+
+```tsx
+import 'etlchina-ui/styles.css';
+import { Button, SmartTable, cn, getRegionOptions } from 'etlchina-ui';
+
+export function Smoke() {
+  const cityOptions = getRegionOptions('CITY');
+
+  return (
+    <section className={cn('space-y-4 p-6')}>
+      <Button>ETLCHINA UI</Button>
+      <SmartTable mock mockType="project" />
+      <pre>{JSON.stringify(cityOptions[0], null, 2)}</pre>
+    </section>
+  );
+}
 ```
 
 ## Mock 数据工坊
@@ -54,7 +110,7 @@ import {
   mockTags,
   mockTreeData,
   mockUsers,
-} from 'boao-ui';
+} from 'etlchina-ui';
 
 const workers = mockUsers(8);
 const projects = mockProjects(8);
@@ -90,7 +146,7 @@ const cityRegionOptions = getRegionOptions('CITY');
 <SmartTable
   mock
   mockType="user"
-  ba_training_project="NEXUS-2026-AI"
+  ba_training_project="ETLCHINA-2026-AI"
   ba_trainning_title="AI-AGENT-ENGINEER"
   ba_trainning_type="CONTINUING-EDUCATION"
   ba_region_scope="440000"
@@ -152,6 +208,7 @@ const cityRegionOptions = getRegionOptions('CITY');
 
 ```tsx
 <DashboardTemplate mock />
+<DashboardTemplate mock pageType="finance" />
 <CardGridPage mock />
 ```
 
@@ -209,7 +266,7 @@ const cityRegionOptions = getRegionOptions('CITY');
 
 ## Ant Design 覆盖推进
 
-组件覆盖盘点记录在 `docs/ant-design-component-coverage.md`。BAUI 不按 Ant Design API 逐字复制，而是按企业培训业务组件库的原子层、业务层和品牌视觉边界做兼容实现。
+组件覆盖盘点记录在 `docs/ant-design-component-coverage.md`。ETLCHINA UI 不按 Ant Design API 逐字复制，而是按企业培训业务组件库的原子层、业务层和品牌视觉边界做兼容实现。
 
 当前新增覆盖包含：
 
@@ -217,6 +274,6 @@ const cityRegionOptions = getRegionOptions('CITY');
 - 导航与数据录入：`Anchor`、`Breadcrumb`、`Menu`、`Steps`、`AutoComplete`、`ColorPicker`、`InputNumber`、`Mentions`、`Rate`、`UiTransfer`。
 - 数据展示：`Calendar`、`Descriptions`、`Empty`、`Segmented`、`Table`、`Timeline`、`Tour`、`Tree`。
 - 反馈与其他：`Alert`、`Drawer`、`Popconfirm`、`Result`、`Spin`、`Watermark`、`Affix`、`App`、`ConfigProvider`、`BorderBeam`。
-- 品牌基础：`Branding`、`Icons` 为登录页、Dashboard、SmartTable 空态和 Upload 提供统一 BOAO 视觉元素。
+- 品牌基础：`Branding`、`Icons` 为登录页、Dashboard、SmartTable 空态和 Upload 提供统一 ETLCHINA 视觉元素。
 
 纯 UI `Table` 和业务 `SmartTable` 分层使用：`Table` 负责排序、固定列、虚拟窗口和展开行；`SmartTable` 继续负责搜索、筛选、分页、动作按钮和接口模拟。根入口保留业务 `Transfer`，纯 UI 穿梭框通过 `UiTransfer` 导出。

@@ -9,7 +9,7 @@ const meta = {
   args: {
     children: (
       <div className="p-6">
-        <h3 className="text-base font-semibold text-foreground dark:text-foreground-dark">BOAO 品牌入口</h3>
+        <h3 className="text-base font-semibold text-foreground dark:text-foreground-dark">ETLCHINA 品牌入口</h3>
         <p className="mt-2 text-sm text-muted-foreground dark:text-muted-dark-foreground">
           用于突出少量重点动作或品牌展示块。
         </p>

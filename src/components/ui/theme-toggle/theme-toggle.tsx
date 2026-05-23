@@ -21,7 +21,7 @@ export interface ThemeToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLBu
   showLabel?: boolean;
 }
 
-const DEFAULT_STORAGE_KEY = 'boao-ui-theme';
+const DEFAULT_STORAGE_KEY = 'etlchina-ui-theme';
 
 const isThemeMode = (value: string | null): value is ThemeMode => value === 'light' || value === 'dark';
 

@@ -31,7 +31,7 @@ describe('Upload', () => {
 
       expect(screen.getByText('上传完成')).toBeInTheDocument();
       expect(screen.getByText('100%')).toBeInTheDocument();
-      expect(onChange).toHaveBeenLastCalledWith(['https://cdn.nexus.internal/materials/mock-file.pdf']);
+      expect(onChange).toHaveBeenLastCalledWith(['https://cdn.etlchina.internal/materials/mock-file.pdf']);
     } finally {
       vi.useRealTimers();
     }

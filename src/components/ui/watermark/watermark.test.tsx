@@ -23,6 +23,6 @@ describe('Watermark', () => {
     );
 
     expect(screen.getByText('项目材料')).toBeInTheDocument();
-    expect(screen.getAllByText('BOAO 内部预览').length).toBeGreaterThan(1);
+    expect(screen.getAllByText('ETLCHINA 内部预览').length).toBeGreaterThan(1);
   });
 });

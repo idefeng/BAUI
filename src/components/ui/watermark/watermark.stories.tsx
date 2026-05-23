@@ -12,7 +12,7 @@ const meta = {
       <div className="space-y-3 p-8 text-foreground dark:text-foreground-dark">
         <h3 className="text-lg font-semibold">食品安全管理员项目证书预览</h3>
         <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">
-          学员：林予安；证书编号：BOAO-2026-0522
+          学员：林予安；证书编号：ETLCHINA-2026-0522
         </p>
       </div>
     ),

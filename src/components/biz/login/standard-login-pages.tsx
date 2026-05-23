@@ -90,7 +90,7 @@ const initialFormValue: LoginFormState = {
   remember: false,
 };
 
-const captchaCode = 'BA26';
+const captchaCode = 'ET26';
 
 const templateCopy: Record<StandardLoginPageType, { title: string; description: string; buttonText: string }> = {
   tech: {
@@ -99,7 +99,7 @@ const templateCopy: Record<StandardLoginPageType, { title: string; description: 
     buttonText: '登录控制台',
   },
   education: {
-    title: '灵境实训学堂',
+    title: '博奥教育学堂',
     description: '连接学员、讲师与教务协同的在线学习工作台。',
     buttonText: '进入学堂',
   },
@@ -580,7 +580,7 @@ export function StandardLoginPages({
               <BrandLogo variant="icon" size="sm" className="size-8" aria-hidden="true" />
             </span>
             <div>
-              <p className="text-sm font-medium text-white/75 dark:text-foreground-dark/75">BOAO Enterprise</p>
+              <p className="text-sm font-medium text-white/75 dark:text-foreground-dark/75">ETLCHINA Enterprise</p>
               <h1 className="text-2xl font-bold tracking-normal text-white dark:text-foreground-dark">大型集团学习运营主系统</h1>
             </div>
           </div>
@@ -634,7 +634,7 @@ export function StandardLoginPages({
             <BookOpenCheck />
           </span>
           <div>
-            <p className="text-sm font-medium text-muted-foreground dark:text-muted-dark-foreground">BOAO Continuing Education</p>
+            <p className="text-sm font-medium text-muted-foreground dark:text-muted-dark-foreground">ETLCHINA Continuing Education</p>
             <h1 className="text-2xl font-bold tracking-normal text-foreground dark:text-foreground-dark">继续教育学分管理系统</h1>
           </div>
         </div>
@@ -643,7 +643,7 @@ export function StandardLoginPages({
         {form}
       </main>
       <footer className="border-t border-border bg-surface/80 px-6 py-4 text-center text-sm text-muted-foreground dark:border-border-dark dark:bg-surface-dark/80 dark:text-muted-dark-foreground">
-        © 2026 博鳌智能培训平台 版权所有
+        © 2026 博奥智能培训平台 版权所有
       </footer>
     </div>
   );

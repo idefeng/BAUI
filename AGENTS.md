@@ -1,4 +1,4 @@
-# BOAO UI Codex Rules
+# ETLCHINA UI Codex Rules
 
 ## 1. 任务判断与沟通规则
 
@@ -29,7 +29,7 @@
 - 组件尽量保持纯 UI 渲染逻辑，状态优先由外部 Controlled 传入。
 - 新功能和行为变更优先使用测试驱动：先补测试，再实现，再验证。
 
-## 4. BOAO UI 技术栈
+## 4. ETLCHINA UI 技术栈
 
 - 框架：React 18+、TypeScript、Vite。
 - 样式：Tailwind CSS、clsx、tailwind-merge。
@@ -38,7 +38,7 @@
 - 文档与预览：Storybook。
 - 测试：Vitest、Testing Library。
 
-## 5. BOAO UI 视觉规范
+## 5. ETLCHINA UI 视觉规范
 
 - 所有组件样式必须基于 `tailwind.config.js` 中定义的语义化变量。
 - 严禁在组件内部使用任何硬编码 hex 颜色值，例如 `bg-[#0066FF]`。
@@ -50,7 +50,7 @@
 - 暗黑模式由 `darkMode: 'class'` 驱动，通过在 `html` 或 `body` 上添加 `dark` 类名控制。
 - 科技蓝和成功色在暗色背景下必须保持足够对比度和可读性。
 
-## 6. BOAO UI 组件目录规范
+## 6. ETLCHINA UI 组件目录规范
 
 每个组件必须独立成目录，结构如下：
 
@@ -74,7 +74,7 @@ src/components/biz/component-name/
 
 组件实现完成后，应在 `src/index.ts` 中导出。
 
-## 7. BOAO UI 组件实现约定
+## 7. ETLCHINA UI 组件实现约定
 
 - 所有 Radix 可套壳组件一律基于 Radix UI 原语封装，不自研复杂交互、定位、焦点管理和无障碍行为。
 - 组件样式使用 `cn` 组合 className，公共样式优先沉淀到 `src/components/ui/shared/styles.ts`。

@@ -31,7 +31,7 @@ const mockRows: ApiProjectRow[] = Array.from({ length: 36 }, (_, index) => {
   const departments = ['资源平台部', '教学运营部', '医学内容部'];
 
   return {
-    id: `BA-${String(index + 1).padStart(3, '0')}`,
+    id: `ETLCHINA-${String(index + 1).padStart(3, '0')}`,
     name: ['住建项目报名管理', '食品安全管理员资料审核', '继续医学教育数据看板', '睡眠健康管理师培训排期'][index % 4],
     status: statuses[index % statuses.length],
     owner: ['林医生', '王老师', '陈主任', '赵经理'][index % 4],
@@ -132,7 +132,7 @@ const meta = {
     columns,
     data: [],
     rowKey: 'id',
-    ba_training_project: 'NEXUS-2026-AI',
+    ba_training_project: 'ETLCHINA-2026-AI',
     ba_trainning_title: 'AI-AGENT-ENGINEER',
     ba_trainning_type: 'CONTINUING-EDUCATION',
     ba_region_scope: '440000',

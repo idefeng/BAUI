@@ -76,7 +76,7 @@ const emptyCertificateData: CertificateData = {
   credits: 0,
   certificateNo: '待生成',
   issuedAt: '待签发',
-  organization: '灵境实训',
+  organization: '博奥教育 (ETLCHINA)',
 };
 
 const CertificateInfoItem = ({ label, value }: { label: string; value?: React.ReactNode }) => (
@@ -136,7 +136,7 @@ export function CertificateTemplate({
         <div className="absolute inset-5 rounded-xl border border-amber-200/70 dark:border-amber-200/25" data-testid="certificate-inner-border" />
         <div className="absolute inset-10 rounded-lg border border-sky-200/60 dark:border-slate-500/40" />
         <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 -rotate-12 select-none text-center text-6xl font-black tracking-[0.32em] text-primary/5 dark:text-amber-200/10">
-          灵境实训 / NEXUS
+          博奥教育 (ETLCHINA)
         </div>
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,_rgba(0,82,217,0.11),transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(245,158,11,0.16),transparent_34%)] dark:bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.12),transparent_38%),radial-gradient(circle_at_bottom_right,_rgba(148,163,184,0.18),transparent_34%)]" />
 
@@ -180,15 +180,22 @@ export function CertificateTemplate({
 
           <footer className="mt-auto grid gap-8 pt-10 sm:grid-cols-[1fr_auto_auto] sm:items-end">
             <div className="space-y-2 text-sm text-muted-foreground dark:text-slate-400">
-              <p>发证单位：{certificateData.organization ?? '灵境实训'}</p>
+              <p>发证单位：{certificateData.organization ?? '博奥教育 (ETLCHINA)'}</p>
               <p>发证日期：{certificateData.issuedAt}</p>
             </div>
-            <div className="relative flex size-28 items-center justify-center rounded-full border-[6px] border-red-600 text-center text-sm font-black leading-5 text-red-600 opacity-90 dark:border-red-400 dark:text-red-300">
+            <div
+              aria-label="博奥教育 (ETLCHINA) 电子印章"
+              className="relative flex size-28 items-center justify-center rounded-full border-[6px] border-red-600 text-center text-[11px] font-black leading-4 text-red-600 opacity-90 dark:border-red-400 dark:text-red-300"
+            >
               <span className="absolute inset-3 rounded-full border border-red-600/70 dark:border-red-300/70" />
-              公司公章
+              <span className="relative px-2">
+                博奥教育
+                <br />
+                (ETLCHINA)
+              </span>
             </div>
             <div className="text-right text-xs uppercase tracking-[0.22em] text-muted-foreground dark:text-slate-500">
-              Nexus Training
+              ETLCHINA Training
             </div>
           </footer>
         </div>

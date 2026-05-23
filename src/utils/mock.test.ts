@@ -9,6 +9,7 @@ import {
   mockCertificate,
   mockCourses,
   mockDashboardMetrics,
+  mockFinanceDashboardData,
   mockLearningProfile,
   mockLoginAccount,
   mockPickTechnologyInterests,
@@ -28,8 +29,8 @@ import {
 describe('mock data workshop', () => {
   it('暴露公司业务属性官方白名单，供组件和 Storybook 统一复用', () => {
     expect(BA_TRAINING_PROJECT_WHITELIST).toEqual([
-      'NEXUS-2026-AI',
-      'NEXUS-2026-FRONTEND',
+      'ETLCHINA-2026-AI',
+      'ETLCHINA-2026-FRONTEND',
       'HIGASHI-CORE-2026',
     ]);
     expect(BA_TRAINNING_TITLE_WHITELIST).toEqual([
@@ -49,7 +50,7 @@ describe('mock data workshop', () => {
 
     expect(users).toHaveLength(3);
     expect(users[0]).toMatchObject({
-      code: 'NX-2026-0001',
+      code: 'ETLCHINA-2026-0001',
       name: '林予安',
       jobTitle: '从业人员',
       idCardMasked: '110101********2026',
@@ -88,7 +89,7 @@ describe('mock data workshop', () => {
 
   it('合法业务属性会让人员、课程、证书和学习档案切换为继续教育 AI 岗位语义', () => {
     const businessProps = {
-      ba_training_project: 'NEXUS-2026-AI',
+      ba_training_project: 'ETLCHINA-2026-AI',
       ba_trainning_title: 'AI-AGENT-ENGINEER',
       ba_trainning_type: 'CONTINUING-EDUCATION',
     };
@@ -97,7 +98,7 @@ describe('mock data workshop', () => {
     const certificate = mockCertificate('hours', businessProps);
     const profile = mockLearningProfile('student-ai-001', businessProps);
 
-    expect(users.every((user) => user.projectName === 'NEXUS 2026 AI 实训项目')).toBe(true);
+    expect(users.every((user) => user.projectName === 'ETLCHINA 2026 AI 实训项目')).toBe(true);
     expect(users.every((user) => user.jobTitle === 'AI Agent 工程师')).toBe(true);
     expect(users.every((user) => user.trainingType === '继续教育')).toBe(true);
     expect(courses.every((course) => course.courseName.startsWith('继续教育：'))).toBe(true);
@@ -180,7 +181,7 @@ describe('mock data workshop', () => {
     const options = mockCascaderOptions();
 
     expect(options).toHaveLength(1);
-    expect(options[0]).toMatchObject({ value: 'boao-hq', label: '灵境实训总公司' });
+    expect(options[0]).toMatchObject({ value: 'boao-hq', label: '博奥教育总公司' });
     expect(options[0].children).toHaveLength(4);
     expect(options[0].children?.map((option) => option.label)).toEqual(
       expect.arrayContaining(['技术中心', '学习产品中心', '市场增长中心', '客户成功中心']),
@@ -247,7 +248,7 @@ describe('mock data workshop', () => {
 
     expect(treeData[0]).toMatchObject({
       key: 'global-hq',
-      title: '灵境实训集团总部',
+      title: '博奥教育集团总部',
     });
     expect(treeData[0].children).toHaveLength(3);
     expect(treeData[0].children?.[0].children?.map((node) => node.title)).toEqual(
@@ -267,17 +268,17 @@ describe('mock data workshop', () => {
       idCardMasked: '110101********2026',
       projectName: '住建项目',
       hours: 48,
-      certificateNo: 'NX-CERT-HOURS-2026-0001',
+      certificateNo: 'ETLCHINA-CERT-HOURS-2026-0001',
     });
     expect(education.credits).toBe(12);
-    expect(education.certificateNo).toBe('NX-CERT-EDU-2026-0003');
+    expect(education.certificateNo).toBe('ETLCHINA-CERT-EDU-2026-0003');
     expect(hours.idCardMasked).toContain('********');
   });
 
   it('生成登录页 AI 一键填表使用的演示账号', () => {
     expect(mockLoginAccount()).toEqual({
-      username: 'boao.admin',
-      password: 'Boao@2026',
+      username: 'etlchina.admin',
+      password: 'EtlChina@2026',
       role: 'admin',
     });
     expect(mockLoginAccount('student')).toMatchObject({
@@ -297,6 +298,16 @@ describe('mock data workshop', () => {
       suffix: '人',
     });
     expect(metrics.every((metric) => metric.trendText.length > 0)).toBe(true);
+  });
+
+  it('生成 DashboardTemplate finance 页面类型使用的财务驾驶舱 mock 数据', () => {
+    const finance = mockFinanceDashboardData();
+
+    expect(finance.balance).toBe('$12,450');
+    expect(finance.chart).toHaveLength(7);
+    expect(finance.goals).toHaveLength(4);
+    expect(finance.transactions).toHaveLength(7);
+    expect(finance.chart.some((point) => point.active)).toBe(true);
   });
 
   it('生成 CardGridPage 使用的项目卡片 mock 数据', () => {

@@ -24,7 +24,7 @@ const iconComponents = [
   BoaoNotificationIcon,
 ];
 
-describe('BOAO Icons', () => {
+describe('ETLCHINA Icons', () => {
   it('导出 8 个企业培训业务图标并保持统一 SVG 契约', () => {
     expect(boaoIconSet).toHaveLength(8);
 

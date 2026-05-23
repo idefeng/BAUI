@@ -8,7 +8,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hoverable?: boolean;
 }
 
-/** Card 是 BOAO UI 的基础布局容器，默认包含边框、柔和阴影和暗黑分层。 */
+/** Card 是 ETLCHINA UI 的基础布局容器，默认包含边框、柔和阴影和暗黑分层。 */
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, hoverable = false, ...props }, ref) => (
     <div

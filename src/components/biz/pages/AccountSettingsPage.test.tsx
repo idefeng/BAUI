@@ -8,7 +8,7 @@ describe('AccountSettingsPage', () => {
     render(
       <AccountSettingsPage
         mock
-        ba_training_project="NEXUS-2026-AI"
+        ba_training_project="ETLCHINA-2026-AI"
         ba_trainning_title="AI-AGENT-ENGINEER"
         ba_trainning_type="CONTINUING-EDUCATION"
       />,
@@ -16,7 +16,7 @@ describe('AccountSettingsPage', () => {
 
     expect(screen.getByTestId('account-settings-page-root')).toHaveClass('dark:bg-background-dark');
     expect(screen.getByText('账号设置中心')).toBeInTheDocument();
-    expect(screen.getAllByText('NEXUS 2026 AI 实训项目').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('ETLCHINA 2026 AI 实训项目').length).toBeGreaterThan(0);
     expect(screen.getByRole('checkbox', { name: 'Python' })).toBeInTheDocument();
     expect(screen.getByRole('checkbox', { name: '大模型 fine-tune' })).toBeInTheDocument();
     expect(screen.getByRole('article', { name: '继续教育学分证书' })).toBeInTheDocument();

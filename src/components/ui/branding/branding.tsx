@@ -24,7 +24,7 @@ export interface BrandWatermarkProps extends React.HTMLAttributes<HTMLDivElement
   repeat?: number;
 }
 
-const brandLabel = '灵境实训 / NEXUS LEARN 品牌标识';
+const brandLabel = '博奥教育 / ETLCHINA 品牌标识';
 
 const fullLogoSizeClassNames: Record<BrandLogoSize, string> = {
   sm: 'h-9 w-[10.5rem]',
@@ -60,12 +60,12 @@ function BrandMark({ className }: { className?: string }) {
         className="text-background dark:text-background-dark"
         fill="currentColor"
         fontFamily="Inter, ui-sans-serif, system-ui, sans-serif"
-        fontSize="27"
+        fontSize="24"
         fontWeight="900"
-        letterSpacing="-1"
+        letterSpacing="0"
         textAnchor="middle"
       >
-        BA
+        ET
       </text>
       <g data-slot="brand-mark-accent" className="text-success dark:text-success-dark">
         <path d="M37 49.5 48.2 31.5 57 45.8h-7l-2.2-3.8-4.8 7.5Z" fill="currentColor" opacity="0.95" />
@@ -75,7 +75,7 @@ function BrandMark({ className }: { className?: string }) {
   );
 }
 
-/** BrandLogo 是 BOAO UI 的中央企业标识，所有页面入口和水印统一复用它。 */
+/** BrandLogo 是 ETLCHINA UI 的中央企业标识，所有页面入口和水印统一复用它。 */
 export function BrandLogo({
   className,
   size = 'md',
@@ -109,10 +109,10 @@ export function BrandLogo({
       <BrandMark />
       <g className="text-current">
         <text x="76" y="29" fill="currentColor" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif" fontSize="20" fontWeight="800" letterSpacing="0">
-          灵境实训
+          博奥教育
         </text>
-        <text x="76" y="48" fill="currentColor" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif" fontSize="11" fontWeight="700" letterSpacing="2.2">
-          NEXUS LEARN
+        <text x="76" y="48" fill="currentColor" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif" fontSize="11" fontWeight="700" letterSpacing="0">
+          ETLCHINA
         </text>
         <path d="M76 36h126" stroke="currentColor" strokeWidth="1.5" opacity="0.16" />
       </g>
@@ -142,7 +142,7 @@ export function BrandBackground({
 export function BrandWatermark({
   className,
   repeat = 16,
-  text = 'NEXUS 内部资产',
+  text = 'ETLCHINA 内部资产',
   ...props
 }: BrandWatermarkProps) {
   return (

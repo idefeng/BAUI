@@ -9,7 +9,7 @@ const meta = {
   args: {
     studentId: 'student-it-001',
     mock: true,
-    ba_training_project: 'NEXUS-2026-AI',
+    ba_training_project: 'ETLCHINA-2026-AI',
     ba_trainning_title: 'AI-AGENT-ENGINEER',
     ba_trainning_type: 'CONTINUING-EDUCATION',
     ba_region_scope: '440000',

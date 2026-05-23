@@ -11,9 +11,9 @@ const baseData: CertificateData = {
   courseName: '睡眠健康管理师高级研修班',
   hours: 56,
   credits: 18,
-  certificateNo: 'NX-CERT-CUSTOM-2026-0008',
+  certificateNo: 'ETLCHINA-CERT-CUSTOM-2026-0008',
   issuedAt: '2026-05-22',
-  organization: '灵境实训',
+  organization: '博奥教育 (ETLCHINA)',
 };
 
 describe('CertificateTemplate', () => {
@@ -23,9 +23,9 @@ describe('CertificateTemplate', () => {
     expect(screen.getByRole('article', { name: '培训合格证明' })).toHaveClass('shadow-xl');
     expect(screen.getByText('培训合格证明')).toBeInTheDocument();
     expect(screen.getByText(/成绩合格，特发此证/)).toBeInTheDocument();
-    expect(screen.getByText('NX-CERT-CUSTOM-2026-0008')).toBeInTheDocument();
-    expect(screen.getByText('灵境实训 / NEXUS')).toBeInTheDocument();
-    expect(screen.getByText('公司公章')).toBeInTheDocument();
+    expect(screen.getByText('ETLCHINA-CERT-CUSTOM-2026-0008')).toBeInTheDocument();
+    expect(screen.getAllByText('博奥教育 (ETLCHINA)').length).toBeGreaterThan(0);
+    expect(screen.getByLabelText('博奥教育 (ETLCHINA) 电子印章')).toHaveTextContent(/博奥教育\s*\(ETLCHINA\)/);
     expect(screen.getByText('防伪校验')).toBeInTheDocument();
   });
 
@@ -47,7 +47,7 @@ describe('CertificateTemplate', () => {
     expect(screen.getByText('学时证明')).toBeInTheDocument();
     expect(certificate).toHaveTextContent('林予安');
     expect(certificate).toHaveTextContent(/完成\s*48\s*学时/);
-    expect(screen.getByText('NX-CERT-HOURS-2026-0001')).toBeInTheDocument();
+    expect(screen.getByText('ETLCHINA-CERT-HOURS-2026-0001')).toBeInTheDocument();
   });
 
   it('继续教育业务属性会让 mock 证书自动切换为学分证书', () => {
@@ -55,7 +55,7 @@ describe('CertificateTemplate', () => {
       <CertificateTemplate
         type="hours"
         mock
-        ba_training_project="NEXUS-2026-AI"
+        ba_training_project="ETLCHINA-2026-AI"
         ba_trainning_title="AI-AGENT-ENGINEER"
         ba_trainning_type="CONTINUING-EDUCATION"
       />,

@@ -1,6 +1,6 @@
 # Ant Design 组件覆盖清单
 
-盘点来源：[Ant Design 组件总览](https://ant.design/components/overview-cn/)，当前页面版本为 `6.4.3`。本清单用于持续推进 BAUI 原子组件补齐，不代表所有 Ant 组件都应按同名 API 复制；BAUI 仍以企业培训业务组件库的语义、样式 token 和 mock 规范为准。
+盘点来源：[Ant Design 组件总览](https://ant.design/components/overview-cn/)，当前页面版本为 `6.4.3`。本清单用于持续推进 ETLCHINA UI 原子组件补齐，不代表所有 Ant 组件都应按同名 API 复制；ETLCHINA UI 仍以企业培训业务组件库的语义、样式 token 和 mock 规范为准。
 
 ## 状态说明
 
@@ -8,12 +8,12 @@
 - `业务覆盖`：已有业务组件覆盖主要使用场景，但未必是 Ant 同名原子 API。
 - `本批新增`：本轮新增了组件实现、导出、测试和 Storybook。
 - `待补齐`：后续应继续实现或拆分设计。
-- `需决策`：不是纯原子组件，或需要先确认是否纳入 BAUI 基础层。
-- `不适用`：Ant 总览中的工具入口，不是可独立渲染的 BAUI 组件。
+- `需决策`：不是纯原子组件，或需要先确认是否纳入 ETLCHINA UI 基础层。
+- `不适用`：Ant 总览中的工具入口，不是可独立渲染的 ETLCHINA UI 组件。
 
 ## 覆盖表
 
-| Ant 分组 | Ant 组件 | BAUI 当前状态 | 对应路径或备注 |
+| Ant 分组 | Ant 组件 | ETLCHINA UI 当前状态 | 对应路径或备注 |
 | --- | --- | --- | --- |
 | 通用 | Button | 已覆盖 | `src/components/ui/button` |
 | 通用 | FloatButton | 本批新增 | `src/components/ui/float-button` |

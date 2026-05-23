@@ -39,7 +39,7 @@ export const Playground: Story = {
       <div className="mx-auto flex max-w-5xl flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-foreground dark:text-foreground-dark">BOAO UI 主题预览</h1>
+            <h1 className="text-2xl font-semibold text-foreground dark:text-foreground-dark">ETLCHINA UI 主题预览</h1>
             <p className="mt-2 text-sm text-muted-foreground dark:text-muted-dark-foreground">
               点击右侧按钮后，Storybook 预览区会通过 html.dark 切换整套组件的暗黑样式。
             </p>

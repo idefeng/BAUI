@@ -18,11 +18,11 @@ describe('ThemeToggle', () => {
     await user.click(screen.getByRole('button', { name: '切换到暗色模式' }));
 
     expect(document.documentElement).toHaveClass('dark');
-    expect(window.localStorage.getItem('boao-ui-theme')).toBe('dark');
+    expect(window.localStorage.getItem('etlchina-ui-theme')).toBe('dark');
 
     await user.click(screen.getByRole('button', { name: '切换到亮色模式' }));
 
     expect(document.documentElement).not.toHaveClass('dark');
-    expect(window.localStorage.getItem('boao-ui-theme')).toBe('light');
+    expect(window.localStorage.getItem('etlchina-ui-theme')).toBe('light');
   });
 });

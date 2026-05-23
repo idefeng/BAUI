@@ -23,7 +23,7 @@ export interface QRCodeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
   title?: string;
 }
 
-/** QRCode 是 BOAO UI 对 qrcode.react 的品牌化包装，适合签到和证书校验。 */
+/** QRCode 是 ETLCHINA UI 对 qrcode.react 的品牌化包装，适合签到和证书校验。 */
 export const QRCode = React.forwardRef<HTMLDivElement, QRCodeProps>(
   (
     {
@@ -32,7 +32,7 @@ export const QRCode = React.forwardRef<HTMLDivElement, QRCodeProps>(
       onRefresh,
       size = 176,
       status = 'active',
-      title = 'BOAO 二维码',
+      title = 'ETLCHINA 二维码',
       value,
       ...props
     },

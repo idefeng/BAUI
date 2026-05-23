@@ -8,8 +8,8 @@ describe('DashboardTemplate', () => {
     render(<DashboardTemplate mock />);
 
     expect(screen.getByTestId('dashboard-template-root')).toHaveClass('dark:bg-background-dark');
-    expect(screen.getByTestId('dashboard-brand-logo')).toHaveAttribute('aria-label', '灵境实训 / NEXUS LEARN 品牌标识');
-    expect(screen.getByTestId('dashboard-brand-watermark')).toHaveTextContent('NEXUS 内部资产');
+    expect(screen.getByTestId('dashboard-brand-logo')).toHaveAttribute('aria-label', '博奥教育 / ETLCHINA 品牌标识');
+    expect(screen.getByTestId('dashboard-brand-watermark')).toHaveTextContent('ETLCHINA 内部资产');
     expect(screen.getAllByTestId('dashboard-metric-card')).toHaveLength(4);
     expect(screen.getByText('运营驾驶舱')).toBeInTheDocument();
     expect(screen.getAllByText('趋势分析图表占位')).toHaveLength(2);
@@ -20,7 +20,7 @@ describe('DashboardTemplate', () => {
     render(
       <DashboardTemplate
         mock
-        ba_training_project="NEXUS-2026-AI"
+        ba_training_project="ETLCHINA-2026-AI"
         ba_trainning_title="AI-AGENT-ENGINEER"
         ba_trainning_type="CONTINUING-EDUCATION"
       />,
@@ -28,7 +28,7 @@ describe('DashboardTemplate', () => {
 
     expect(screen.getByText('年度继续教育学分')).toBeInTheDocument();
     expect(screen.getByText('学分达标率')).toBeInTheDocument();
-    expect(screen.getByText('NEXUS 2026 AI 实训项目')).toBeInTheDocument();
+    expect(screen.getByText('ETLCHINA 2026 AI 实训项目')).toBeInTheDocument();
   });
 
   it('ba_region_scope 会让大屏指标切换为属地数据', () => {
@@ -52,5 +52,17 @@ describe('DashboardTemplate', () => {
     expect(screen.getByText('今日成交额')).toBeInTheDocument();
     expect(screen.getByText('¥ 82.6w')).toBeInTheDocument();
     expect(screen.queryByText('本周新增学员')).not.toBeInTheDocument();
+  });
+
+  it('finance 页面类型渲染三栏财务驾驶舱和交易列表', () => {
+    render(<DashboardTemplate mock pageType="finance" />);
+
+    expect(screen.getByTestId('dashboard-finance-shell')).toHaveClass('bg-secondary');
+    expect(screen.getByTestId('finance-balance-chart')).toHaveClass('dark:bg-surface-dark');
+    expect(screen.getByText('Balance overview')).toBeInTheDocument();
+    expect(screen.getByText('$12,450')).toBeInTheDocument();
+    expect(screen.getByText('My card')).toBeInTheDocument();
+    expect(screen.getAllByTestId('finance-goal-row')).toHaveLength(4);
+    expect(screen.getAllByTestId('finance-transaction-row')).toHaveLength(7);
   });
 });

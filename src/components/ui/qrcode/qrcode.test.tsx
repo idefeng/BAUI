@@ -5,16 +5,16 @@ import { QRCode } from './qrcode';
 
 describe('QRCode', () => {
   it('渲染白底圆角二维码卡片', () => {
-    render(<QRCode value="https://boao.example.com/sign/2026" />);
+    render(<QRCode value="https://etlchina.example.com/sign/2026" />);
 
     expect(screen.getByTestId('boao-qrcode')).toHaveClass('rounded-2xl');
     expect(screen.getByTestId('boao-qrcode')).toHaveClass('bg-surface');
   });
 
   it('支持中心 icon 覆盖层', () => {
-    render(<QRCode value="https://boao.example.com/cert/001" icon={<span>BO</span>} />);
+    render(<QRCode value="https://etlchina.example.com/cert/001" icon={<span>ET</span>} />);
 
-    expect(screen.getByText('BO').closest('[data-slot="qrcode-icon"]')).toHaveClass('rounded-xl');
+    expect(screen.getByText('ET').closest('[data-slot="qrcode-icon"]')).toHaveClass('rounded-xl');
   });
 
   it('过期状态展示遮罩和刷新提示', () => {

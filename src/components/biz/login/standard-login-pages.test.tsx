@@ -12,7 +12,7 @@ describe('StandardLoginPages', () => {
 
       expect(screen.getByTestId('standard-login-brand-logo')).toHaveAttribute(
         'aria-label',
-        '灵境实训 / NEXUS LEARN 品牌标识',
+        '博奥教育 / ETLCHINA 品牌标识',
       );
     },
   );
@@ -45,12 +45,12 @@ describe('StandardLoginPages', () => {
     render(<StandardLoginPages type="education" onSubmit={onSubmit} />);
 
     await user.type(screen.getByLabelText('登录账号'), 'teacher_001');
-    await user.type(screen.getByLabelText('登录密码'), 'Boao@2026');
+    await user.type(screen.getByLabelText('登录密码'), 'EtlChina@2026');
     await user.click(screen.getByRole('button', { name: '进入学堂' }));
 
     expect(onSubmit).toHaveBeenCalledWith({
       username: 'teacher_001',
-      password: 'Boao@2026',
+      password: 'EtlChina@2026',
       role: 'student',
     });
   });
@@ -63,14 +63,14 @@ describe('StandardLoginPages', () => {
 
     await user.click(screen.getByRole('button', { name: '🌟 AI 一键填表' }));
 
-    expect(screen.getByLabelText('登录账号')).toHaveValue('boao.admin');
-    expect(screen.getByLabelText('登录密码')).toHaveValue('Boao@2026');
+    expect(screen.getByLabelText('登录账号')).toHaveValue('etlchina.admin');
+    expect(screen.getByLabelText('登录密码')).toHaveValue('EtlChina@2026');
 
     await user.click(screen.getByRole('button', { name: '登录' }));
 
     expect(onSubmit).toHaveBeenCalledWith({
-      username: 'boao.admin',
-      password: 'Boao@2026',
+      username: 'etlchina.admin',
+      password: 'EtlChina@2026',
     });
   });
 
@@ -81,18 +81,18 @@ describe('StandardLoginPages', () => {
     render(<StandardLoginPages type="classic" onSubmit={onSubmit} />);
 
     await user.type(screen.getByLabelText('登录账号'), 'gov_admin');
-    await user.type(screen.getByLabelText('登录密码'), 'Boao@2026');
+    await user.type(screen.getByLabelText('登录密码'), 'EtlChina@2026');
     await user.click(screen.getByRole('button', { name: '安全登录' }));
 
     expect(onSubmit).not.toHaveBeenCalled();
     expect(screen.getByText('请输入图形验证码')).toBeInTheDocument();
 
-    await user.type(screen.getByLabelText('图形验证码'), 'BA26');
+    await user.type(screen.getByLabelText('图形验证码'), 'ET26');
     await user.click(screen.getByRole('button', { name: '安全登录' }));
 
     expect(onSubmit).toHaveBeenCalledWith({
       username: 'gov_admin',
-      password: 'Boao@2026',
+      password: 'EtlChina@2026',
     });
   });
 

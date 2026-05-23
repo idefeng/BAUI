@@ -8,7 +8,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     mock: true,
-    ba_training_project: 'NEXUS-2026-AI',
+    ba_training_project: 'ETLCHINA-2026-AI',
     ba_trainning_title: 'AI-AGENT-ENGINEER',
     ba_trainning_type: 'CONTINUING-EDUCATION',
     ba_region_scope: '440000',
@@ -16,6 +16,10 @@ const meta = {
   argTypes: {
     mock: {
       control: 'boolean',
+    },
+    pageType: {
+      control: 'select',
+      options: ['data-screen', 'finance'],
     },
     ba_training_project: {
       control: 'text',
@@ -40,6 +44,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const MockDashboard: Story = {};
+
+export const FinanceDashboard: Story = {
+  args: {
+    pageType: 'finance',
+    mock: true,
+  },
+};
 
 export const DarkMode: Story = {
   render: (args) => (

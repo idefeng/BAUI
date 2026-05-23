@@ -9,7 +9,7 @@ const meta = {
   component: App,
   tags: ['autodocs'],
   args: {
-    title: 'BOAO 管理后台',
+    title: 'ETLCHINA 管理后台',
     navigation: (
       <Menu
         items={[

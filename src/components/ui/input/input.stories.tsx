@@ -46,7 +46,7 @@ export const WithIcons: Story = {
 
 export const Clearable: Story = {
   render: () => {
-    const [value, setValue] = React.useState('博鳌智能组件库');
+    const [value, setValue] = React.useState('博奥智能组件库');
 
     return (
       <Input

@@ -84,7 +84,7 @@ describe('TreeSelect', () => {
 
     const content = screen.getByTestId('tree-select-content');
 
-    expect(within(content).getByText('灵境实训集团总部')).toBeInTheDocument();
+    expect(within(content).getByText('博奥教育集团总部')).toBeInTheDocument();
     expect(content.className).toContain('rounded-2xl');
     expect(content.className).toContain('dark:bg-surface-dark');
   });
