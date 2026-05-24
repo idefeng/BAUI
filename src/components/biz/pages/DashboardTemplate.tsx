@@ -45,8 +45,13 @@ import {
   type MockFinanceTone,
   type MockFinanceTransaction,
 } from '../../../utils/mock';
+import { Avatar } from '../../ui/avatar';
+import { Badge } from '../../ui/badge';
 import { BrandLogo, BrandWatermark } from '../../ui/branding';
+import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
+import { Input } from '../../ui/input';
+import { Progress } from '../../ui/progress';
 import { ThemeToggle } from '../../ui/theme-toggle';
 
 export type DashboardMetric = MockDashboardMetric;
@@ -80,28 +85,28 @@ const fallbackMetrics: DashboardMetric[] = [
 const metricIcons = [Activity, BookOpenCheck, Award, ShieldAlert];
 const chartColumns = [32, 46, 58, 74, 66, 82, 92, 104, 118];
 const financeNavItems = [
-  { label: 'Dashboard', icon: LayoutDashboard, active: true },
-  { label: 'Accounts', icon: UserRound },
-  { label: 'Transactions', icon: ArrowUpRight, expanded: true },
-  { label: 'Cash flow', icon: Wallet },
-  { label: 'Budget', icon: PiggyBank },
-  { label: 'Investments', icon: BriefcaseBusiness },
+  { label: '财务看板', icon: LayoutDashboard, active: true },
+  { label: '账户管理', icon: UserRound },
+  { label: '交易流水', icon: ArrowUpRight, expanded: true },
+  { label: '现金流', icon: Wallet },
+  { label: '预算', icon: PiggyBank },
+  { label: '投资', icon: BriefcaseBusiness },
 ];
 const financeNavChildren = [
-  { label: 'History', count: 19 },
-  { label: 'Integration' },
-  { label: 'Reports' },
+  { label: '历史记录', count: 19 },
+  { label: '集成配置' },
+  { label: '报表' },
 ];
 const financeSupportItems = [
-  { label: 'Learning center', icon: BookOpen },
-  { label: 'Support', icon: Settings },
+  { label: '学习中心', icon: BookOpen },
+  { label: '支持', icon: Settings },
 ];
 const financeActions = [
-  { label: 'Top up', icon: WalletCards },
-  { label: 'Send', icon: Send },
-  { label: 'Request', icon: ArrowDownLeft },
-  { label: 'History', icon: History },
-  { label: 'More', icon: MoreHorizontal },
+  { label: '充值', icon: WalletCards },
+  { label: '转账', icon: Send },
+  { label: '收款', icon: ArrowDownLeft },
+  { label: '历史', icon: History },
+  { label: '更多', icon: MoreHorizontal },
 ];
 const financeToneStyles = {
   primary: 'bg-primary-soft text-primary dark:bg-primary-dark-soft dark:text-primary-dark',
@@ -128,7 +133,7 @@ const financeTextStyles = {
 const formatMetricValue = (value: DashboardMetric['value']) =>
   typeof value === 'number' ? new Intl.NumberFormat('zh-CN').format(value) : value;
 
-const formatFinanceNumber = (value: number) => `$${new Intl.NumberFormat('en-US').format(value)}`;
+const formatFinanceNumber = (value: number) => `¥${new Intl.NumberFormat('zh-CN').format(value)}`;
 
 const getPercent = (current: number, target: number) => {
   if (target <= 0) {
@@ -254,11 +259,11 @@ function FinanceSidebar() {
   return (
     <aside
       className="flex min-h-full flex-col rounded-3xl bg-surface p-5 text-foreground shadow-sm dark:bg-surface-dark dark:text-foreground-dark"
-      aria-label="Finance dashboard navigation"
+      aria-label="财务驾驶舱导航"
     >
       <div className="flex items-center gap-3 px-1 py-2">
         <BrandLogo variant="icon" size="sm" />
-        <span className="text-lg font-black tracking-normal">BA Finance</span>
+        <span className="text-lg font-black tracking-normal">财务驾驶舱</span>
       </div>
 
       <nav className="mt-6 space-y-2">
@@ -267,34 +272,37 @@ function FinanceSidebar() {
 
           return (
             <div key={item.label}>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                fullWidth
+                leftIcon={<Icon className="size-5" />}
+                rightIcon={item.expanded ? <ChevronDown className="size-4" /> : undefined}
                 className={cn(
-                  'flex h-12 w-full items-center gap-3 rounded-2xl px-4 text-left text-sm font-semibold transition-colors',
+                  'h-12 justify-start rounded-2xl px-4 text-left text-sm font-semibold [&>span:nth-child(2)]:min-w-0 [&>span:nth-child(2)]:flex-1 [&>span:nth-child(2)]:truncate',
                   item.active
                     ? 'bg-secondary text-foreground shadow-sm dark:bg-secondary-dark dark:text-foreground-dark'
                     : 'text-muted-foreground hover:bg-secondary-hover hover:text-foreground dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark',
                 )}
               >
-                <Icon className="size-5 shrink-0" aria-hidden="true" />
-                <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                {item.expanded ? <ChevronDown className="size-4 shrink-0" aria-hidden="true" /> : null}
-              </button>
+                {item.label}
+              </Button>
               {item.expanded ? (
                 <div className="ml-7 mt-2 space-y-1 border-l border-border pl-4 dark:border-border-dark">
                   {financeNavChildren.map((child) => (
-                    <button
+                    <Button
                       key={child.label}
-                      type="button"
-                      className="flex h-8 w-full items-center justify-between rounded-xl px-2 text-left text-sm text-foreground transition-colors hover:bg-secondary-hover dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
+                      variant="ghost"
+                      size="sm"
+                      fullWidth
+                      className="h-8 justify-between rounded-xl px-2 text-left text-sm text-foreground hover:bg-secondary-hover dark:text-foreground-dark dark:hover:bg-secondary-dark-hover [&>span]:flex [&>span]:w-full [&>span]:items-center [&>span]:justify-between"
                     >
                       <span>{child.label}</span>
                       {child.count ? (
-                        <span className="inline-flex min-w-6 justify-center rounded-full bg-foreground px-2 py-0.5 text-xs font-bold text-background dark:bg-foreground-dark dark:text-background-dark">
+                        <Badge className="min-w-6 rounded-full bg-foreground px-2 py-0.5 text-xs font-bold text-background dark:bg-foreground-dark dark:text-background-dark">
                           {child.count}
-                        </span>
+                        </Badge>
                       ) : null}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               ) : null}
@@ -308,14 +316,15 @@ function FinanceSidebar() {
           const Icon = item.icon;
 
           return (
-            <button
+            <Button
               key={item.label}
-              type="button"
-              className="flex h-12 w-full items-center gap-3 rounded-2xl px-4 text-left text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark"
+              variant="ghost"
+              fullWidth
+              leftIcon={<Icon className="size-5" />}
+              className="h-12 justify-start rounded-2xl px-4 text-left text-sm font-semibold text-muted-foreground hover:bg-secondary-hover hover:text-foreground dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark [&>span:nth-child(2)]:min-w-0 [&>span:nth-child(2)]:truncate"
             >
-              <Icon className="size-5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{item.label}</span>
-            </button>
+              {item.label}
+            </Button>
           );
         })}
       </div>
@@ -325,33 +334,36 @@ function FinanceSidebar() {
           <span className="inline-flex size-10 items-center justify-center rounded-full bg-foreground text-background dark:bg-foreground-dark dark:text-background-dark">
             <Zap className="size-5" aria-hidden="true" />
           </span>
-          <button
-            type="button"
-            className="inline-flex size-8 items-center justify-center rounded-xl border border-border text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground dark:border-border-dark dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark"
-            aria-label="Close upgrade panel"
+          <Button
+            variant="outline"
+            size="sm"
+            className="size-8 rounded-xl border-border p-0 text-muted-foreground hover:bg-secondary-hover hover:text-foreground dark:border-border-dark dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark"
+            aria-label="关闭升级提示"
           >
             <MoreHorizontal className="size-4" aria-hidden="true" />
-          </button>
+          </Button>
         </div>
-        <h3 className="mt-5 text-xl font-black tracking-normal">Upgrade to Pro!</h3>
+        <h3 className="mt-5 text-xl font-black tracking-normal">升级专业版</h3>
         <p className="mt-2 text-sm leading-6 text-muted-foreground dark:text-muted-dark-foreground">
-          Full financial insights with analytics and graphs.
+          解锁完整财务洞察、预算分析和趋势图表。
         </p>
-        <button
-          type="button"
+        <Button
+          variant="solid"
+          fullWidth
           className="mt-4 h-11 w-full rounded-xl bg-foreground text-sm font-bold text-background transition-colors hover:bg-foreground/90 dark:bg-foreground-dark dark:text-background-dark dark:hover:bg-foreground-dark/90"
         >
-          Upgrade now
-        </button>
+          立即升级
+        </Button>
       </Card>
 
-      <button
-        type="button"
-        className="mt-5 flex items-center gap-2 px-2 text-sm font-semibold text-muted-foreground hover:text-foreground dark:text-muted-dark-foreground dark:hover:text-foreground-dark"
+      <Button
+        variant="ghost"
+        size="sm"
+        leftIcon={<ChevronsLeft className="size-4" />}
+        className="mt-5 justify-start px-2 text-sm font-semibold text-muted-foreground hover:bg-transparent hover:text-foreground dark:text-muted-dark-foreground dark:hover:bg-transparent dark:hover:text-foreground-dark"
       >
-        <ChevronsLeft className="size-4" aria-hidden="true" />
-        Collapse sidebar
-      </button>
+        收起侧边栏
+      </Button>
     </aside>
   );
 }
@@ -359,43 +371,39 @@ function FinanceSidebar() {
 function FinanceTopbar() {
   return (
     <header className="grid gap-3 lg:grid-cols-[minmax(16rem,26rem)_1fr] lg:items-center">
-      <label className="flex h-12 items-center gap-3 rounded-2xl bg-surface px-4 text-sm text-muted-foreground shadow-sm dark:bg-surface-dark dark:text-muted-dark-foreground">
-        <Search className="size-5 shrink-0 text-foreground dark:text-foreground-dark" aria-hidden="true" />
-        <span className="sr-only">Quick search</span>
-        <input
-          className="min-w-0 flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground dark:text-foreground-dark dark:placeholder:text-muted-dark-foreground"
-          placeholder="Quick search"
-        />
-      </label>
+      <Input
+        aria-label="快捷搜索"
+        placeholder="搜索账户、交易或目标"
+        prefixIcon={<Search className="size-5" />}
+        rootClassName="h-12 rounded-2xl border-transparent bg-surface shadow-sm dark:bg-surface-dark"
+      />
       <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
         {[Bell, Settings].map((Icon, index) => (
-          <button
+          <Button
             key={index}
-            type="button"
-            className="inline-flex size-12 items-center justify-center rounded-2xl bg-surface text-foreground shadow-sm transition-colors hover:bg-secondary-hover dark:bg-surface-dark dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
-            aria-label={index === 0 ? 'Open notifications' : 'Open settings'}
+            variant="ghost"
+            className="inline-flex size-12 items-center justify-center rounded-2xl bg-surface p-0 text-foreground shadow-sm transition-colors hover:bg-secondary-hover dark:bg-surface-dark dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
+            aria-label={index === 0 ? '打开通知' : '打开设置'}
           >
             <Icon className="size-5" aria-hidden="true" />
-          </button>
+          </Button>
         ))}
         <div className="flex h-12 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 shadow-sm dark:bg-surface-dark">
-          <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-success-soft text-xs font-black text-success dark:bg-success-dark-soft dark:text-success-dark">
-            MJ
-          </span>
+          <Avatar name="陈明远" fallback="陈" size="sm" className="border-success/20" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-foreground dark:text-foreground-dark">Michael Johnson</p>
+            <p className="truncate text-sm font-bold text-foreground dark:text-foreground-dark">陈明远</p>
             <p className="truncate text-xs text-muted-foreground dark:text-muted-dark-foreground">
-              m.johnson@finex.com
+              chen.mingyuan@etlchina.com
             </p>
           </div>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          leftIcon={<Plus className="size-4" />}
           className="inline-flex h-12 items-center gap-2 rounded-2xl bg-surface px-4 text-sm font-bold text-foreground shadow-sm transition-colors hover:bg-secondary-hover dark:bg-surface-dark dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
         >
-          <Plus className="size-4" aria-hidden="true" />
-          Add widget
-        </button>
+          添加组件
+        </Button>
       </div>
     </header>
   );
@@ -415,45 +423,48 @@ function FinanceBalanceOverview({ data }: { data: FinanceDashboardData }) {
             <p className="text-4xl font-black leading-none tracking-normal text-foreground dark:text-foreground-dark">
               {data.balance}
             </p>
-            <p className="mt-2 text-sm text-muted-foreground dark:text-muted-dark-foreground">Balance overview</p>
+            <p className="mt-2 text-sm text-muted-foreground dark:text-muted-dark-foreground">余额概览</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="sm"
+              rightIcon={<ChevronDown className="size-3.5" />}
               className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-background px-3 text-xs font-semibold text-foreground dark:border-border-dark dark:bg-background-dark dark:text-foreground-dark"
             >
-              7d
-              <ChevronDown className="size-3.5" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="inline-flex size-9 items-center justify-center rounded-xl border border-border bg-background text-foreground dark:border-border-dark dark:bg-background-dark dark:text-foreground-dark"
-              aria-label="Show bar chart"
+              7天
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="inline-flex size-9 items-center justify-center rounded-xl border border-border bg-background p-0 text-foreground dark:border-border-dark dark:bg-background-dark dark:text-foreground-dark"
+              aria-label="显示柱状图"
             >
               <LineChart className="size-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="inline-flex size-9 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground dark:border-border-dark dark:bg-background-dark dark:text-muted-dark-foreground"
-              aria-label="Show trend chart"
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="inline-flex size-9 items-center justify-center rounded-xl border border-border bg-background p-0 text-muted-foreground dark:border-border-dark dark:bg-background-dark dark:text-muted-dark-foreground"
+              aria-label="显示趋势图"
             >
               <Gauge className="size-4" aria-hidden="true" />
-            </button>
+            </Button>
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap justify-end gap-4 text-xs text-muted-foreground dark:text-muted-dark-foreground">
           <span className="inline-flex items-center gap-2">
             <span className="size-3 rounded-sm bg-primary dark:bg-primary-dark" aria-hidden="true" />
-            Savings
+            储蓄
           </span>
           <span className="inline-flex items-center gap-2">
             <span className="size-3 rounded-sm bg-success dark:bg-success-dark" aria-hidden="true" />
-            Income
+            收入
           </span>
           <span className="inline-flex items-center gap-2">
             <span className="size-3 rounded-sm bg-warning dark:bg-warning-dark" aria-hidden="true" />
-            Expenses
+            支出
           </span>
         </div>
 
@@ -519,10 +530,10 @@ function FinanceBalanceOverview({ data }: { data: FinanceDashboardData }) {
               })}
             </div>
             <div className="pointer-events-none absolute left-[56%] top-20 hidden rounded-2xl border border-border bg-surface/95 p-3 text-xs shadow-button backdrop-blur dark:border-border-dark dark:bg-surface-dark/95 md:block">
-              <p className="text-muted-foreground dark:text-muted-dark-foreground">Wednesday, 7 Jan 2025</p>
-              <p className="mt-2 font-semibold text-foreground dark:text-foreground-dark">Savings $240</p>
-              <p className="font-semibold text-foreground dark:text-foreground-dark">Income $700</p>
-              <p className="font-semibold text-foreground dark:text-foreground-dark">Expenses $460</p>
+              <p className="text-muted-foreground dark:text-muted-dark-foreground">2025年1月7日 周三</p>
+              <p className="mt-2 font-semibold text-foreground dark:text-foreground-dark">储蓄 ¥240</p>
+              <p className="font-semibold text-foreground dark:text-foreground-dark">收入 ¥700</p>
+              <p className="font-semibold text-foreground dark:text-foreground-dark">支出 ¥460</p>
             </div>
           </div>
         </div>
@@ -567,21 +578,22 @@ function FinanceSpendingLimit({ data }: { data: FinanceDashboardData['spendingLi
           <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">{data.label}</h3>
           <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">{data.helperText}</p>
         </div>
-        <button
-          type="button"
-          className="inline-flex size-9 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-secondary-hover dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
-          aria-label="Edit spending limit"
+        <Button
+          variant="ghost"
+          size="sm"
+          className="inline-flex size-9 items-center justify-center rounded-xl p-0 text-foreground transition-colors hover:bg-secondary-hover dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
+          aria-label="编辑支出上限"
         >
           <Pencil className="size-4" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
-      <div className="mt-6 h-8 overflow-hidden rounded-lg bg-muted dark:bg-muted-dark">
-        <div
-          className="h-full rounded-lg bg-success dark:bg-success-dark"
-          style={{ width: `${percent}%` }}
-          aria-hidden="true"
-        />
-      </div>
+      <Progress
+        value={percent}
+        showValue={false}
+        status="success"
+        trackClassName="mt-6 h-8 rounded-lg"
+        indicatorClassName="rounded-lg"
+      />
       <div className="mt-2 flex justify-between text-sm">
         <span className="font-semibold text-foreground dark:text-foreground-dark">{formatFinanceNumber(data.used)}</span>
         <span className="text-muted-foreground dark:text-muted-dark-foreground">{formatFinanceNumber(data.limit)}</span>
@@ -596,13 +608,14 @@ function FinanceBudgetTip({ data }: { data: FinanceDashboardData['budgetTip'] })
       <div className="relative z-10 max-w-xl">
         <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">{data.title}</h3>
         <p className="mt-2 max-w-md text-sm leading-6 text-foreground dark:text-foreground-dark">{data.description}</p>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="sm"
+          rightIcon={<ArrowUpRight className="size-4" />}
           className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-foreground transition-colors hover:text-primary dark:text-foreground-dark dark:hover:text-primary-dark"
         >
-          Read more
-          <ArrowUpRight className="size-4" aria-hidden="true" />
-        </button>
+          查看建议
+        </Button>
       </div>
       <div className="absolute bottom-5 right-5 grid grid-cols-3 gap-1 opacity-80" aria-hidden="true">
         {['bg-primary-soft', 'bg-warning-soft', 'bg-success-soft', 'bg-secondary', 'bg-warning-soft', 'bg-success-soft', 'bg-success-soft', 'bg-success-soft', 'bg-success-soft'].map((className, index) => (
@@ -618,16 +631,17 @@ function FinanceCostAnalysis({ data }: { data: FinanceDashboardData['costAnalysi
     <Card className="border-transparent bg-surface p-6 shadow-sm dark:bg-surface-dark">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">Cost analysis</h3>
-          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">Spending overview</p>
+          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">成本分析</h3>
+          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">支出概览</p>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
+          rightIcon={<ChevronDown className="size-4" />}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-border px-3 text-sm font-semibold text-foreground dark:border-border-dark dark:text-foreground-dark"
         >
           {data.month}
-          <ChevronDown className="size-4" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
       <p className="mt-7 text-3xl font-black tracking-normal text-foreground dark:text-foreground-dark">{data.total}</p>
       <div className="mt-5 flex h-8 overflow-hidden rounded-lg bg-muted dark:bg-muted-dark">
@@ -660,16 +674,17 @@ function FinanceHealthGauge({ data }: { data: FinanceDashboardData['financialHea
     <Card className="border-transparent bg-surface p-6 shadow-sm dark:bg-surface-dark">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">Financial health</h3>
-          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">Current status</p>
+          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">财务健康度</h3>
+          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">当前状态</p>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
+          rightIcon={<ChevronDown className="size-4" />}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-border px-3 text-sm font-semibold text-foreground dark:border-border-dark dark:text-foreground-dark"
         >
-          30d
-          <ChevronDown className="size-4" aria-hidden="true" />
-        </button>
+          30天
+        </Button>
       </div>
       <p className="mt-7 text-3xl font-black tracking-normal text-foreground dark:text-foreground-dark">{data.total}</p>
       <p className="mt-2 inline-flex items-center gap-1 text-sm text-success dark:text-success-dark">
@@ -698,7 +713,7 @@ function FinanceHealthGauge({ data }: { data: FinanceDashboardData['financialHea
         </svg>
         <div className="absolute inset-x-0 bottom-0 text-center">
           <p className="text-3xl font-black text-foreground dark:text-foreground-dark">{data.score}%</p>
-          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">Of monthly income saved</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">月收入储蓄率</p>
         </div>
       </div>
       <p className="mt-5 text-sm leading-6 text-foreground dark:text-foreground-dark">{data.description}</p>
@@ -711,16 +726,17 @@ function FinanceGoalTracker({ goals }: { goals: MockFinanceGoal[] }) {
     <Card className="border-transparent bg-surface p-6 shadow-sm dark:bg-surface-dark">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">Goal tracker</h3>
-          <p className="mt-6 text-sm text-muted-foreground dark:text-muted-dark-foreground">This year</p>
+          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">目标追踪</h3>
+          <p className="mt-6 text-sm text-muted-foreground dark:text-muted-dark-foreground">今年</p>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
+          leftIcon={<Plus className="size-4" />}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-border px-3 text-sm font-semibold text-foreground dark:border-border-dark dark:text-foreground-dark"
         >
-          <Plus className="size-4" aria-hidden="true" />
-          Add goals
-        </button>
+          添加目标
+        </Button>
       </div>
       <div className="mt-3 space-y-4">
         {goals.map((goal) => {
@@ -738,9 +754,13 @@ function FinanceGoalTracker({ goals }: { goals: MockFinanceGoal[] }) {
                     {formatFinanceNumber(goal.current)} / <span className="text-muted-foreground dark:text-muted-dark-foreground">{formatFinanceNumber(goal.target)}</span>
                   </span>
                 </div>
-                <div className="mt-1 h-4 overflow-hidden rounded-full bg-muted dark:bg-muted-dark">
-                  <div className={cn('h-full rounded-full', financeProgressStyles[goal.tone])} style={{ width: `${percent}%` }} />
-                </div>
+                <Progress
+                  value={percent}
+                  showValue={false}
+                  status={goal.tone === 'danger' ? 'exception' : goal.tone === 'success' ? 'success' : 'normal'}
+                  trackClassName="mt-1 h-4 rounded-full"
+                  indicatorClassName={financeProgressStyles[goal.tone]}
+                />
                 <p className="mt-1 text-xs text-muted-foreground dark:text-muted-dark-foreground">{goal.helperText}</p>
               </div>
             </div>
@@ -756,35 +776,36 @@ function FinanceCardPanel({ data }: { data: FinanceDashboardData }) {
     <Card className="overflow-hidden border-transparent bg-surface p-6 shadow-sm dark:bg-surface-dark">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">My card</h3>
-          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">Quick actions</p>
+          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">我的卡片</h3>
+          <p className="text-sm text-muted-foreground dark:text-muted-dark-foreground">快捷操作</p>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
+          leftIcon={<Plus className="size-4" />}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-border px-3 text-sm font-semibold text-foreground dark:border-border-dark dark:text-foreground-dark"
         >
-          <Plus className="size-4" aria-hidden="true" />
-          Add card
-        </button>
+          添加卡片
+        </Button>
       </div>
 
       <div className="mt-5 grid grid-cols-[minmax(0,1fr)_5rem] gap-2">
         <div className="min-h-44 rounded-2xl bg-success p-5 text-success-foreground shadow-button dark:bg-success-dark dark:text-success-dark-foreground">
           <div className="flex items-start justify-between text-sm font-semibold">
-            <span>Debit card</span>
+            <span>借记卡</span>
             <span className="text-lg font-black tracking-normal">VISA</span>
           </div>
           <CreditCard className="mt-9 size-7" aria-hidden="true" />
           <div className="mt-5 flex items-end justify-between gap-3 text-sm">
             <div>
               <p className="font-semibold">**** **** **** 7890</p>
-              <p className="mt-1 text-xs">Michael Johnson</p>
+              <p className="mt-1 text-xs">陈明远</p>
             </div>
             <span className="text-xs">03/30</span>
           </div>
         </div>
         <div className="min-h-44 rounded-2xl bg-secondary p-4 text-secondary-foreground dark:bg-secondary-dark dark:text-secondary-dark-foreground">
-          <p className="text-xs font-semibold">Credit card</p>
+          <p className="text-xs font-semibold">信用卡</p>
           <CreditCard className="mt-12 size-6 text-muted-foreground dark:text-muted-dark-foreground" aria-hidden="true" />
         </div>
       </div>
@@ -794,27 +815,32 @@ function FinanceCardPanel({ data }: { data: FinanceDashboardData }) {
           const Icon = action.icon;
 
           return (
-            <button key={action.label} type="button" className="min-w-0 text-center">
+            <Button
+              key={action.label}
+              variant="ghost"
+              className="h-auto min-w-0 flex-col gap-2 rounded-xl px-0 py-0 text-center text-foreground hover:bg-transparent dark:text-foreground-dark dark:hover:bg-transparent [&>span]:flex [&>span]:min-w-0 [&>span]:flex-col [&>span]:items-center"
+            >
               <span className="mx-auto inline-flex size-14 items-center justify-center rounded-xl border border-border bg-background text-foreground transition-colors hover:bg-secondary-hover dark:border-border-dark dark:bg-background-dark dark:text-foreground-dark dark:hover:bg-secondary-dark-hover">
                 <Icon className="size-5" aria-hidden="true" />
               </span>
               <span className="mt-2 block truncate text-xs font-semibold text-foreground dark:text-foreground-dark">
                 {action.label}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>
 
       <div className="mt-7 flex items-center justify-between">
-        <h4 className="text-sm font-bold text-foreground dark:text-foreground-dark">Quick payment</h4>
-        <button
-          type="button"
-          className="inline-flex size-8 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-secondary-hover dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
-          aria-label="More quick payments"
+        <h4 className="text-sm font-bold text-foreground dark:text-foreground-dark">快捷付款</h4>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="inline-flex size-8 items-center justify-center rounded-xl p-0 text-foreground transition-colors hover:bg-secondary-hover dark:text-foreground-dark dark:hover:bg-secondary-dark-hover"
+          aria-label="更多快捷付款"
         >
           <MoreHorizontal className="size-4" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
       <div className="mt-3 grid grid-cols-6 gap-2">
         {data.quickPayments.map((contact) => (
@@ -828,9 +854,12 @@ function FinanceCardPanel({ data }: { data: FinanceDashboardData }) {
 function FinancePaymentContact({ contact }: { contact: MockFinancePaymentContact }) {
   return (
     <div className="min-w-0 text-center">
-      <span className={cn('mx-auto flex size-11 items-center justify-center rounded-xl text-xs font-black', financeToneStyles[contact.tone])}>
-        {contact.initials}
-      </span>
+      <Avatar
+        name={contact.name}
+        fallback={contact.initials}
+        size="md"
+        className={cn('mx-auto rounded-xl text-xs font-black', financeToneStyles[contact.tone])}
+      />
       <span className="mt-2 block truncate text-xs text-foreground dark:text-foreground-dark">{contact.name}</span>
     </div>
   );
@@ -841,30 +870,39 @@ function FinanceTransactionHistory({ transactions }: { transactions: MockFinance
     <Card className="border-transparent bg-surface p-6 shadow-sm dark:bg-surface-dark">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">Transaction history</h3>
-          <p className="mt-5 text-xs text-muted-foreground dark:text-muted-dark-foreground">↑↓ Name</p>
+          <h3 className="text-lg font-bold tracking-normal text-foreground dark:text-foreground-dark">交易历史</h3>
+          <p className="mt-5 text-xs text-muted-foreground dark:text-muted-dark-foreground">↑↓ 名称</p>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
+          rightIcon={<ChevronDown className="size-4" />}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-border px-3 text-sm font-semibold text-foreground dark:border-border-dark dark:text-foreground-dark"
         >
-          7d
-          <ChevronDown className="size-4" aria-hidden="true" />
-        </button>
+          7天
+        </Button>
       </div>
       <div className="mt-4 space-y-3">
         {transactions.map((transaction) => (
           <div key={transaction.id} data-testid="finance-transaction-row" className="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3">
-            <span className={cn('inline-flex size-9 items-center justify-center rounded-xl text-xs font-black', financeToneStyles[transaction.tone])}>
-              {transaction.name.slice(0, 2).toUpperCase()}
-            </span>
+            <Avatar
+              name={transaction.name}
+              fallback={transaction.name.slice(0, 2)}
+              size="sm"
+              className={cn('rounded-xl text-xs font-black', financeToneStyles[transaction.tone])}
+            />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-foreground dark:text-foreground-dark">{transaction.name}</p>
               <p className="text-xs text-muted-foreground dark:text-muted-dark-foreground">{transaction.date}</p>
             </div>
             <div className="text-right">
               <p className="text-sm font-bold text-foreground dark:text-foreground-dark">{transaction.amount}</p>
-              <p className={cn('text-xs', financeTextStyles[transaction.tone])}>{transaction.status}</p>
+              <Badge
+                variant={transaction.status === '已拒绝' ? 'error' : 'success'}
+                className={cn('mt-1 px-2 py-0.5 text-[0.6875rem]', financeTextStyles[transaction.tone])}
+              >
+                {transaction.status}
+              </Badge>
             </div>
           </div>
         ))}
@@ -884,7 +922,7 @@ function FinanceDashboardPage({
       data-testid="dashboard-finance-shell"
       className={cn('min-h-screen bg-secondary p-4 text-foreground dark:bg-background-dark dark:text-foreground-dark', className)}
     >
-      <div className="mx-auto grid max-w-[118rem] gap-4 rounded-3xl bg-background p-4 shadow-button dark:bg-background-dark lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[17rem_minmax(0,1fr)_24rem]">
+      <div className="mx-auto grid max-w-[118rem] gap-4 rounded-3xl bg-background p-4 shadow-button dark:bg-background-dark lg:grid-cols-[16rem_minmax(0,1fr)] 2xl:grid-cols-[17rem_minmax(0,1fr)_24rem]">
         <FinanceSidebar />
 
         <main className="min-w-0 space-y-4">
@@ -901,7 +939,7 @@ function FinanceDashboardPage({
           </div>
         </main>
 
-        <aside className="grid gap-4 lg:col-span-2 xl:col-span-1 xl:block xl:space-y-4">
+        <aside className="grid gap-4 lg:col-span-2 lg:grid-cols-2 2xl:col-span-1 2xl:block 2xl:space-y-4">
           <FinanceCardPanel data={data} />
           <FinanceTransactionHistory transactions={data.transactions} />
         </aside>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { cn } from '../../../lib/utils';
+import { clampNumber } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export type SplitterOrientation = 'horizontal' | 'vertical';
@@ -39,7 +40,7 @@ const resizePair = (sizes: number[], index: number, delta: number, min: number) 
   const nextSizes = [...sizes];
   const left = nextSizes[index];
   const right = nextSizes[index + 1];
-  const nextLeft = Math.min(Math.max(left + delta, min), left + right - min);
+  const nextLeft = clampNumber(left + delta, min, left + right - min);
 
   nextSizes[index] = nextLeft;
   nextSizes[index + 1] = left + right - nextLeft;
@@ -96,7 +97,8 @@ export const Splitter = React.forwardRef<HTMLDivElement, SplitterProps>(
         {...props}
         ref={ref}
         className={cn(
-          'flex min-h-0 min-w-0 overflow-hidden rounded-2xl border border-border bg-surface dark:border-border-dark dark:bg-surface-dark',
+          'flex min-h-0 min-w-0 overflow-hidden',
+          uiStyles.surfaceShellPlain,
           orientation === 'vertical' ? 'flex-col' : 'flex-row',
           className,
         )}

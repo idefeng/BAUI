@@ -59,7 +59,10 @@ export const DrawerContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed z-50 flex flex-col gap-5 overflow-y-auto rounded-none border-border bg-surface p-6 text-foreground shadow-2xl outline-none dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
+        'fixed z-50 flex flex-col gap-5 overflow-y-auto rounded-none p-6 shadow-2xl outline-none',
+        uiStyles.borderDefault,
+        uiStyles.surfaceBackground,
+        uiStyles.textForeground,
         side === 'right' && 'border-l',
         side === 'left' && 'border-r',
         side === 'top' && 'border-b',
@@ -91,7 +94,10 @@ export const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLD
 DrawerHeader.displayName = 'DrawerHeader';
 
 export const DrawerFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('mt-auto flex flex-col-reverse gap-3 border-t border-border pt-4 dark:border-border-dark sm:flex-row sm:justify-end', className)} {...props} />
+  <div
+    className={cn('mt-auto flex flex-col-reverse gap-3 border-t pt-4 sm:flex-row sm:justify-end', uiStyles.borderDefault, className)}
+    {...props}
+  />
 );
 
 DrawerFooter.displayName = 'DrawerFooter';

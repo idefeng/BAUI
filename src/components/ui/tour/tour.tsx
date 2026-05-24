@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
 import { Button } from '../button';
+import { clampNumber } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface TourStep {
@@ -42,7 +43,7 @@ export const Tour = React.forwardRef<HTMLDivElement, TourProps>(
   ) => {
     const isControlled = current !== undefined;
     const [innerCurrent, setInnerCurrent] = React.useState(defaultCurrent);
-    const safeCurrent = Math.min(Math.max(isControlled ? current : innerCurrent, 0), Math.max(steps.length - 1, 0));
+    const safeCurrent = clampNumber(isControlled ? current : innerCurrent, 0, Math.max(steps.length - 1, 0));
     const activeStep = steps[safeCurrent];
     const titleId = React.useId();
 
@@ -81,7 +82,7 @@ export const Tour = React.forwardRef<HTMLDivElement, TourProps>(
         >
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
-              <h2 id={titleId} className="text-base font-semibold text-foreground dark:text-foreground-dark">
+              <h2 id={titleId} className={uiStyles.heading}>
                 {activeStep.title}
               </h2>
               {activeStep.description ? (

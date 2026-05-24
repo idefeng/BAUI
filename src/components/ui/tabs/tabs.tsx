@@ -64,7 +64,8 @@ export const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      'mt-4 rounded-2xl border border-border bg-surface p-5 text-sm leading-6 outline-none dark:border-border-dark dark:bg-surface-dark',
+      'mt-4 p-5 text-sm leading-6 outline-none',
+      uiStyles.surfaceShellPlain,
       uiStyles.textForeground,
       uiStyles.focusRing,
       className,

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { cn } from '../../../lib/utils';
+import { floorAtLeast } from '../shared/logic';
 
 export interface MasonryProps extends React.HTMLAttributes<HTMLDivElement> {
   /** CSS columns 数量，适合瀑布流式卡片预览。 */
@@ -33,7 +34,7 @@ export const Masonry = React.forwardRef<HTMLDivElement, MasonryProps>(
       className={cn('[&>*]:mb-4 [&>*]:break-inside-avoid', className)}
       style={{
         ...style,
-        columnCount: Math.max(1, Math.floor(columns)),
+        columnCount: floorAtLeast(columns),
         columnGap: toCssLength(gap),
       }}
     >

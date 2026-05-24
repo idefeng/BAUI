@@ -54,14 +54,23 @@ describe('DashboardTemplate', () => {
     expect(screen.queryByText('本周新增学员')).not.toBeInTheDocument();
   });
 
-  it('finance 页面类型渲染三栏财务驾驶舱和交易列表', () => {
-    render(<DashboardTemplate mock pageType="finance" />);
+  it('finance 页面类型渲染中文财务驾驶舱并复用库内基础组件', () => {
+    const { container } = render(<DashboardTemplate mock pageType="finance" />);
 
     expect(screen.getByTestId('dashboard-finance-shell')).toHaveClass('bg-secondary');
     expect(screen.getByTestId('finance-balance-chart')).toHaveClass('dark:bg-surface-dark');
-    expect(screen.getByText('Balance overview')).toBeInTheDocument();
-    expect(screen.getByText('$12,450')).toBeInTheDocument();
-    expect(screen.getByText('My card')).toBeInTheDocument();
+    expect(screen.getByText('财务驾驶舱')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('搜索账户、交易或目标')).toBeInTheDocument();
+    expect(screen.getByTestId('boao-input-root')).toBeInTheDocument();
+    expect(screen.getByText('余额概览')).toBeInTheDocument();
+    expect(screen.getByText('¥12,450')).toBeInTheDocument();
+    expect(screen.getByText('我的卡片')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '添加组件' })).toBeInTheDocument();
+    expect(screen.queryByText('Balance overview')).not.toBeInTheDocument();
+    expect(screen.queryByText('My card')).not.toBeInTheDocument();
+    expect(screen.queryByText('Quick payment')).not.toBeInTheDocument();
+    expect(container.querySelectorAll('[data-slot="avatar"]').length).toBeGreaterThanOrEqual(7);
+    expect(screen.getAllByTestId('boao-progress-indicator').length).toBeGreaterThanOrEqual(5);
     expect(screen.getAllByTestId('finance-goal-row')).toHaveLength(4);
     expect(screen.getAllByTestId('finance-transaction-row')).toHaveLength(7);
   });

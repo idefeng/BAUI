@@ -36,6 +36,9 @@ export const uiStatusStyles = {
 export const uiStyles = {
   textForeground: 'text-foreground dark:text-foreground-dark',
   textMuted: 'text-muted-foreground dark:text-muted-dark-foreground',
+  heading: 'text-base font-semibold text-foreground dark:text-foreground-dark',
+  borderDefault: 'border-border dark:border-border-dark',
+  surfaceBackground: 'bg-surface dark:bg-surface-dark',
   placeholderText: 'text-muted-foreground dark:text-muted-dark-foreground',
   activePrimary:
     'bg-primary text-primary-foreground shadow-md dark:bg-primary-dark dark:text-primary-dark-foreground',
@@ -80,6 +83,8 @@ export const uiStyles = {
     'rounded-2xl border border-border bg-surface text-foreground shadow-sm dark:border-border-dark dark:bg-surface-dark/50 dark:text-foreground-dark',
   surfaceShell:
     'rounded-2xl border border-border bg-surface shadow-sm dark:border-border-dark dark:bg-surface-dark',
+  surfaceShellPlain:
+    'rounded-2xl border border-border bg-surface dark:border-border-dark dark:bg-surface-dark',
   carouselArrowButton:
     'absolute top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-surface/90 text-foreground opacity-0 shadow-button backdrop-blur transition-all duration-200 hover:bg-primary-soft hover:text-primary group-hover:opacity-100 focus:opacity-100 dark:bg-surface-dark/90 dark:text-foreground-dark dark:hover:bg-primary-dark-soft dark:hover:text-primary-dark',
   floatingSurface:
@@ -112,6 +117,12 @@ export const uiStyles = {
     'rounded-xl border border-border/80 bg-surface dark:border-border-dark dark:bg-surface-dark',
   optionPanelBackground:
     'rounded-xl border border-border/80 bg-background dark:border-border-dark dark:bg-background-dark',
+  tableHeaderCell:
+    'border-b border-border bg-secondary px-4 py-3 dark:border-border-dark dark:bg-secondary-dark',
+  tableBodyCell:
+    'border-b border-border bg-surface px-4 py-3 align-middle dark:border-border-dark dark:bg-surface-dark',
+  selectionInput:
+    'size-4 rounded border-border accent-primary dark:border-border-dark dark:accent-primary-dark',
   emptyStateSurface:
     'rounded-xl border border-border bg-surface text-center text-sm text-muted-foreground shadow-lg dark:border-border-dark dark:bg-surface-dark dark:text-muted-dark-foreground',
   stateOpenPrimary:

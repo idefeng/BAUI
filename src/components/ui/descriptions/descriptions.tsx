@@ -48,7 +48,7 @@ export const Descriptions = React.forwardRef<HTMLDivElement, DescriptionsProps>(
       ref={ref}
       className={cn(
         'space-y-4',
-        bordered && 'rounded-2xl border border-border bg-surface shadow-sm dark:border-border-dark dark:bg-surface-dark',
+        bordered && uiStyles.surfaceShell,
         className,
       )}
       {...props}
@@ -65,7 +65,7 @@ export const Descriptions = React.forwardRef<HTMLDivElement, DescriptionsProps>(
             className={cn(
               'min-w-0',
               sizeClasses[size],
-              bordered && 'border-border dark:border-border-dark',
+              bordered && uiStyles.borderDefault,
               bordered && index < items.length && 'border-t',
               item.span && item.span > 1 && 'md:col-span-2',
             )}

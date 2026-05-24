@@ -33,8 +33,10 @@ export const List = React.forwardRef<HTMLUListElement, ListProps>(
       <ul
         ref={ref}
         className={cn(
-          'rounded-2xl bg-surface text-foreground dark:bg-surface-dark dark:text-foreground-dark',
-          bordered && 'border border-border dark:border-border-dark',
+          'rounded-2xl',
+          uiStyles.surfaceBackground,
+          uiStyles.textForeground,
+          bordered && cn('border', uiStyles.borderDefault),
           className,
         )}
         {...props}

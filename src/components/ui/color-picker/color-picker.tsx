@@ -107,7 +107,9 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
                 aria-label={`选择 ${preset.label}`}
                 disabled={disabled}
                 className={cn(
-                  'inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground transition-all duration-150 hover:border-primary/70 hover:bg-primary-soft dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark dark:hover:border-primary-dark dark:hover:bg-primary-dark-soft',
+                  'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition-all duration-150 hover:border-primary/70 dark:hover:border-primary-dark',
+                  uiStyles.surfaceInteractive,
+                  uiStyles.textForeground,
                   uiStyles.buttonFocusVisibleRing,
                   disabled && 'cursor-not-allowed opacity-60',
                   currentValue === preset.value &&
@@ -117,7 +119,7 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
               >
                 <span
                   aria-hidden="true"
-                  className="size-4 rounded-full border border-border dark:border-border-dark"
+                  className={cn('size-4 rounded-full border', uiStyles.borderDefault)}
                   style={{ background: preset.value }}
                 />
                 {preset.label}

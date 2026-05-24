@@ -3,6 +3,7 @@ import { Star } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
 import { mockRateValue } from '../../../utils/mock';
+import { clampNumber, floorAtLeast } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -24,7 +25,7 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   character?: React.ReactNode;
 }
 
-const clampRateValue = (value: number, count: number) => Math.min(Math.max(Math.round(value), 0), count);
+const clampRateValue = (value: number, count: number) => clampNumber(Math.round(value), 0, count);
 
 export const Rate = React.forwardRef<HTMLDivElement, RateProps>(
   (
@@ -42,7 +43,7 @@ export const Rate = React.forwardRef<HTMLDivElement, RateProps>(
     },
     ref,
   ) => {
-    const safeCount = Math.max(1, Math.floor(count));
+    const safeCount = floorAtLeast(count);
     const initialValue = defaultValue ?? (mock && value === undefined ? mockRateValue() : 0);
     const isControlled = value !== undefined;
     const [innerValue, setInnerValue] = React.useState(() => clampRateValue(initialValue, safeCount));
@@ -91,7 +92,7 @@ export const Rate = React.forwardRef<HTMLDivElement, RateProps>(
                   : 'hover:bg-warning-soft hover:text-warning dark:hover:bg-warning-dark-soft dark:hover:text-warning-dark',
                 checked
                   ? 'text-warning dark:text-warning-dark'
-                  : 'text-muted-foreground dark:text-muted-dark-foreground',
+                  : uiStyles.textMuted,
               )}
               onClick={() => handleSelect(rateValue)}
             >

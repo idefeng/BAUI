@@ -78,7 +78,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
           {icon ?? <Icon className="size-5" aria-hidden={true} />}
         </span>
         <div className="min-w-0 flex-1 space-y-1">
-          {title ? <div className="font-semibold text-foreground dark:text-foreground-dark">{title}</div> : null}
+          {title ? <div className={cn('font-semibold', uiStyles.textForeground)}>{title}</div> : null}
           {description ? (
             <div className={cn('leading-6', uiStyles.textMuted)}>{description}</div>
           ) : children ? (

@@ -303,10 +303,17 @@ describe('mock data workshop', () => {
   it('生成 DashboardTemplate finance 页面类型使用的财务驾驶舱 mock 数据', () => {
     const finance = mockFinanceDashboardData();
 
-    expect(finance.balance).toBe('$12,450');
+    expect(finance.balance).toBe('¥12,450');
     expect(finance.chart).toHaveLength(7);
+    expect(finance.chart.map((point) => point.label)).toEqual(['周日', '周一', '周二', '周三', '周四', '周五', '周六']);
+    expect(finance.summary[0].label).toBe('总收入');
+    expect(finance.spendingLimit.label).toBe('月度支出上限');
+    expect(finance.costAnalysis.categories.map((category) => category.label)).toEqual(
+      expect.arrayContaining(['住房', '餐饮', '交通', '投资']),
+    );
     expect(finance.goals).toHaveLength(4);
     expect(finance.transactions).toHaveLength(7);
+    expect(finance.transactions.every((transaction) => ['已完成', '已拒绝'].includes(transaction.status))).toBe(true);
     expect(finance.chart.some((point) => point.active)).toBe(true);
   });
 

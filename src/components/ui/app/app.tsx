@@ -19,7 +19,7 @@ export const App = React.forwardRef<HTMLDivElement, AppProps>(
       ref={ref}
       className={cn('min-h-screen bg-background text-foreground dark:bg-background-dark dark:text-foreground-dark', className)}
     >
-      <header className="flex min-h-16 items-center justify-between gap-4 border-b border-border px-6 dark:border-border-dark">
+      <header className={cn('flex min-h-16 items-center justify-between gap-4 border-b px-6', uiStyles.borderDefault)}>
         <div>
           {title ? <h1 className="text-lg font-semibold">{title}</h1> : null}
         </div>
@@ -27,7 +27,7 @@ export const App = React.forwardRef<HTMLDivElement, AppProps>(
       </header>
       <div className="flex min-h-[calc(100vh-4rem)]">
         {navigation ? (
-          <aside className={cn('w-64 shrink-0 border-r border-border p-4 dark:border-border-dark', uiStyles.textForeground)}>
+          <aside className={cn('w-64 shrink-0 border-r p-4', uiStyles.borderDefault, uiStyles.textForeground)}>
             {navigation}
           </aside>
         ) : null}

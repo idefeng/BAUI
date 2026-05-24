@@ -6,6 +6,7 @@ import { mockTransferData, type MockTransferItem } from '../../../utils/mock';
 import { Button } from '../button';
 import { Checkbox } from '../checkbox';
 import { Input } from '../input';
+import { clampNumber } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface TransferItem {
@@ -99,8 +100,8 @@ const TransferPanel = ({
       data-testid={`ui-transfer-panel-${direction}`}
       className={cn('flex min-h-80 min-w-0 flex-1 flex-col overflow-hidden', uiStyles.surfaceShell)}
     >
-      <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 dark:border-border-dark">
-        <h3 className="truncate text-sm font-semibold text-foreground dark:text-foreground-dark">{title}</h3>
+      <header className={cn('flex items-center justify-between gap-3 border-b px-4 py-3', uiStyles.borderDefault)}>
+        <h3 className={cn('truncate text-sm font-semibold', uiStyles.textForeground)}>{title}</h3>
         <div className="flex shrink-0 items-center gap-3">
           <Checkbox
             aria-label={`全选${title}`}
@@ -113,7 +114,7 @@ const TransferPanel = ({
           </span>
         </div>
       </header>
-      <div className="border-b border-border p-3 dark:border-border-dark">
+      <div className={cn('border-b p-3', uiStyles.borderDefault)}>
         <Input
           aria-label={`搜索${title}`}
           placeholder={`搜索${title}`}
@@ -178,7 +179,7 @@ const TransferPanel = ({
                       }}
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-foreground dark:text-foreground-dark">
+                      <span className={cn('block truncate text-sm font-medium', uiStyles.textForeground)}>
                         {item.title}
                       </span>
                       {item.description ? (
@@ -313,7 +314,7 @@ export function Transfer({
       return;
     }
 
-    const targetIndex = Math.min(Math.max(currentIndex + offset, 0), enabledKeys.length - 1);
+    const targetIndex = clampNumber(currentIndex + offset, 0, enabledKeys.length - 1);
     const anchorKey = keyboardAnchorRef.current[direction] ?? key;
     const anchorIndex = enabledKeys.indexOf(anchorKey);
     const start = Math.min(anchorIndex === -1 ? currentIndex : anchorIndex, targetIndex);

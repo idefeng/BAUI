@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { cn } from '../../../lib/utils';
+import { hasChildItems } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface AnchorItem {
@@ -52,8 +53,8 @@ const AnchorList = ({
           >
             {item.title}
           </a>
-          {item.children?.length ? (
-            <AnchorList activeHref={activeHref} items={item.children} level={level + 1} onChange={onChange} />
+          {hasChildItems(item) ? (
+            <AnchorList activeHref={activeHref} items={item.children ?? []} level={level + 1} onChange={onChange} />
           ) : null}
         </li>
       );

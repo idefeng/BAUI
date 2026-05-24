@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronRight, LoaderCircl
 
 import { cn } from '../../../lib/utils';
 import { mockProjects, mockUsers, type MockProject, type MockUser } from '../../../utils/mock';
+import { clampNumber } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export type TableRowKey = string | number;
@@ -308,8 +309,9 @@ export function Table<T extends object = Record<string, unknown>>({
   }, [currentSortState, resolvedColumns, rowModels]);
 
   const normalizedVirtualVisibleCount = Math.max(1, virtualVisibleCount);
-  const normalizedVirtualStart = Math.min(
-    Math.max(0, virtualStart),
+  const normalizedVirtualStart = clampNumber(
+    virtualStart,
+    0,
     Math.max(0, sortedRowModels.length - normalizedVirtualVisibleCount),
   );
   const displayRowModels = virtual
@@ -391,7 +393,8 @@ export function Table<T extends object = Record<string, unknown>>({
               {selectable ? (
                 <th
                   className={cn(
-                    'w-12 border-b border-border bg-secondary px-4 py-3 dark:border-border-dark dark:bg-secondary-dark',
+                    'w-12',
+                    uiStyles.tableHeaderCell,
                     selectionColumnStyle && 'shadow-sm',
                   )}
                   style={selectionColumnStyle}
@@ -402,7 +405,7 @@ export function Table<T extends object = Record<string, unknown>>({
                       aria-label="选择全部数据"
                       checked={allChecked}
                       onChange={toggleAll}
-                      className="size-4 rounded border-border accent-primary dark:border-border-dark dark:accent-primary-dark"
+                      className={uiStyles.selectionInput}
                     />
                   ) : null}
                 </th>
@@ -411,7 +414,8 @@ export function Table<T extends object = Record<string, unknown>>({
                 <th
                   aria-label="展开行"
                   className={cn(
-                    'w-12 border-b border-border bg-secondary px-4 py-3 dark:border-border-dark dark:bg-secondary-dark',
+                    'w-12',
+                    uiStyles.tableHeaderCell,
                     expandColumnStyle && 'shadow-sm',
                   )}
                   style={expandColumnStyle}
@@ -429,7 +433,8 @@ export function Table<T extends object = Record<string, unknown>>({
                     data-testid={`ui-table-head-${column.key}`}
                     style={fixedStyle}
                     className={cn(
-                      'border-b border-border bg-secondary px-4 py-3 font-medium dark:border-border-dark dark:bg-secondary-dark',
+                      'font-medium',
+                      uiStyles.tableHeaderCell,
                       column.fixed && 'shadow-sm',
                       column.headerClassName,
                     )}
@@ -486,7 +491,7 @@ export function Table<T extends object = Record<string, unknown>>({
                     {selectable ? (
                       <td
                         className={cn(
-                          'border-b border-border bg-surface px-4 py-3 align-middle dark:border-border-dark dark:bg-surface-dark',
+                          uiStyles.tableBodyCell,
                           selectionColumnStyle && 'shadow-sm',
                         )}
                         style={selectionColumnStyle}
@@ -496,14 +501,14 @@ export function Table<T extends object = Record<string, unknown>>({
                           aria-label={`选择 ${rowLabel}`}
                           checked={selected}
                           onChange={() => toggleRow(key)}
-                          className="size-4 rounded border-border accent-primary dark:border-border-dark dark:accent-primary-dark"
+                          className={uiStyles.selectionInput}
                         />
                       </td>
                     ) : null}
                     {expandable ? (
                       <td
                         className={cn(
-                          'border-b border-border bg-surface px-4 py-3 align-middle dark:border-border-dark dark:bg-surface-dark',
+                          uiStyles.tableBodyCell,
                           expandColumnStyle && 'shadow-sm',
                         )}
                         style={expandColumnStyle}
@@ -532,7 +537,8 @@ export function Table<T extends object = Record<string, unknown>>({
                           data-testid={`ui-table-cell-${String(key)}-${column.key}`}
                           style={fixedStyle}
                           className={cn(
-                            'border-b border-border bg-surface px-4 py-3 align-middle text-foreground dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
+                            uiStyles.tableBodyCell,
+                            uiStyles.textForeground,
                             column.align === 'center' && 'text-center',
                             column.align === 'right' && 'text-right',
                             column.fixed && 'shadow-sm',
@@ -546,8 +552,11 @@ export function Table<T extends object = Record<string, unknown>>({
                   </tr>
                   {expandable && expanded && renderExpandedRow ? (
                     <tr data-testid={`ui-table-expanded-row-${String(key)}`}>
-                      <td colSpan={columnCount} className="border-b border-border bg-secondary/60 px-6 py-4 dark:border-border-dark dark:bg-secondary-dark/60">
-                        <div className={cn('rounded-xl border border-border bg-surface p-4 text-sm dark:border-border-dark dark:bg-surface-dark', uiStyles.textForeground)}>
+                      <td
+                        colSpan={columnCount}
+                        className={cn('border-b bg-secondary/60 px-6 py-4 dark:bg-secondary-dark/60', uiStyles.borderDefault)}
+                      >
+                        <div className={cn('rounded-xl border p-4 text-sm', uiStyles.borderDefault, uiStyles.surfaceBackground, uiStyles.textForeground)}>
                           {renderExpandedRow(record, sourceIndex)}
                         </div>
                       </td>

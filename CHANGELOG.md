@@ -7,6 +7,12 @@
 - `DashboardTemplate` 新增 `pageType="finance"` 财务驾驶舱页面类型，复刻三栏金融运营看板布局，包含左侧导航、余额图表、预算建议、健康度、目标追踪、银行卡快捷操作和交易历史。
 - `src/utils/mock.ts` 新增 `mockFinanceDashboardData()` 与对应类型，为财务驾驶舱提供可替换的中央 Mock 数据。
 
+### Changed
+
+- `DashboardTemplate pageType="finance"` 全量中文化，统一人民币金额、中文导航、中文指标、中文交易状态和中文 Mock 数据。
+- 财务驾驶舱复用库内 `Button`、`Input`、`Avatar`、`Badge` 和 `Progress` 等基础组件，减少页面模板内重复 UI 实现。
+- `src/components/ui/shared/styles.ts` 和 `src/components/ui/shared/logic.ts` 补充表格单元格、通用边框、表面背景、数值边界等公共片段，并无损替换 `src/components/ui/` 内重复 Tailwind 类名和边界逻辑。
+
 ## 2026-05-23
 
 ### Added

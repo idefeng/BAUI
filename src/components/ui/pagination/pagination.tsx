@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../select';
-import { clampNumber } from '../shared/logic';
+import { clampNumber, floorAtLeast } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export type PaginationItem = number | 'ellipsis-left' | 'ellipsis-right';
@@ -40,7 +40,7 @@ export const getPageCount = (total: number, pageSize = defaultPageSize) =>
   Math.max(1, Math.ceil(Math.max(0, total) / Math.max(1, pageSize)));
 
 export const getPaginationItems = (pageCount: number, currentPage: number): PaginationItem[] => {
-  const safePageCount = Math.max(1, Math.floor(pageCount));
+  const safePageCount = floorAtLeast(pageCount);
   const safeCurrentPage = clampPage(Math.floor(currentPage), safePageCount);
 
   if (safePageCount <= maxContinuousPages + 2) {

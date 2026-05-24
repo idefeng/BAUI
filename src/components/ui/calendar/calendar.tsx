@@ -154,7 +154,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
           </button>
-          <div className="text-base font-semibold text-foreground dark:text-foreground-dark">
+          <div className={uiStyles.heading}>
             {viewDate.getFullYear()}年 {viewDate.getMonth() + 1}月
           </div>
           <button

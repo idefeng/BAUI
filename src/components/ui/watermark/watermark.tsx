@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from '../../../lib/utils';
 import { mockWatermarkContent } from '../../../utils/mock';
+import { floorAtLeast } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface WatermarkProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
@@ -40,7 +41,7 @@ export const Watermark = React.forwardRef<HTMLDivElement, WatermarkProps>(
     ref,
   ) => {
     const actualContent = normalizeContent(content ?? (mock ? mockWatermarkContent() : undefined));
-    const safeRepeat = Math.max(0, Math.floor(repeat));
+    const safeRepeat = floorAtLeast(repeat, 0);
 
     return (
       <div
@@ -52,7 +53,7 @@ export const Watermark = React.forwardRef<HTMLDivElement, WatermarkProps>(
         {actualContent.length > 0 && safeRepeat > 0 ? (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-20 grid select-none grid-cols-3 gap-8 p-8 text-muted-foreground dark:text-muted-dark-foreground"
+            className={cn('pointer-events-none absolute inset-0 z-20 grid select-none grid-cols-3 gap-8 p-8', uiStyles.textMuted)}
             style={{ opacity }}
           >
             {Array.from({ length: safeRepeat }, (_, index) => (

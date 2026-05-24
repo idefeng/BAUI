@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
+import { hasChildItems } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export interface MenuItem {
@@ -67,7 +68,7 @@ export const Menu = React.forwardRef<HTMLDivElement, MenuProps>(
 
     const renderItems = (menuItems: MenuItem[], depth = 0): React.ReactNode =>
       menuItems.map((item) => {
-        const hasChildren = Boolean(item.children?.length);
+        const hasChildren = hasChildItems(item);
         const isOpen = openKeys.has(item.key);
         const isSelected = actualSelectedKey === item.key;
 

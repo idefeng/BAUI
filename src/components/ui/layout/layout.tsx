@@ -35,7 +35,9 @@ export const LayoutHeader = React.forwardRef<HTMLElement, React.HTMLAttributes<H
     <header
       ref={ref}
       className={cn(
-        'flex h-16 shrink-0 items-center border-b border-border bg-surface px-6 shadow-sm dark:border-border-dark dark:bg-surface-dark',
+        'flex h-16 shrink-0 items-center border-b px-6 shadow-sm',
+        uiStyles.borderDefault,
+        uiStyles.surfaceBackground,
         uiStyles.textForeground,
         className,
       )}
@@ -51,7 +53,9 @@ export const LayoutSider = React.forwardRef<HTMLElement, LayoutSiderProps>(
     <aside
       ref={ref}
       className={cn(
-        'shrink-0 border-r border-border bg-surface p-4 transition-all duration-200 dark:border-border-dark dark:bg-surface-dark',
+        'shrink-0 border-r p-4 transition-all duration-200',
+        uiStyles.borderDefault,
+        uiStyles.surfaceBackground,
         collapsed ? 'w-20' : 'w-64',
         uiStyles.textForeground,
         className,
@@ -76,7 +80,9 @@ export const LayoutFooter = React.forwardRef<HTMLElement, React.HTMLAttributes<H
     <footer
       ref={ref}
       className={cn(
-        'shrink-0 border-t border-border bg-surface px-6 py-4 text-sm dark:border-border-dark dark:bg-surface-dark',
+        'shrink-0 border-t px-6 py-4 text-sm',
+        uiStyles.borderDefault,
+        uiStyles.surfaceBackground,
         uiStyles.textMuted,
         className,
       )}

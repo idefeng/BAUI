@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ChevronDown, ChevronRight, Circle } from 'lucide-react';
 
 import { cn } from '../../../lib/utils';
+import { hasChildItems } from '../shared/logic';
 import { uiStyles } from '../shared/styles';
 
 export type TreeKey = string | number;
@@ -51,7 +52,7 @@ const TreeNodeView = ({
   setExpandedKeys: React.Dispatch<React.SetStateAction<Set<string>>>;
   setSelectedKey: (key: TreeKey) => void;
 }) => {
-  const hasChildren = Boolean(node.children?.length);
+  const hasChildren = hasChildItems(node);
   const expanded = expandedKeys.has(String(node.key));
   const selected = selectedKey !== undefined && isSameKey(selectedKey, node.key);
 

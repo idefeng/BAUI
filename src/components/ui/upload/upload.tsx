@@ -14,7 +14,7 @@ import {
 import { cn } from '../../../lib/utils';
 import { BrandLogo } from '../branding';
 import { Button } from '../button';
-import { clampNumber } from '../shared/logic';
+import { clampNumber, roundAtLeast } from '../shared/logic';
 import { uiStatusStyles, uiStyles, type UiProgressStatus } from '../shared/styles';
 
 export type UploadStatus = 'uploading' | 'success' | 'error';
@@ -144,7 +144,7 @@ const formatFileSize = (file: File) => {
     return `${sizeInMb.toFixed(1)}MB`;
   }
 
-  return `${Math.max(1, Math.round(file.size / 1024))}KB`;
+  return `${roundAtLeast(file.size / 1024)}KB`;
 };
 
 const getErrorMessage = (file: File, accept?: string, maxSize?: number) => {
