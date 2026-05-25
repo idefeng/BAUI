@@ -87,6 +87,7 @@ export * from './components/biz/pages';
 export * from './components/biz/profile';
 export * from './components/biz/smart-table';
 export * from './components/biz/transfer';
+export * from './components/biz/demo-studio';
 
 // 企业业务属性、Mock 造血机和全国行政区划基础设施导出区。
 export * from './utils/mock';

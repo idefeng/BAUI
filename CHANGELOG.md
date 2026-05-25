@@ -2,6 +2,10 @@
 
 ## 2026-05-26
 
+### Added
+
+- 新增 `DemoStudio` 可视化演示系统装配工坊与 `DemoPlayer` 零代码演示播放引擎，支持运行时 CSS 主题色推导与局部注入、行政区划与业务 Mock 数据属地化绑定、跨组件路由自动流转以及一键 Base64URL 压缩生成与分享超链接。
+
 ### Changed
 
 - `StandardLoginPages` 新增 `type="otp"` 免密登录模板，承接参考截图风格的双栏登录页、右侧视觉面板、安全提示区、Storybook 场景和提交回调；移除 `src/components/biz/pages` 下独立 `LoginPageTemplate` 入口。
