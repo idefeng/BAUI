@@ -50,6 +50,6 @@ describe('Tooltip', () => {
     const content = screen.getAllByText('暗黑模式提示')[0];
 
     expect(content).toHaveClass('dark:border-border-dark');
-    expect(content).toHaveClass('dark:bg-surface-dark');
+    expect(content).toHaveClass('dark:bg-surface-dark/85');
   });
 });

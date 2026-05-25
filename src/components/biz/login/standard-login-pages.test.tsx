@@ -17,6 +17,17 @@ describe('StandardLoginPages', () => {
     },
   );
 
+  it('otp 模板渲染双栏免密登录页并使用中央 mock 联系人', () => {
+    render(<StandardLoginPages type="otp" mock onSubmit={() => undefined} />);
+
+    expect(screen.getByTestId('standard-login-pages-root')).toHaveAttribute('data-template', 'otp');
+    expect(screen.getByText('登录到个人中心')).toBeInTheDocument();
+    expect(screen.getByLabelText('手机号或邮箱')).toHaveValue('student.demo@etlchina.com');
+    expect(screen.getAllByTestId('standard-login-otp-input')).toHaveLength(6);
+    expect(screen.getByText('云端学习中心')).toBeInTheDocument();
+    expect(screen.getByText('安全免密登录')).toBeInTheDocument();
+  });
+
   it('education 模板展示学堂轮播、角色选择器和进入学堂按钮', () => {
     render(<StandardLoginPages type="education" onSubmit={() => undefined} />);
 
@@ -101,5 +112,27 @@ describe('StandardLoginPages', () => {
 
     expect(screen.getByTestId('standard-login-brand-background')).toBeInTheDocument();
     expect(screen.getByText('© 2026 HIGASHIKAWA CO., LTD. All Rights Reserved.')).toBeInTheDocument();
+  });
+
+  it('otp 模板提交时回传联系人和 6 位验证码，同时保留旧账号字段', async () => {
+    const onSubmit = vi.fn();
+    const user = userEvent.setup();
+
+    render(<StandardLoginPages type="otp" onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText('手机号或邮箱'), 'learner@etlchina.com');
+
+    for (const [index, digit] of ['1', '2', '3', '4', '5', '6'].entries()) {
+      await user.type(screen.getByLabelText(`验证码第 ${index + 1} 位`), digit);
+    }
+
+    await user.click(screen.getByRole('button', { name: '登录' }));
+
+    expect(onSubmit).toHaveBeenCalledWith({
+      username: 'learner@etlchina.com',
+      password: '',
+      contact: 'learner@etlchina.com',
+      otp: '123456',
+    });
   });
 });

@@ -80,7 +80,7 @@ export const uiStyles = {
   iconGhostButton:
     'inline-flex shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary-hover hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 dark:text-muted-dark-foreground dark:hover:bg-secondary-dark-hover dark:hover:text-foreground-dark dark:focus:ring-primary-dark/30',
   panelSurface:
-    'rounded-2xl border border-border bg-surface text-foreground shadow-sm dark:border-border-dark dark:bg-surface-dark/50 dark:text-foreground-dark',
+    'rounded-2xl border border-border bg-surface/90 backdrop-blur-md text-foreground shadow-sm dark:border-border-dark dark:bg-surface-dark/75 dark:text-foreground-dark',
   surfaceShell:
     'rounded-2xl border border-border bg-surface shadow-sm dark:border-border-dark dark:bg-surface-dark',
   surfaceShellPlain:
@@ -91,7 +91,7 @@ export const uiStyles = {
     'rounded-2xl border border-border bg-surface text-foreground shadow-button dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
   surfaceCard: 'border border-border bg-surface shadow-button dark:border-border-dark dark:bg-surface-dark',
   floatingContent:
-    'z-50 rounded-2xl border border-border bg-surface text-foreground shadow-xl dark:border-border-dark dark:bg-surface-dark dark:text-foreground-dark',
+    'z-50 rounded-2xl border border-border bg-surface/95 backdrop-blur-md text-foreground shadow-xl dark:border-border-dark dark:bg-surface-dark/85 dark:text-foreground-dark',
   floatingBackdropContent:
     'z-50 rounded-2xl border border-border bg-background/90 text-foreground shadow-lg backdrop-blur dark:border-border-dark dark:bg-background-dark/90 dark:text-foreground-dark',
   floatingStateMotion: 'data-[state=open]:animate-select-in data-[state=closed]:animate-select-out',

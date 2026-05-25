@@ -26,7 +26,7 @@ describe('Card', () => {
     const card = screen.getByText('项目概览').closest('[data-slot="card"]');
 
     expect(card).toHaveClass('rounded-2xl');
-    expect(card).toHaveClass('dark:bg-surface-dark/50');
+    expect(card).toHaveClass('dark:bg-surface-dark/75');
     expect(screen.getByText('展示培训项目核心数据。')).toHaveClass('text-muted-foreground');
   });
 

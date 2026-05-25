@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { StandardLoginPages } from './standard-login-pages';
 
-const pageTypes = ['tech', 'education', 'minimal', 'split-screen', 'classic'] as const;
+const pageTypes = ['tech', 'education', 'minimal', 'split-screen', 'classic', 'otp'] as const;
 
 const meta = {
   title: 'Biz/StandardLoginPages',

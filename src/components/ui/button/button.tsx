@@ -87,7 +87,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         tabIndex={asChild && isDisabled ? -1 : tabIndex}
         onClick={handleClick}
         className={cn(
-          'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200',
+          'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 active:scale-[0.98] hover:scale-[1.015]',
           uiStyles.buttonFocusVisibleRing,
           uiStyles.buttonDisabled,
           uiStyles.dataDisabledButton,

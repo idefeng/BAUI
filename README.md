@@ -194,13 +194,18 @@ const cityRegionOptions = getRegionOptions('CITY');
 <LearningProfile studentId="student-it-001" mock />
 ```
 
-`StandardLoginPages` 提供五种行业登录页门面，`mock={true}` 时展示 AI 一键填表按钮：
+`StandardLoginPages` 提供多种行业登录页门面，包含账号密码、分屏品牌页和 OTP 免密登录。`mock={true}` 时会填入中央 mock 账号或演示联系人：
 
 ```tsx
 <StandardLoginPages
   type="tech"
   mock
   onSubmit={(values) => console.log(values.username, values.password, values.role)}
+/>
+<StandardLoginPages
+  type="otp"
+  mock
+  onSubmit={(values) => console.log(values.contact, values.otp)}
 />
 ```
 

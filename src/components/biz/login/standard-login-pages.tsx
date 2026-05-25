@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {
   BookOpenCheck,
+  CheckCircle2,
+  CloudSun,
   GraduationCap,
   KeyRound,
   LockKeyhole,
@@ -12,6 +14,7 @@ import {
 
 import { cn } from '../../../lib/utils';
 import { mockLoginAccount, type MockLoginRole } from '../../../utils/mock';
+import { Badge } from '../../ui/badge';
 import { BrandBackground, BrandLogo } from '../../ui/branding';
 import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
@@ -22,13 +25,17 @@ import { Statistic } from '../../ui/statistic';
 import { Switch } from '../../ui/switch';
 import { ThemeToggle } from '../../ui/theme-toggle';
 
-export type StandardLoginPageType = 'tech' | 'education' | 'minimal' | 'split-screen' | 'classic';
+export type StandardLoginPageType = 'tech' | 'education' | 'minimal' | 'split-screen' | 'classic' | 'otp';
 export type StandardLoginRole = 'student' | 'teacher' | 'academic-admin';
 
 export interface StandardLoginPagesSubmitValues {
   username: string;
   password: string;
   role?: StandardLoginRole;
+  /** `type="otp"` 免密登录时回传的手机号或邮箱。 */
+  contact?: string;
+  /** `type="otp"` 免密登录时回传的一次性验证码。 */
+  otp?: string;
 }
 
 export interface StandardLoginPagesProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
@@ -49,7 +56,7 @@ interface LoginFormState {
 }
 
 type LoginFormErrors = Partial<Record<'username' | 'password' | 'role' | 'captcha', string>>;
-type LoginFormTone = StandardLoginPageType;
+type LoginFormTone = Exclude<StandardLoginPageType, 'otp'>;
 
 interface LoginFormProps {
   tone: LoginFormTone;
@@ -91,8 +98,10 @@ const initialFormValue: LoginFormState = {
 };
 
 const captchaCode = 'ET26';
+const otpLength = 6;
+const mockOtp = '202626';
 
-const templateCopy: Record<StandardLoginPageType, { title: string; description: string; buttonText: string }> = {
+const templateCopy: Record<LoginFormTone, { title: string; description: string; buttonText: string }> = {
   tech: {
     title: '云平台统一身份登录',
     description: '进入智能培训、资源调度与内控审计一体化控制台。',
@@ -232,6 +241,13 @@ const updateErrors = (errors: LoginFormErrors, field: keyof LoginFormErrors): Lo
 
 const isStandardLoginRole = (role: MockLoginRole | undefined): role is StandardLoginRole =>
   role === 'student' || role === 'teacher' || role === 'academic-admin';
+
+const createEmptyOtp = () => Array.from({ length: otpLength }, () => '');
+
+const createMockContact = () => `${mockLoginAccount('student').username}@etlchina.com`;
+
+/** 将任意输入收敛为单个数字字符，避免验证码格子里出现多字符状态。 */
+const normalizeOtpDigit = (value: string) => value.replace(/\D/g, '').slice(-1);
 
 const getPanelIcon = (tone: LoginFormTone) => {
   if (tone === 'education') {
@@ -480,6 +496,202 @@ function LoginFormPanel({
   return <Card className={styles.panel}>{panelContent}</Card>;
 }
 
+function OtpLoginVisualPanel() {
+  return (
+    <div
+      data-testid="standard-login-otp-visual-panel"
+      className="relative hidden min-h-[34rem] overflow-hidden bg-gradient-to-br from-success via-primary to-warning text-success-foreground lg:block"
+    >
+      <div className="absolute inset-0 bg-foreground/10" aria-hidden="true" />
+      <div className="absolute inset-x-8 top-10 flex items-center justify-between text-success-foreground/85" aria-hidden="true">
+        <CloudSun className="size-14" />
+        <span className="h-px w-36 bg-success-foreground/40" />
+      </div>
+
+      <div className="absolute inset-x-10 bottom-24 h-56" aria-hidden="true">
+        <span className="absolute bottom-0 left-1/2 h-32 w-64 -translate-x-1/2 rounded-t-full bg-surface/75 shadow-button dark:bg-surface-dark/75" />
+        <span className="absolute bottom-0 left-1/2 h-20 w-40 -translate-x-1/2 rounded-t-full bg-success-foreground/25" />
+        <span className="absolute bottom-0 left-[22%] h-44 w-7 rounded-t-full bg-surface/75 dark:bg-surface-dark/75" />
+        <span className="absolute bottom-0 right-[22%] h-44 w-7 rounded-t-full bg-surface/75 dark:bg-surface-dark/75" />
+        <span className="absolute bottom-36 left-[21%] size-10 rounded-full bg-warning-soft/80 dark:bg-warning-dark-soft/80" />
+        <span className="absolute bottom-36 right-[21%] size-10 rounded-full bg-warning-soft/80 dark:bg-warning-dark-soft/80" />
+        <span className="absolute bottom-0 left-10 right-10 h-10 rounded-t-full bg-success-foreground/20" />
+      </div>
+
+      <div className="absolute inset-x-8 top-32">
+        <Badge className="border-success-foreground/20 bg-success-foreground/15 px-3 py-1 text-success-foreground">
+          云端学习中心
+        </Badge>
+      </div>
+
+      <div className="absolute inset-x-8 bottom-8 rounded-2xl bg-background/15 p-5 text-success-foreground shadow-button backdrop-blur-md dark:bg-background-dark/25">
+        <p className="text-base font-semibold leading-7">持续学习，让每一次登录都通向新的能力。</p>
+        <p className="mt-3 text-right text-xs text-success-foreground/75">— ETLCHINA 学习服务</p>
+      </div>
+    </div>
+  );
+}
+
+function OtpLoginPage({
+  className,
+  mock,
+  onSubmit,
+  rootProps,
+}: {
+  className?: string;
+  mock: boolean;
+  onSubmit: StandardLoginPagesProps['onSubmit'];
+  rootProps: React.HTMLAttributes<HTMLDivElement> & {
+    'data-testid': string;
+    'data-template': StandardLoginPageType;
+  };
+}) {
+  const contactId = React.useId();
+  const [contact, setContact] = React.useState(() => (mock ? createMockContact() : ''));
+  const [otp, setOtp] = React.useState(() => (mock ? mockOtp.split('') : createEmptyOtp()));
+  const otpRefs = React.useRef<Array<HTMLInputElement | null>>([]);
+
+  const handleOtpChange = (index: number, value: string) => {
+    const nextDigit = normalizeOtpDigit(value);
+
+    setOtp((currentOtp) => currentOtp.map((digit, digitIndex) => (digitIndex === index ? nextDigit : digit)));
+
+    // 输入后自动进入下一格，保留 OTP 分格录入的高效体验。
+    if (nextDigit && index < otpLength - 1) {
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const normalizedContact = contact.trim();
+
+    onSubmit({
+      username: normalizedContact,
+      password: '',
+      contact: normalizedContact,
+      otp: otp.join(''),
+    });
+  };
+
+  return (
+    <div
+      {...rootProps}
+      className={cn('min-h-screen bg-secondary p-4 text-foreground dark:bg-background-dark dark:text-foreground-dark md:p-8', className)}
+    >
+      <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-6xl items-center justify-center md:min-h-[calc(100vh-4rem)]">
+        <div className="grid w-full overflow-hidden rounded-3xl bg-surface shadow-button dark:bg-surface-dark lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+          <div className="flex min-h-[34rem] flex-col justify-center px-6 py-10 sm:px-10 lg:px-14">
+            <div className="mb-10 flex items-center justify-between gap-4">
+              <BrandLogo variant="icon" size="sm" />
+              <Badge variant="success" className="rounded-full px-3 py-1">
+                OTP 认证
+              </Badge>
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-black tracking-normal text-foreground dark:text-foreground-dark">登录到个人中心</h1>
+              <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground dark:text-muted-dark-foreground">
+                访问课程、证书、学习记录和项目进度。
+              </p>
+            </div>
+
+            <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+              <div className="space-y-2">
+                <label htmlFor={contactId} className="text-sm font-semibold text-foreground dark:text-foreground-dark">
+                  手机号或邮箱
+                </label>
+                <Input
+                  id={contactId}
+                  value={contact}
+                  onChange={(event) => setContact(event.currentTarget.value)}
+                  placeholder="请输入手机号或邮箱"
+                  prefixIcon={<BookOpenCheck className="size-4" />}
+                  rootClassName="h-12 rounded-xl bg-background shadow-none dark:bg-background-dark"
+                />
+                <p className="text-xs text-muted-foreground dark:text-muted-dark-foreground">
+                  一次性验证码会发送到你的账号绑定联系方式。
+                </p>
+              </div>
+
+              <fieldset className="space-y-2">
+                <legend className="text-sm font-semibold text-foreground dark:text-foreground-dark">输入验证码</legend>
+                <div className="flex flex-wrap gap-2">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      ref={(element) => {
+                        otpRefs.current[index] = element;
+                      }}
+                      aria-label={`验证码第 ${index + 1} 位`}
+                      data-testid="standard-login-otp-input"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(event) => handleOtpChange(index, event.currentTarget.value)}
+                      onKeyDown={(event) => handleOtpKeyDown(index, event)}
+                      className="size-10 rounded-xl border border-border bg-background text-center text-sm font-bold text-foreground outline-none transition-colors focus:border-warning focus:ring-2 focus:ring-warning/30 dark:border-border-dark dark:bg-background-dark dark:text-foreground-dark dark:focus:border-warning-dark dark:focus:ring-warning-dark/30"
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground dark:text-muted-dark-foreground">
+                  <span>没有收到验证码？重新发送</span>
+                  <span>02:00</span>
+                </div>
+              </fieldset>
+
+              <Button
+                type="submit"
+                fullWidth
+                className="h-12 rounded-xl bg-warning text-warning-foreground hover:bg-warning-hover active:bg-warning-active dark:bg-warning-dark dark:text-warning-dark-foreground dark:hover:bg-warning-dark-hover dark:active:bg-warning-dark-active"
+              >
+                登录
+              </Button>
+            </form>
+
+            <div className="mt-8 rounded-2xl border border-warning/30 bg-warning-soft/40 p-4 dark:border-warning-dark/30 dark:bg-warning-dark-soft/30">
+              <div className="flex gap-3">
+                <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-warning-soft text-warning dark:bg-warning-dark-soft dark:text-warning-dark">
+                  <LockKeyhole className="size-5" aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 className="text-sm font-bold text-foreground dark:text-foreground-dark">安全免密登录</h2>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground dark:text-muted-dark-foreground">
+                    无需记忆密码，系统将通过一次性验证码完成身份校验。
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-success dark:text-success-dark">
+                    <span className="inline-flex items-center gap-1">
+                      <ShieldCheck className="size-3.5" aria-hidden="true" />
+                      加密传输
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <CheckCircle2 className="size-3.5" aria-hidden="true" />
+                      会话保护
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <KeyRound className="size-3.5" aria-hidden="true" />
+                      无需密码
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <OtpLoginVisualPanel />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const getRootProps = (
   props: Omit<StandardLoginPagesProps, 'type' | 'onSubmit' | 'mock'>,
   type: StandardLoginPageType,
@@ -496,6 +708,12 @@ export function StandardLoginPages({
   type = 'tech',
   ...props
 }: StandardLoginPagesProps) {
+  const rootProps = getRootProps(props, type);
+
+  if (type === 'otp') {
+    return <OtpLoginPage className={className} mock={mock} onSubmit={onSubmit} rootProps={rootProps} />;
+  }
+
   const copy = templateCopy[type];
   const form = (
     <LoginFormPanel
@@ -509,7 +727,6 @@ export function StandardLoginPages({
       onSubmit={onSubmit}
     />
   );
-  const rootProps = getRootProps(props, type);
 
   if (type === 'tech') {
     return (

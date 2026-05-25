@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-05-26
+
+### Changed
+
+- `StandardLoginPages` 新增 `type="otp"` 免密登录模板，承接参考截图风格的双栏登录页、右侧视觉面板、安全提示区、Storybook 场景和提交回调；移除 `src/components/biz/pages` 下独立 `LoginPageTemplate` 入口。
+- `Button` 增加统一悬浮与按下缩放反馈，`Skeleton` 默认切换为 Shimmer 高光动画并通过 `shimmer={false}` 保留原 pulse 动画兼容。
+- `src/components/ui/shared/styles.ts` 优化面板与浮层公共表面样式，补充轻量透明度与 backdrop blur。
+- `.gitignore` 增加 Vim/Swap 临时文件规则，避免 `.swp`、`.swo` 和备份文件混入提交。
+
 ## 2026-05-24
 
 ### Added
