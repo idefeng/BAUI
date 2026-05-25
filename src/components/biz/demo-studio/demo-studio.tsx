@@ -28,6 +28,7 @@ import {
   DemoPlayer,
   DEFAULT_DEMO_MANIFEST
 } from './demo-player';
+import { getRegionValuePath } from '../../../utils/regions';
 
 // ============================================================================
 // 常量定义：预设主题主色调 & 业务属性白名单
@@ -226,6 +227,7 @@ function StudioControlPanel() {
                 type="region"
                 ba_region_level="CITY"
                 placeholder="请选择目标客户所属省市"
+                value={manifest.context.ba_region_scope ? getRegionValuePath(manifest.context.ba_region_scope) : []}
                 onChange={(path) => {
                   const adcode = path[path.length - 1];
                   updateManifest((prev: DemoManifest) => ({
